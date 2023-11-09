@@ -1,0 +1,10 @@
+@use 'Button/button';
+@use 'Slider/slider';
+@use 'Toast/toast';
+
+.c-disabled,
+.c-disabled * {
+  cursor: default !important;
+  pointer-events: none;
+  user-select: none;
+}

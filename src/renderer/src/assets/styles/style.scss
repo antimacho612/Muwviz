@@ -1,0 +1,86 @@
+@use './components/' as *;
+
+// CSS Variables
+:root {
+  --primary-light: #8abdff;
+  --primary: #6d5dfc;
+  --primary-dark: #5b0eeb;
+
+  --white: #ffffff;
+  --greyLight-1: #e4ebf5;
+  --greyLight-2: #c8d0e7;
+  --greyLight-3: #bec8e4;
+  --greyDark: #9baacf;
+
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  --sidebar-bg-color: #ebecf0;
+  --background-color: var(--greyLight-1);
+  --background-color-dark: #0f172a; // = --tw-slate-900
+
+  // --tw-violet-600
+  --primary-color: #7c3aed;
+  --primary-color-rgb: 147, 51, 234;
+  --primary-light-color: #a855f7;
+  --primary-lightest-color: #c4b5fd;
+  --primary-lightest-color-rgb: 196, 181, 253;
+  --primary-dark-color: #9333ea;
+
+  --primary-text-color: #111827;
+  --secondary-text-color: #6b7280;
+
+  --disabled-text-color: #71717a; // = --tw-zinc-500
+  --disabled-bg-color: #d4d4d8; // = --tw-zinc-300
+
+  // ripple
+  --ripple-color: rgba(124, 58, 237, 0.4);
+
+  // animation
+  --animate-duration: #{$transitionDuration};
+}
+
+*,
+*::after,
+*::before {
+  user-select: none;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--background-color);
+  max-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+#app {
+  position: relative;
+  min-height: 100vh;
+  max-height: 100vh;
+  min-width: 100vw;
+  max-width: 100vw;
+  display: grid;
+  grid-template:
+    'title' 32px
+    'layout' 1fr;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-light-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(var(--primary-lightest-color-rgb), 0.5);
+  box-shadow: $innerShadow;
+  border-radius: 10px;
+}

@@ -1,0 +1,56 @@
+@use '../../global/index' as *;
+
+$vt-font-family: var(--font-family);
+
+$vt-color-default: #fff;
+$vt-text-color-default: #1976d2;
+
+$vt-color-info: #fff;
+$vt-text-color-info: #2196f3;
+
+$vt-color-success: #fff;
+$vt-text-color-success: #4caf50;
+
+$vt-color-warning: #fff;
+$vt-text-color-warning: #ffc107;
+
+$vt-color-error: #fff;
+$vt-text-color-error: #ff5252;
+
+@import 'vue-toastification/src/scss/_variables';
+@import 'vue-toastification/src/scss/_toastContainer';
+@import 'vue-toastification/src/scss/_toast';
+@import 'vue-toastification/src/scss/_closeButton';
+@import 'vue-toastification/src/scss/_progressBar';
+@import 'vue-toastification/src/scss/_icon';
+@import 'vue-toastification/src/scss/animations/_fade';
+
+.#{$vt-namespace}__toast {
+  background: var(--background-color);
+  border-radius: $borderRadiusLg;
+  box-shadow: $shadowHover;
+
+  &--default .#{$vt-namespace}__progress-bar {
+    background-color: $vt-text-color-default;
+  }
+
+  &--info .#{$vt-namespace}__progress-bar {
+    background-color: $vt-text-color-info;
+  }
+
+  &--success .#{$vt-namespace}__progress-bar {
+    background-color: $vt-text-color-success;
+  }
+
+  &--error .#{$vt-namespace}__progress-bar {
+    background-color: $vt-text-color-error;
+  }
+
+  &--warning .#{$vt-namespace}__progress-bar {
+    background-color: $vt-text-color-warning;
+  }
+}
+
+.#{$vt-namespace}__close-button {
+  color: #000;
+}
