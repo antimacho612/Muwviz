@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Timeline from './Timeline.vue';
-import MusicInfo from './MusicInfo.vue';
+import SongInfo from './SongInfo.vue';
 import PlayerControls from './PlayerControls.vue';
 import VolumeControl from './VolumeControl.vue';
 </script>
@@ -11,8 +11,8 @@ import VolumeControl from './VolumeControl.vue';
       <Timeline />
     </div>
     <div class="controls-pane-bottom">
-      <div class="music-info-container">
-        <MusicInfo />
+      <div class="song-info-container">
+        <SongInfo />
       </div>
       <div class="player-controls-container">
         <PlayerControls />
@@ -42,13 +42,13 @@ import VolumeControl from './VolumeControl.vue';
   justify-content: space-between;
 }
 
-.music-info-container,
+.song-info-container,
 .player-controls-container,
 .volume-control-container {
   flex: 0 1 calc(100% / 3);
 }
 
-.music-info-container {
+.song-info-container {
   overflow: hidden;
 }
 </style>

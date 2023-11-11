@@ -51,9 +51,7 @@ import ControlsPane from './ControlsPane/ControlsPane.vue';
 .layout-center {
   grid-area: center;
   position: relative;
-  width: 100%;
-  height: 100%;
-  max-height: 100%;
+  padding: 0.5rem;
   overflow: hidden;
 }
 
@@ -66,6 +64,8 @@ import ControlsPane from './ControlsPane/ControlsPane.vue';
 
 .layout-right {
   grid-area: right;
+  position: relative;
   padding: 0.5rem;
+  overflow: hidden;
 }
 </style>

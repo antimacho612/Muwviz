@@ -10,7 +10,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showPlayIcon: true,
+  showPlayIcon: false,
 });
 
 const emits = defineEmits<{
@@ -38,7 +38,13 @@ watch(
 </script>
 
 <template>
-  <div class="artwork" :style="{ width, height }" @click.stop="onClick">
+  <div
+    class="artwork"
+    :style="{ width, height }"
+    @click.stop="onClick"
+    @dblclick.stop
+    @pointerdown.stop
+  >
     <img
       v-if="!showAltIcon"
       :src="artworkImgSrc"
@@ -49,7 +55,7 @@ watch(
     />
     <MusicalNoteIcon v-else class="artwork-img" style="color: var(--secondary-text-color)" />
 
-    <div class="play-button">
+    <div v-if="showPlayIcon" class="play-button">
       <PlayIcon class="play-button-icon"></PlayIcon>
     </div>
   </div>

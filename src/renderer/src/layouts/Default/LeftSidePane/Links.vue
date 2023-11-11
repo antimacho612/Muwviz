@@ -103,7 +103,7 @@ const emits = defineEmits<{ click: [] }>();
 @for $i from 1 through 5 {
   .link:nth-child(#{$i}).router-link-active ~ .active-link-color {
     $idx: $i - 1;
-    $y: ($sidebarLinkSize * $idx) + ($sidebarLinksGap * $idx);
+    $y: ($sidebarLinkSize + $sidebarLinksGap) * $idx;
     transform: translateY($y);
   }
 }

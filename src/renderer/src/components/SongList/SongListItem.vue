@@ -1,75 +1,83 @@
 <script setup lang="ts">
-import { getContextMenu } from '@renderer/utils/contextMenu';
-import { formatTime } from '@renderer/utils/utils';
 import { Song } from '@shared/types';
+import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
+import { formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
 import Button from '@renderer/components/base/Button/Button.vue';
-import Artwork from './Artwork.vue';
-import PlayingAnimation from './PlayingAnimation.vue';
+import Artwork from '@renderer/components/Artwork/Artwork.vue';
+import BarsAnimation from '@renderer/components/BarsAnimation/BarsAnimation.vue';
 
 interface Props {
   song: Song;
   selected?: boolean;
-  nowPlaying?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   selected: false,
-  nowPlaying: false,
 });
 
 const emits = defineEmits<{
-  rowClick: [e: MouseEvent];
-  rowDoubleClick: [e: MouseEvent];
+  clickRow: [e: MouseEvent];
+  doubleClickRow: [e: MouseEvent];
   clickArtwork: [e: MouseEvent];
+  contextmenu: [e: MouseEvent];
+  clickEllipsisButton: [e: MouseEvent];
 }>();
 
-const onRowClick = (e: MouseEvent) => emits('rowClick', e);
-const onRowDoubleClick = (e: MouseEvent) => emits('rowDoubleClick', e);
-const onArtworkClick = (e: MouseEvent) => emits('clickArtwork', e);
+const { isPlaying, currentSong } = useAudioPlayer();
 
-const showContextMenu = (e: MouseEvent) => {
-  e.preventDefault();
-  getContextMenu(e, 'SONG');
-};
+const onClickRow = (e: MouseEvent) => emits('clickRow', e);
+const onDoubleClickRow = (e: MouseEvent) => emits('doubleClickRow', e);
+const onClickArtwork = (e: MouseEvent) => emits('clickArtwork', e);
+const onClickEllipsisButton = (e: MouseEvent) => emits('clickEllipsisButton', e);
+const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 </script>
 
 <template>
   <div
+    v-ripple="{ duration: 0.25 }"
     class="list-item"
     :class="{ selected: selected }"
-    @click="onRowClick"
-    @dblclick="onRowDoubleClick"
-    @contextmenu="showContextMenu"
+    @click="onClickRow"
+    @dblclick="onDoubleClickRow"
+    @contextmenu="contextMenu"
   >
     <Artwork
       :src="song.artworkPath"
       width="40px"
       height="40px"
+      :show-play-icon="true"
       class="img-area"
-      @click="onArtworkClick"
+      @click="onClickArtwork"
     />
     <div class="main-area">
       <div class="title-and-artist">
         <span class="title">{{ song.title }}</span>
-        <span class="artist">{{ song.artist || '-' }}</span>
+        <span class="artist">{{ toHyphenIfEmpty(song.artist) }}</span>
       </div>
 
-      <PlayingAnimation
-        v-if="nowPlaying"
+      <BarsAnimation
+        v-if="song.id === currentSong?.id"
+        :pause="!isPlaying"
         width="1rem"
-        height="1rem"
+        height="1.25rem"
         color="var(--primary-light-color)"
         class="playing-animation"
       />
     </div>
     <div class="trailing-area">
-      <span class="album">{{ song.album || '-' }}</span>
+      <span class="album">{{ toHyphenIfEmpty(song.album) }}</span>
       <span>{{ formatTime(song.duration) }}</span>
     </div>
     <div style="grid-area: menu">
-      <Button :icon="EllipsisVerticalIcon" size="sm" text @click.stop="showContextMenu"></Button>
+      <Button
+        :icon="EllipsisVerticalIcon"
+        size="sm"
+        text
+        @click.stop="onClickEllipsisButton"
+        @pointerdown.stop
+      />
     </div>
   </div>
 </template>
@@ -92,10 +100,10 @@ const showContextMenu = (e: MouseEvent) => {
     box-shadow: $innerShadow;
     border: 1px solid var(--primary-lightest-color);
   }
+}
 
-  &:hover {
-    box-shadow: $innerShadow;
-  }
+.hover .list-item {
+  box-shadow: $innerShadow;
 }
 
 .img-area {
@@ -122,19 +130,20 @@ const showContextMenu = (e: MouseEvent) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 90%;
-  line-height: 1;
+  height: 100%;
+  line-height: 1.3;
   overflow: hidden;
 
   .title {
-    font-size: 1rem;
+    font-size: map-get($fontSizes, md);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }
 
   .artist {
-    font-size: 0.875rem;
+    font-size: map-get($fontSizes, sm);
+    color: var(--secondary-text-color);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

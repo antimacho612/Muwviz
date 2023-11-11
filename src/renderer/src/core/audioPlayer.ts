@@ -24,11 +24,12 @@ export const audioPlayer = () => {
   const currentSongIndex = ref(-1);
 
   const currentSongId = computed(() => songQueue.value[currentSongIndex.value]);
-  const currentSong = computed(() => entities.songsMap.get(currentSongId.value));
+  const currentSong = computed(() =>
+    entities.songs.find((song) => song.id === currentSongId.value)
+  );
 
   // Audio Elementの初期化
   const audio = new Audio();
-  audio.src = 'media://D:\\\\Music\\Ado\\クラクラ\\クラクラ instrumental.mp3';
   audio.preload = 'auto';
   audio.crossOrigin = 'anonymous';
   audio.volume = 1;
@@ -197,29 +198,47 @@ export const audioPlayer = () => {
     repeat.value = payload;
   }
 
-  function setQueue(queue: string[], play = true) {
-    isLoading.value = true;
+  function setQueue(
+    songIds: string[],
+    options?: {
+      autoplay?: boolean;
+      shuffle?: boolean;
+      firstSongIndex?: number;
+    }
+  ) {
+    const defaultOpts = {
+      autoplay: true,
+      shuffle: false,
+      firstSongIndex: 0,
+    };
+    const opts = { ...defaultOpts, ...options };
 
-    if (isShufflOn.value) {
-      shuffleQueue(queue);
+    isLoading.value = true;
+    currentSongIndex.value = -1;
+
+    if (opts.shuffle) {
+      // シャッフル
+      originalSongQueue = [...songIds];
+      songQueue.value = shuffleArray(songIds, opts.firstSongIndex);
     } else {
       originalSongQueue = [];
-      songQueue.value = [...queue];
-      currentSongIndex.value = -1;
+      songQueue.value = [...songIds];
     }
 
-    if (queue.length && play) {
-      playSong(0);
-    } else {
+    if (!opts.autoplay) {
       isLoading.value = false;
+      return;
     }
+
+    const playSongIndex = opts.shuffle ? 0 : opts.firstSongIndex;
+    playSong(playSongIndex);
   }
 
   function addSongsToQueue(songIds: string[]) {
     //
   }
 
-  function removeFromQueue(songIds: string[]) {
+  function removeSongsFromQueue(songIds: string[]) {
     //
   }
 
@@ -245,6 +264,7 @@ export const audioPlayer = () => {
     }
   }
 
+  // TODO: キュー内の曲をシャッフルする関数に変える
   function shuffleQueue(queue: string[], firstSongIndex = -1) {
     originalSongQueue = queue;
 
@@ -257,7 +277,6 @@ export const audioPlayer = () => {
       // 全曲シャッフル
       songQueue.value = shuffleArray(queue);
     }
-    currentSongIndex.value = 0;
   }
 
   document.addEventListener('keydown', (event) => {
@@ -274,9 +293,10 @@ export const audioPlayer = () => {
     currentTime: readonly(currentTime),
     volume: readonly(volume),
     isMuted: readonly(isMuted),
-    currentSong: readonly(currentSong),
 
-    isReady: computed(() => songQueue.value.length),
+    songQueue: readonly(songQueue),
+    currentSongIndex: readonly(currentSongIndex),
+    currentSong: readonly(currentSong),
 
     play,
     pause,

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useContextMenu } from '@renderer/utils/useContextMenu';
 import { Song } from '@shared/types';
+
 import SongListItem from './SongListItem.vue';
 
 interface Props {
@@ -8,8 +10,12 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emits = defineEmits<{
+  clickArtwork: [songId: string];
+  doubleClickRow: [songId: string];
+}>();
 
-const selectedSongs = ref<Set<string>>(new Set());
+const selectedSongs = ref(new Set<string>());
 
 const selectAll = () => {
   selectedSongs.value = new Set(props.songs.map((song) => song.id));
@@ -22,7 +28,7 @@ const clearSelection = () => {
 let keyPressed: 'Shift' | 'Control' | undefined;
 let currentIndex = 0;
 
-const onRowClick = (index: number, id: string) => {
+const onClickRow = (index: number, id: string) => {
   if (keyPressed === 'Control') {
     if (selectedSongs.value.has(id)) {
       selectedSongs.value.delete(id);
@@ -41,6 +47,16 @@ const onRowClick = (index: number, id: string) => {
   } else {
     selectedSongs.value = new Set([id]);
     currentIndex = index;
+  }
+};
+
+const songContextMenu = useContextMenu('SONG');
+const songsContextMenu = useContextMenu('SONGS');
+const showContextMenu = (e: MouseEvent, song: Song) => {
+  if (selectedSongs.value.size > 1) {
+    songsContextMenu.show(e, { selectedSongs: selectedSongs.value });
+  } else {
+    songContextMenu.show(e, { song });
   }
 };
 
@@ -85,15 +101,20 @@ onUnmounted(() => {
       v-click-outside="clearSelection"
       class="songs-scroller"
       :items="songs"
-      :item-size="50"
+      :item-size="48"
       key-field="id"
       direction="vertical"
     >
       <template #default="{ item, index }">
         <SongListItem
+          :index="index"
           :song="item"
           :selected="selectedSongs.has(item.id)"
-          @row-click="onRowClick(index, item.id)"
+          @click-row="onClickRow(index, item.id)"
+          @click-artwork="emits('clickArtwork', item.id)"
+          @double-click-row="emits('doubleClickRow', item.id)"
+          @click-ellipsis-button="showContextMenu($event, item)"
+          @contextmenu="showContextMenu($event, item)"
         />
       </template>
     </RecycleScroller>

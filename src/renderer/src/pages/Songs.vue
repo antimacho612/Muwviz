@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
 import { Order, Song, SongsSortKey } from '@shared/types';
 import { sortArrayOfObjects } from '@shared/utils';
@@ -11,13 +12,12 @@ import InputText from '@renderer/components/base/InputText/InputText.vue';
 import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
 import SongList from '@renderer/components/SongList/SongList.vue';
 
-const entitiesStore = useEntitiesStore();
-const { songs } = storeToRefs(entitiesStore);
+const audioPlayer = useAudioPlayer();
+const { songs } = storeToRefs(useEntitiesStore());
 
 const searchText = ref('');
 const sortKey = ref<SongsSortKey>('Artist');
 const order = ref<Order>('ASC');
-
 const sortedSongs = ref<Song[]>([...songs.value]);
 
 const filteredSongs = computed(() => {
@@ -51,6 +51,17 @@ watch([sortKey, order], () => {
     );
   }
 });
+
+const playTheSong = (songId: string) => {
+  const songIds = sortedSongs.value.map((song) => song.id);
+  const theSongIndex = songIds.indexOf(songId);
+
+  audioPlayer.clearQueue();
+  audioPlayer.setQueue(songIds, { firstSongIndex: theSongIndex });
+};
+
+const onClickArtwork = (songId: string) => playTheSong(songId);
+const onDoubleClickRow = (songId: string) => playTheSong(songId);
 </script>
 
 <template>
@@ -115,7 +126,11 @@ watch([sortKey, order], () => {
       </div>
     </div>
 
-    <SongList :songs="filteredSongs" />
+    <SongList
+      :songs="filteredSongs"
+      @click-artwork="onClickArtwork"
+      @double-click-row="onDoubleClickRow"
+    />
   </div>
 </template>
 

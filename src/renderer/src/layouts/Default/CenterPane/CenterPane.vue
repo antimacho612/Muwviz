@@ -28,6 +28,5 @@ import Visualizer from './Visualizer.vue';
   width: 100%;
   height: calc(100% - 3.5rem);
   border-radius: $borderRadiusLg;
-  padding: 0.5rem;
 }
 </style>

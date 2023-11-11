@@ -15,7 +15,7 @@ const onSidebarToggleClick = () => {
 
 const onLinkClick = () => (isCollapsed.value = false);
 
-const isModalOpen = ref(true);
+const isModalOpen = ref(false);
 const modalSong = ref<Song | undefined>();
 
 const showSongDetailModal = (song: Song) => {
@@ -24,15 +24,11 @@ const showSongDetailModal = (song: Song) => {
 };
 
 provide('showSongDetailModal', showSongDetailModal);
-
-setInterval(() => {
-  isModalOpen.value = !isModalOpen.value;
-}, 2000);
 </script>
 
 <template>
   <aside class="left-side-pane" :class="{ 'is-collapsed': isCollapsed }">
-    <div class="sidenav">
+    <div class="sidenav" :inert="isModalOpen">
       <div class="links-container">
         <Links @click="onLinkClick" />
       </div>
@@ -46,7 +42,7 @@ setInterval(() => {
         />
       </div>
     </div>
-    <div class="left-pane-main">
+    <div class="left-pane-main" :inert="isModalOpen">
       <RouterView v-slot="{ Component }">
         <transition mode="out-in">
           <component :is="Component"></component>
@@ -54,7 +50,7 @@ setInterval(() => {
       </RouterView>
     </div>
 
-    <SongDetailModal v-model:is-open="isModalOpen" />
+    <SongDetailModal v-model:is-open="isModalOpen" :song="modalSong" />
   </aside>
 </template>
 

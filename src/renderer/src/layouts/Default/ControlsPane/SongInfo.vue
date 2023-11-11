@@ -1,21 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
+import { toHyphenIfEmpty } from '@renderer/utils/utils';
+
+import Artwork from '@renderer/components/Artwork/Artwork.vue';
+
+const { currentSong } = useAudioPlayer();
+</script>
 
 <template>
-  <div class="music-info">
-    <img src="" alt="" width="48" height="48" class="artwork" />
+  <div class="song-info">
+    <Artwork :src="currentSong?.filePath" width="48px" height="48px" />
     <div class="info">
-      <div class="title">曲のタイトル</div>
+      <div class="title">{{ toHyphenIfEmpty(currentSong?.title) }}</div>
       <div class="artist-and-album">
-        <a class="artist">アーティスト</a>
+        <a class="artist">{{ toHyphenIfEmpty(currentSong?.artist) }}</a>
         <span>／</span>
-        <a class="album">アルバム</a>
+        <a class="album">{{ toHyphenIfEmpty(currentSong?.album) }}</a>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.music-info {
+.song-info {
   display: flex;
   flex-wrap: nowrap;
   align-items: stretch;
@@ -32,6 +39,7 @@
 .info {
   flex: auto 1;
   display: flex;
+  line-height: 1.2;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
@@ -41,7 +49,6 @@
 .title {
   margin-bottom: 0.5rem;
   font-size: map-get($fontSizes, xl);
-  line-height: 1.2;
   color: var(--primary-text-color);
   text-overflow: ellipsis;
   overflow: hidden;
@@ -52,7 +59,6 @@
   flex-wrap: nowrap;
   justify-content: start;
   font-size: map-get($fontSizes, sm);
-  line-height: 1.2;
   color: var(--secondary-text-color);
 }
 

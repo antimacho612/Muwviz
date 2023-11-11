@@ -1,17 +1,24 @@
 import { Order, Song, SongsSortKey, SortOption } from './types';
 
-export const isEmpty = <T>(value: T | undefined): value is undefined =>
-  typeof value === 'undefined' || value === null;
-
 export const getRandomInt = (max: number, min = 0) =>
   Math.floor(Math.random() * (max + 1 - min)) + min;
 
-export const shuffleArray = <T>(array: readonly T[]): T[] => {
+export const shuffleArray = <T>(array: readonly T[], firstItemIndex = -1): T[] => {
+  const fixFirstItem = firstItemIndex >= 0 && firstItemIndex < array.length;
   const shuffled = [...array];
+
+  if (fixFirstItem) {
+    // 指定されたインデックスの項目をシャッフル対象の配列から除外（シャッフル後に先頭に追加）
+    shuffled.splice(firstItemIndex, 1);
+  }
 
   for (let i = shuffled.length - 1; i > 0; i--) {
     const randomIndex = getRandomInt(i);
     [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+  }
+
+  if (fixFirstItem) {
+    shuffled.unshift(array[firstItemIndex]);
   }
 
   return shuffled;

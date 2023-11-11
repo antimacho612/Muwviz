@@ -18,3 +18,31 @@ export const formatTime = (ms?: number): string => {
 
   return times.join(':');
 };
+
+export const formatBytes = (bytes: number, decimals = 2) => {
+  const KB = 1024;
+  const UNITS = ['B', 'KB', 'MB', 'GB', 'TB'] as const;
+
+  let unitIndex = 0;
+
+  if (Math.abs(bytes) < KB) {
+    return `${bytes} ${UNITS[unitIndex]}`;
+  }
+
+  const r = 10 ** decimals;
+  let calculated = bytes;
+  do {
+    calculated /= KB;
+    unitIndex++;
+  } while (Math.round(Math.abs(calculated) * r) / r >= KB && unitIndex < UNITS.length - 1);
+
+  return `${calculated.toFixed(decimals)} ${UNITS[unitIndex]}`;
+};
+
+export const toHyphenIfEmpty = (value: string | number | undefined | null) => {
+  if (value == null) return '-';
+  // string
+  if (typeof value === 'string') return value || '-';
+  // number
+  return Number.isFinite(value) ? value.toString() : '-';
+};

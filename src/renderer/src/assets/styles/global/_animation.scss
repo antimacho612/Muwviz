@@ -1,0 +1,86 @@
+@use './variables' as *;
+
+@mixin animation(
+  $name,
+  $duration: $transitionDuration,
+  $timingFunction: ease,
+  $delay: 0s,
+  $iterationCount: 1,
+  $direction: normal,
+  $fillMode: forwards
+) {
+  animation: {
+    name: $name;
+    duration: $duration;
+    timing-function: $timingFunction;
+    delay: $delay;
+    iteration-count: $iterationCount;
+    direction: $direction;
+    fill-mode: $fillMode;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-5%);
+  }
+}
+
+@keyframes up-and-down {
+  10% {
+    height: 30%;
+  }
+
+  30% {
+    height: 100%;
+  }
+
+  60% {
+    height: 50%;
+  }
+
+  80% {
+    height: 75%;
+  }
+
+  100% {
+    height: 60%;
+  }
+}
