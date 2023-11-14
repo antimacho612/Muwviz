@@ -18,10 +18,10 @@ if (!app.requestSingleInstanceLock()) {
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('muviz', process.execPath, [path.resolve(process.argv[1])]);
+    app.setAsDefaultProtocolClient('muwviz', process.execPath, [path.resolve(process.argv[1])]);
   }
 } else {
-  app.setAsDefaultProtocolClient('muviz');
+  app.setAsDefaultProtocolClient('muwviz');
 }
 
 initializeLogger();
@@ -118,7 +118,7 @@ function initializeLogger() {
 
 function registerProtocols() {
   protocol.registerSchemesAsPrivileged([
-    { scheme: 'muviz', privileges: { secure: true, standard: true } },
+    { scheme: 'muwviz', privileges: { secure: true, standard: true } },
     { scheme: 'media', privileges: { corsEnabled: true, supportFetchAPI: true } },
   ]);
 }
@@ -127,7 +127,7 @@ async function createWindow() {
   const hasFrame = process.platform === 'linux' || process.platform === 'darwin';
 
   const window = new BrowserWindow({
-    title: 'Muviz',
+    title: 'Muwviz',
     titleBarStyle: hasFrame ? 'default' : 'hidden',
     frame: hasFrame,
     width: 900,

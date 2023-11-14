@@ -14,7 +14,7 @@ const playPauseButtonIcon = computed(() => {
   }
 });
 
-const onPlayPauseButtonClick = async () => {
+const onClickPlayPauseButton = async () => {
   await audioPlayer.togglePlay();
 };
 </script>
@@ -22,7 +22,7 @@ const onPlayPauseButtonClick = async () => {
 <template>
   <div class="player-controls">
     <Button :icon="BackwardIcon" text />
-    <Button :icon="playPauseButtonIcon" size="lg" @click="onPlayPauseButtonClick" />
+    <Button :icon="playPauseButtonIcon" size="lg" @click="onClickPlayPauseButton" />
     <Button :icon="ForwardIcon" text />
   </div>
 </template>

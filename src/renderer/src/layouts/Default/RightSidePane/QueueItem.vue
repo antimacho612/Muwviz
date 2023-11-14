@@ -6,10 +6,12 @@ import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import Button from '@renderer/components/base/Button/Button.vue';
 import BarsAnimation from '@renderer/components/BarsAnimation/BarsAnimation.vue';
+import { toHyphenIfEmpty } from '@renderer/utils/utils';
 
 interface Props {
-  index: number;
-  song: Song;
+  queueId: string;
+  index?: number;
+  song?: Song;
 }
 
 const props = defineProps<Props>();
@@ -35,10 +37,12 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
     @dblclick="onDoubleClickRow"
     @contextmenu="contextMenu"
   >
-    <div class="index">{{ index + 1 }}</div>
+    <div class="index">{{ index === undefined ? '-' : index + 1 }}</div>
     <div class="song-info">
-      <span class="title">{{ song.title }}</span>
-      <span class="artist-and-album">{{ song.artist || '-' }}／{{ song.album || '-' }}</span>
+      <span class="title">{{ song?.title }}</span>
+      <span class="artist-and-album">
+        {{ toHyphenIfEmpty(song?.artist) }}／{{ toHyphenIfEmpty(song?.album) }}
+      </span>
     </div>
     <BarsAnimation
       v-if="current"
@@ -55,6 +59,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
       text
       class="delele-button"
       @click.stop="onClickDeleteButton"
+      @dblclick.stop
     />
   </div>
 </template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
 import { Order, Song, SongsSortKey } from '@shared/types';
@@ -13,12 +12,12 @@ import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
 import SongList from '@renderer/components/SongList/SongList.vue';
 
 const audioPlayer = useAudioPlayer();
-const { songs } = storeToRefs(useEntitiesStore());
+const { songList } = useEntitiesStore();
 
 const searchText = ref('');
 const sortKey = ref<SongsSortKey>('Artist');
 const order = ref<Order>('ASC');
-const sortedSongs = ref<Song[]>([...songs.value]);
+const sortedSongs = ref<Song[]>([...songList]);
 
 const filteredSongs = computed(() => {
   // フィルタリング
@@ -38,10 +37,10 @@ const filteredSongs = computed(() => {
 watch([sortKey, order], () => {
   // ソート
   if (sortKey.value === 'Artist' && order.value === 'ASC') {
-    sortedSongs.value = [...songs.value];
+    sortedSongs.value = [...songList];
   } else {
     sortedSongs.value = sortArrayOfObjects(
-      [...songs.value],
+      [...songList],
       [
         {
           key: 'title',
@@ -52,22 +51,20 @@ watch([sortKey, order], () => {
   }
 });
 
-const playTheSong = (songId: string) => {
+const playTheSong = async (songId: string) => {
   const songIds = sortedSongs.value.map((song) => song.id);
   const theSongIndex = songIds.indexOf(songId);
-
-  audioPlayer.clearQueue();
-  audioPlayer.setQueue(songIds, { firstSongIndex: theSongIndex });
+  await audioPlayer.setQueue(songIds, { firstSongIndex: theSongIndex });
 };
 
-const onClickArtwork = (songId: string) => playTheSong(songId);
-const onDoubleClickRow = (songId: string) => playTheSong(songId);
+const onClickArtwork = async (songId: string) => await playTheSong(songId);
+const onDoubleClickRow = async (songId: string) => await playTheSong(songId);
 </script>
 
 <template>
   <div class="songs-page">
     <div class="mb-2" style="display: flex; align-items: center; justify-content: space-between">
-      <h2 class="title">すべての曲 ({{ songs.length }})</h2>
+      <h2 class="title">すべての曲 ({{ songList.length }})</h2>
       <div>
         <Button size="sm">s</Button>
       </div>

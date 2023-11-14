@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { Album, Artist, Song } from '@shared/types';
 
 type EntitiesStoreState = {
-  songs: Song[];
+  songsMap: Map<string, Song>;
   albums: Album[];
   artists: Artist[];
   playlists: Song[];
@@ -11,11 +11,17 @@ type EntitiesStoreState = {
 export const useEntitiesStore = defineStore('entities', {
   state: (): EntitiesStoreState => {
     return {
-      songs: [],
+      songsMap: new Map(),
       albums: [],
       artists: [],
       playlists: [],
     };
+  },
+
+  getters: {
+    songList(state) {
+      return Array.from(state.songsMap.values());
+    },
   },
 
   actions: {
@@ -29,7 +35,7 @@ export const useEntitiesStore = defineStore('entities', {
           window.electronAPI.invoke.getAllArtists(),
         ]);
 
-        this.songs = songs;
+        this.songsMap = new Map(songs.map((song) => [song.id, song]));
         this.albums = albums;
         this.artists = artists;
 

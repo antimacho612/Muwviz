@@ -19,7 +19,30 @@ onMounted(() => {
 
 <template>
   <div class="titlebar">
-    <div class="title">Muviz</div>
+    <div class="title">
+      <div style="display: flex; gap: 1px; align-items: center; height: 90%; margin-right: 4px">
+        <div
+          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 30%"
+        ></div>
+        <div
+          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 55%"
+        ></div>
+        <div
+          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 75%"
+        ></div>
+        <div
+          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 35%"
+        ></div>
+        <div
+          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 70%"
+        ></div>
+        <div
+          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 45%"
+        ></div>
+      </div>
+
+      Muwviz
+    </div>
     <div class="buttons">
       <div class="button" @click="onMinimizeButtonClick">
         <MinusIcon class="icon" />
@@ -44,14 +67,18 @@ onMounted(() => {
   height: 100%;
   width: 100vw;
   -webkit-app-region: drag;
-  color: var(--primary-text-color);
+  box-shadow: 0.1rem 0.1rem 0.6rem var(--greyLight-3);
   z-index: 100;
 }
 
 .title {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
   font-weight: bold;
   line-height: 1;
-  padding-left: 0.5rem;
+  padding-left: 8px;
 }
 
 .buttons {

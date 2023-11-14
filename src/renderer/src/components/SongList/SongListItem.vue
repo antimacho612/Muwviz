@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Song } from '@shared/types';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
@@ -13,7 +14,7 @@ interface Props {
   selected?: boolean;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   selected: false,
 });
 
@@ -27,6 +28,8 @@ const emits = defineEmits<{
 
 const { isPlaying, currentSong } = useAudioPlayer();
 
+const current = computed(() => props.song.id === currentSong.value?.id);
+
 const onClickRow = (e: MouseEvent) => emits('clickRow', e);
 const onDoubleClickRow = (e: MouseEvent) => emits('doubleClickRow', e);
 const onClickArtwork = (e: MouseEvent) => emits('clickArtwork', e);
@@ -38,7 +41,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
   <div
     v-ripple="{ duration: 0.25 }"
     class="list-item"
-    :class="{ selected: selected }"
+    :class="{ selected, current }"
     @click="onClickRow"
     @dblclick="onDoubleClickRow"
     @contextmenu="contextMenu"
@@ -58,7 +61,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
       </div>
 
       <BarsAnimation
-        v-if="song.id === currentSong?.id"
+        v-if="current"
         :pause="!isPlaying"
         width="1rem"
         height="1.25rem"
@@ -77,6 +80,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
         text
         @click.stop="onClickEllipsisButton"
         @pointerdown.stop
+        @dblclick.stop
       />
     </div>
   </div>
@@ -95,6 +99,17 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
   border: 1px solid transparent;
   border-radius: $borderRadiusMd;
   cursor: default;
+
+  &.current {
+    .title,
+    .trailing-area {
+      color: var(--primary-color);
+    }
+
+    .artist {
+      color: var(--primary-light-color);
+    }
+  }
 
   &.selected {
     box-shadow: $innerShadow;

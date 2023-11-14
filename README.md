@@ -1,4 +1,4 @@
-# muviz
+# muwviz
 
 An Electron application with Vue and TypeScript
 

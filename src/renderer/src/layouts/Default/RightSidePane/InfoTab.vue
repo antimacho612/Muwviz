@@ -82,9 +82,11 @@ const { currentSong } = useAudioPlayer();
   overflow: hidden;
 }
 .artwork {
+  flex-shrink: 0;
   margin: 0 auto;
 }
 .title {
+  flex-shrink: 0;
   width: 100%;
   text-align: center;
   font-size: map-get($fontSizes, lg);
