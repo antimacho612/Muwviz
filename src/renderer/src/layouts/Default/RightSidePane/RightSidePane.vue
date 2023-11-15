@@ -20,8 +20,9 @@ const TABS = [
   },
   {
     title: 'Visualizer',
+    component: LyricsTab,
   },
-];
+] as const;
 </script>
 
 <template>

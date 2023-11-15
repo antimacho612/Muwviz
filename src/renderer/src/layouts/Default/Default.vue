@@ -3,6 +3,7 @@ import LeftSidePane from './LeftSidePane/LeftSidePane.vue';
 import CenterPane from './CenterPane/CenterPane.vue';
 import RightSidePane from './RightSidePane/RightSidePane.vue';
 import ControlsPane from './ControlsPane/ControlsPane.vue';
+import SettingsModal from './SettingsModal/SettingsModal.vue';
 </script>
 
 <template>
@@ -22,6 +23,8 @@ import ControlsPane from './ControlsPane/ControlsPane.vue';
     <div class="layout-bottom">
       <ControlsPane />
     </div>
+
+    <SettingsModal :is-open="true" />
   </div>
 </template>
 

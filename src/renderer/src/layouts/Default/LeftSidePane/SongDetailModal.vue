@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { Song } from '@shared/types';
 import { formatTime, formatBytes, toHyphenIfEmpty } from '@renderer/utils/utils';
 
 import { XMarkIcon } from '@heroicons/vue/24/outline';
+import Modal from '@renderer/components/base/Modal/Modal.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import Artwork from '@renderer/components/Artwork/Artwork.vue';
 
-defineProps<{ song?: Song; isOpen?: boolean }>();
+interface Props {
+  song?: Song;
+  isOpen?: boolean;
+}
+
+const props = defineProps<Props>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
 
-const wapperEl = ref<HTMLElement>();
-
-const onOpened = () => {
-  wapperEl.value?.focus();
-};
+const opened = computed({
+  get: () => props.isOpen,
+  set: (value: boolean) => emits('update:isOpen', value),
+});
 
 const close = () => {
   emits('update:isOpen', false);
@@ -22,115 +27,81 @@ const close = () => {
 </script>
 
 <template>
-  <Transition enter-active-class="fadeIn" leave-active-class="fadeOut">
-    <div v-show="isOpen" class="backdrop"></div>
-  </Transition>
-  <Transition
-    enter-active-class="fadeInDown"
-    leave-active-class="fadeOutUp"
-    @after-enter="onOpened"
-  >
-    <div
-      v-show="isOpen"
-      ref="wapperEl"
-      class="wrapper"
-      tabindex="-1"
-      role="dialog"
-      aria-modal="true"
-      @click.self="close"
-      @keydown.esc.stop="close"
-    >
-      <div class="modal">
-        <div class="modal-header">
-          <h3 class="modal-title">
-            {{ toHyphenIfEmpty(song?.title) }}
-          </h3>
-          <Button class="modal-close-button" size="sm" :icon="XMarkIcon" text @click="close" />
-        </div>
-        <div class="modal-content">
-          <Artwork
-            :src="song?.artworkPath"
-            class="artwork"
-            width="120px"
-            height="120px"
-            :show-play-icon="false"
-          />
-          <div class="info">
-            <div class="row">
-              <div class="prop-name" style="width: 20%">アーティスト</div>
-              <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.artist) }}</div>
+  <Modal v-model:is-open="opened">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          {{ toHyphenIfEmpty(song?.title) }}
+        </h3>
+        <Button class="modal-close-button" size="sm" :icon="XMarkIcon" text @click="close" />
+      </div>
+      <div class="modal-main">
+        <Artwork
+          :src="song?.artworkPath"
+          class="artwork"
+          width="120px"
+          height="120px"
+          :show-play-icon="false"
+        />
+        <div class="info">
+          <div class="row">
+            <div class="prop-name" style="width: 20%">アーティスト</div>
+            <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.artist) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">アルバム</div>
+            <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.album) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">ディスク</div>
+            <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.diskNo) }}</div>
+            <div class="prop-name" style="width: 20%">トラック</div>
+            <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.trackNo) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">年</div>
+            <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.year) }}</div>
+            <div class="prop-name" style="width: 20%">長さ</div>
+            <div class="prop-value" style="width: 30%">{{ formatTime(song?.duration) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">ジャンル</div>
+            <div class="prop-value" style="width: 80%">
+              {{ toHyphenIfEmpty(song?.genres?.join(', ')) }}
             </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">アルバム</div>
-              <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.album) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">ビットレート</div>
+            <div class="prop-value" style="width: 30%">
+              {{ song?.bitrate ? `${(song.bitrate / 1000000).toFixed(2)} Mbps` : '-' }}
             </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">ディスク</div>
-              <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.diskNo) }}</div>
-              <div class="prop-name" style="width: 20%">トラック</div>
-              <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.trackNo) }}</div>
+            <div class="prop-name" style="width: 20%">サンプルレート</div>
+            <div class="prop-value" style="width: 30%">
+              {{ song?.sampleRate ? `${song.sampleRate / 1000} kHz` : '-' }}
             </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">年</div>
-              <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.year) }}</div>
-              <div class="prop-name" style="width: 20%">長さ</div>
-              <div class="prop-value" style="width: 30%">{{ formatTime(song?.duration) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">ファイルパス</div>
+            <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.filePath) }}</div>
+          </div>
+          <div class="row">
+            <div class="prop-name" style="width: 20%">サイズ</div>
+            <div class="prop-value" style="width: 30%">
+              {{ song?.size ? formatBytes(song.size) : '-' }}
             </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">ジャンル</div>
-              <div class="prop-value" style="width: 80%">
-                {{ toHyphenIfEmpty(song?.genres?.join(', ')) }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">ビットレート</div>
-              <div class="prop-value" style="width: 30%">
-                {{ song?.bitrate ? `${(song.bitrate / 1000000).toFixed(2)} Mbps` : '-' }}
-              </div>
-              <div class="prop-name" style="width: 20%">サンプルレート</div>
-              <div class="prop-value" style="width: 30%">
-                {{ song?.sampleRate ? `${song.sampleRate / 1000} kHz` : '-' }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">ファイルパス</div>
-              <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.filePath) }}</div>
-            </div>
-            <div class="row">
-              <div class="prop-name" style="width: 20%">サイズ</div>
-              <div class="prop-value" style="width: 30%">
-                {{ song?.size ? formatBytes(song.size) : '-' }}
-              </div>
-              <div class="prop-name" style="width: 20%">作成日</div>
-              <div class="prop-value" style="width: 30%">
-                {{ toHyphenIfEmpty(song?.createdAt.toLocaleDateString('ja')) }}
-              </div>
+            <div class="prop-name" style="width: 20%">作成日</div>
+            <div class="prop-value" style="width: 30%">
+              {{ toHyphenIfEmpty(song?.createdAt.toLocaleDateString('ja')) }}
             </div>
           </div>
         </div>
       </div>
     </div>
-  </Transition>
+  </Modal>
 </template>
 
 <style lang="scss" scoped>
-.backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: 1050;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.wrapper {
-  position: absolute;
-  inset: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  outline: 0;
-  z-index: 1051;
-}
-
-.modal {
+.modal-content {
   position: absolute;
   top: 20%;
   left: calc(50% + 4rem);
@@ -160,7 +131,7 @@ const close = () => {
   overflow: hidden;
 }
 
-.modal-content {
+.modal-main {
   display: flex;
   flex-wrap: nowrap;
   align-items: start;
@@ -205,21 +176,5 @@ const close = () => {
       cursor: text;
     }
   }
-}
-
-.fadeIn {
-  @include animation($name: fadeIn);
-}
-
-.fadeOut {
-  @include animation($name: fadeOut, $delay: 0.1s);
-}
-
-.fadeInDown {
-  @include animation($name: fadeInDown, $delay: 0.1s, $fillMode: both);
-}
-
-.fadeOutUp {
-  @include animation($name: fadeOutUp);
 }
 </style>
