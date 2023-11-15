@@ -11,6 +11,8 @@ import { ensureDirectory } from '@main/utils';
 
 const ARTWORK_DIR = path.join(app.getPath('userData'), 'artworks');
 
+export type ParsedSong = Omit<Song, 'artistId' | 'albumId'> & { lyrics?: string };
+
 async function storePicture(picture: IPicture) {
   const hashedFileName = xxHash32(picture.data).toString(16);
 
@@ -50,7 +52,7 @@ export async function parseSongFile(filePath: string) {
 
     const fileStat = await fsAsync.stat(filePath);
 
-    const song: Song = {
+    const song: ParsedSong = {
       id: crypto.randomUUID(),
       filePath: filePath,
       title: metadata.common.title ?? path.parse(filePath).name,
@@ -67,6 +69,11 @@ export async function parseSongFile(filePath: string) {
         : undefined,
       sampleRate: metadata.format.sampleRate,
       artworkPath: artworkPath,
+      lyrics: metadata.common.lyrics
+        ? metadata.common.lyrics.join('\n')
+        : metadata.common.lyricist
+        ? metadata.common.lyricist.join('\n')
+        : undefined,
       createdAt: fileStat.ctime,
       parsedAt: new Date(),
     };

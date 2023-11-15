@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { GetApiType } from 'electron-typescript-ipc';
-import { Album, Artist, Song } from '@shared/types';
+import { Album, Artist, LyricsMap, Song } from '@shared/types';
 
 export type ElectronAPI = GetApiType<
   {
@@ -48,6 +48,11 @@ export type ElectronAPI = GetApiType<
      * 全アーティスト情報を取得する
      */
     getAllArtists: () => Promise<Artist[]>;
+
+    /**
+     * 全歌詞情報を取得する
+     */
+    getAllLyrics: () => Promise<LyricsMap>;
   },
   {
     /**
@@ -75,6 +80,8 @@ export const electronAPI: ElectronAPI = {
     getAllAlbums: async () => await ipcRenderer.invoke('getAllAlbums'),
 
     getAllArtists: async () => await ipcRenderer.invoke('getAllArtists'),
+
+    getAllLyrics: async () => await ipcRenderer.invoke('getAllLyrics'),
   },
   on: {
     windowResized: (listener) => ipcRenderer.on('windowResized', listener),

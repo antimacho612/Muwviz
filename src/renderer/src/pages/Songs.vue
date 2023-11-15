@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { Ref, computed, inject, ref, watch } from 'vue';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
 import { Order, Song, SongsSortKey } from '@shared/types';
@@ -11,8 +11,13 @@ import InputText from '@renderer/components/base/InputText/InputText.vue';
 import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
 import SongList from '@renderer/components/SongList/SongList.vue';
 
-const audioPlayer = useAudioPlayer();
+const { setQueue } = useAudioPlayer();
 const { songList } = useEntitiesStore();
+
+const isSidebarCollapsed = inject('isSidebarCollapsed') as Ref<boolean>;
+const onClickCloseButton = () => {
+  isSidebarCollapsed.value = true;
+};
 
 const searchText = ref('');
 const sortKey = ref<SongsSortKey>('Artist');
@@ -51,14 +56,14 @@ watch([sortKey, order], () => {
   }
 });
 
-const playTheSong = async (songId: string) => {
+const playSong = async (songId: string) => {
   const songIds = sortedSongs.value.map((song) => song.id);
   const theSongIndex = songIds.indexOf(songId);
-  await audioPlayer.setQueue(songIds, { firstSongIndex: theSongIndex });
+  await setQueue(songIds, { firstSongIndex: theSongIndex });
 };
 
-const onClickArtwork = async (songId: string) => await playTheSong(songId);
-const onDoubleClickRow = async (songId: string) => await playTheSong(songId);
+const onClickArtwork = async (songId: string) => await playSong(songId);
+const onDoubleClickRow = async (songId: string) => await playSong(songId);
 </script>
 
 <template>
@@ -66,7 +71,7 @@ const onDoubleClickRow = async (songId: string) => await playTheSong(songId);
     <div class="mb-2" style="display: flex; align-items: center; justify-content: space-between">
       <h2 class="title">すべての曲 ({{ songList.length }})</h2>
       <div>
-        <Button size="sm">s</Button>
+        <Button size="sm" :icon="XMarkIcon" text @click="onClickCloseButton" />
       </div>
     </div>
 

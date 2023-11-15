@@ -44,7 +44,7 @@ export const audioPlayer = () => {
     console.error('Audio Error', event, source, lineno, colno, error);
     toast.error('エラーが発生しました。選択された曲を再生できません。');
     isLoading.value = false;
-    isPlaying.value = true;
+    isPlaying.value = false;
   };
 
   // 再生開始時
@@ -70,59 +70,60 @@ export const audioPlayer = () => {
   // 曲終了時
   audio.onended = async () => {
     if (repeat.value !== 'ONCE') {
+      isPlaying.value = true;
       nextSong();
     }
   };
 
-  function resetAudio() {
+  const resetAudio = () => {
     audio.removeAttribute('src');
     audio.srcObject = null;
-  }
+  };
 
-  async function refleshToPlay() {
+  const loadSong = async (autoPlay = true) => {
     resetAudio();
 
     currentSong.value = songsMap.value.get(songQueue.currentItem.value.songId);
-
     if (!currentSong.value) {
-      console.error('曲が存在しないため再生できません。');
-      audio.pause();
+      toast.error('曲が存在しません...😢');
+      console.error('曲が存在しません...');
       return;
     }
 
     audio.src = `media://${currentSong.value.filePath}`;
-    audio.play();
+
+    if (autoPlay) {
+      await play();
+    }
+  };
+
+  const play = async () => {
+    if (currentSong.value) {
+      await audio.play();
+    }
 
     // main側に再生状態を伝える ← 必要だったら
     // await window.electronAPI.invoke.updatePlaybackState(playAfterLoad || playerStatus !== 'PAUSED' ? 'PLAYING' : 'PAUSED')
     // 再生回数増やす
     // incrementPlayCount(song.id)
-  }
+  };
 
-  async function resume() {
-    if (currentSong.value) {
-      await audio.play();
-    }
-  }
+  const pause = () => audio.pause();
 
-  function pause() {
-    audio.pause();
-  }
-
-  async function togglePlay() {
+  const togglePlay = async () => {
     if (isPlaying.value) {
       audio.pause();
     } else {
-      await resume();
+      await play();
     }
-  }
+  };
 
-  async function playSongInQueue(queueId: string) {
+  const playSongInQueue = async (queueId: string) => {
     songQueue.setCurrent(queueId);
-    await refleshToPlay();
-  }
+    await loadSong();
+  };
 
-  async function nextSong() {
+  const nextSong = async () => {
     if (!songQueue.length.value) {
       setCurrentTime(0);
       return;
@@ -130,14 +131,14 @@ export const audioPlayer = () => {
 
     if (songQueue.hasNext() || repeat.value === 'ALL') {
       songQueue.next(true);
-      await refleshToPlay();
+      await loadSong(isPlaying.value);
     } else {
       toast.warning('キューに次の曲がありません。');
     }
-  }
+  };
 
-  async function previousSong() {
-    if (!songQueue.length) {
+  const previousSong = async () => {
+    if (!songQueue.length.value) {
       setCurrentTime(0);
       return;
     }
@@ -150,46 +151,46 @@ export const audioPlayer = () => {
 
     if (songQueue.hasPrevious() || repeat.value === 'ALL') {
       songQueue.previous(true);
-      await refleshToPlay();
+      await loadSong(isPlaying.value);
     } else {
       toast.warning('キューに前の曲がありません。');
     }
-  }
+  };
 
-  function setVolume(payload: number) {
+  const setVolume = (payload: number) => {
     audio.volume = payload / 100;
     volume.value = payload;
 
     audio.muted = false;
     isMuted.value = false;
-  }
+  };
 
-  function toggleMute() {
+  const toggleMute = () => {
     audio.muted = !audio.muted;
     isMuted.value = audio.muted;
 
     if (!isMuted.value && volume.value < 10) {
       setVolume(10);
     }
-  }
+  };
 
-  function setCurrentTime(currentTime: number) {
+  const setCurrentTime = (currentTime: number) => {
     audio.currentTime = currentTime;
-  }
+  };
 
-  function setRepeat(payload: RepeatState) {
+  const setRepeat = (payload: RepeatState) => {
     audio.loop = payload === 'ONCE';
     repeat.value = payload;
-  }
+  };
 
-  async function setQueue(
+  const setQueue = async (
     songIds: string[],
     options?: {
       autoplay?: boolean;
       shuffle?: boolean;
       firstSongIndex?: number;
     }
-  ) {
+  ) => {
     const defaultOpts = {
       autoplay: true,
       shuffle: false,
@@ -206,8 +207,8 @@ export const audioPlayer = () => {
       return;
     }
 
-    await refleshToPlay();
-  }
+    await loadSong();
+  };
 
   function addSongsToQueue(songIds: string[]) {
     //
@@ -268,7 +269,7 @@ export const audioPlayer = () => {
     currentSongIndex: songQueue.currentIndex,
     currentSong,
 
-    resume,
+    play,
     pause,
     togglePlay,
     nextSong,

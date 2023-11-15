@@ -6,9 +6,8 @@ import icon from '../../resources/icon.png?asset';
 import { deleteOldLog } from './logger';
 import { registerIpcChannels, registerWindowIpcListener } from './ipc';
 import { scanDirectory } from './core/directoryScanner';
-import { parseSongFile } from './core/songFileParser';
-import { songsStore, albumsStore, artistsStore } from './stores';
-import { Song } from '@shared/types';
+import { ParsedSong, parseSongFile } from './core/songFileParser';
+import { songsStore, albumsStore, artistsStore, lyricsStore } from './stores';
 import { buildLibrary } from './core/libraryBuilder';
 
 // 多重起動防止
@@ -33,9 +32,9 @@ export let win: BrowserWindow;
 app.whenReady().then(async () => {
   // test ---------------------------------------
   console.debug('Scanning directory...');
-  const files = await scanDirectory('D:\\Music\\mameyudoufu');
+  const files = await scanDirectory('D:\\Music\\Perfume');
 
-  const parsedSongs: Song[] = [];
+  const parsedSongs: ParsedSong[] = [];
   for (const file of files) {
     const parsedSong = await parseSongFile(file);
     if (parsedSong) {
@@ -44,11 +43,12 @@ app.whenReady().then(async () => {
   }
 
   console.debug('Building library...');
-  const { songs, albums, artists } = await buildLibrary(parsedSongs);
+  const { songs, albums, artists, lyricsMap } = await buildLibrary(parsedSongs);
 
   await albumsStore.save(albums);
   await artistsStore.save(artists);
   await songsStore.save(songs);
+  await lyricsStore.save(lyricsMap);
   // test ---------------------------------------
 
   electronApp.setAppUserModelId('com.electron');
@@ -147,6 +147,20 @@ async function createWindow() {
   window.on('ready-to-show', () => {
     window.show();
   });
+
+  window.webContents.session.webRequest.onHeadersReceived(
+    { urls: ['*://*.genius.com/*'] },
+    (details, callback) => {
+      if (details.responseHeaders) {
+        // 強制的にCORSブロックを回避する
+        delete details.responseHeaders['Access-Control-Allow-Origin'];
+        delete details.responseHeaders['access-control-allow-origin'];
+        details.responseHeaders['Access-Control-Allow-Origin'] = ['*'];
+      }
+
+      callback({ responseHeaders: details.responseHeaders });
+    }
+  );
 
   window.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);

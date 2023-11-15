@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import InfoTab from './InfoTab.vue';
 import QueueTab from './QueueTab.vue';
+import LyricsTab from './LyricsTab.vue';
 
 const activeMenuIndex = ref(0);
 const TABS = [
@@ -15,6 +16,7 @@ const TABS = [
   },
   {
     title: 'Lyrics',
+    component: LyricsTab,
   },
   {
     title: 'Visualizer',

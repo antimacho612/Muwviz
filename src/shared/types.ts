@@ -2,9 +2,9 @@ export type Song = {
   id: string;
   filePath: string;
   title: string;
-  artistId?: string;
+  artistId: string;
   artist: string;
-  albumId?: string;
+  albumId: string;
   album: string;
   diskNo?: number;
   trackNo?: number;
@@ -31,6 +31,10 @@ export type Artist = {
   id: string;
   name: string;
   songCount: number;
+};
+
+export type LyricsMap = {
+  [songId: string]: string;
 };
 
 export type Order = 'ASC' | 'DESC';

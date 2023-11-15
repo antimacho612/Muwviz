@@ -4,10 +4,10 @@ import { PlayIcon, PauseIcon, BackwardIcon, ForwardIcon } from '@heroicons/vue/2
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import Button from '@renderer/components/base/Button/Button.vue';
 
-const audioPlayer = useAudioPlayer();
+const { isPlaying, previousSong, togglePlay, nextSong } = useAudioPlayer();
 
 const playPauseButtonIcon = computed(() => {
-  if (audioPlayer.isPlaying.value) {
+  if (isPlaying.value) {
     return PauseIcon;
   } else {
     return PlayIcon;
@@ -15,15 +15,15 @@ const playPauseButtonIcon = computed(() => {
 });
 
 const onClickPlayPauseButton = async () => {
-  await audioPlayer.togglePlay();
+  await togglePlay();
 };
 </script>
 
 <template>
   <div class="player-controls">
-    <Button :icon="BackwardIcon" text />
+    <Button :icon="BackwardIcon" text @click="previousSong" />
     <Button :icon="playPauseButtonIcon" size="lg" @click="onClickPlayPauseButton" />
-    <Button :icon="ForwardIcon" text />
+    <Button :icon="ForwardIcon" text @click="nextSong" />
   </div>
 </template>
 

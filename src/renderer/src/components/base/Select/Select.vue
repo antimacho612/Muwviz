@@ -1,45 +1,28 @@
 <script setup lang="ts">
 interface Props {
-  modelValue?: string;
-  size?: 'sm' | 'md' | 'lg';
-  selectAllOnFocus?: boolean;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
-
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: '',
+withDefaults(defineProps<Props>(), {
   size: 'md',
-  selectAllOnFocus: false,
 });
-
-const emits = defineEmits<{
-  focus: [e: FocusEvent];
-  'update:modelValue': [value: string];
-}>();
-
-const onInput = (e: Event) => {
-  emits('update:modelValue', (e.target as HTMLInputElement)?.value);
-};
-
-const onFocus = (e: FocusEvent) => {
-  if (props.selectAllOnFocus) {
-    (e.target as HTMLInputElement)?.select();
-  }
-};
 </script>
 
 <template>
-  <input
-    class="c-inputtext"
-    spellcheck="false"
-    :class="{ 'c-inputtext-sm': size === 'sm', 'c-inputtext-lg': size === 'lg' }"
-    :value="modelValue"
-    @input="onInput"
-    @focus="onFocus"
-  />
+  <select
+    class="c-select"
+    :class="{
+      'c-select-xs': size === 'xs',
+      'c-select-sm': size === 'sm',
+      'c-select-md': size === 'md',
+      'c-select-lg': size === 'lg',
+    }"
+  >
+    <slot></slot>
+  </select>
 </template>
 
 <style lang="scss">
-.c-inputtext {
+.c-select {
   font-size: 1rem;
   line-height: normal;
   color: var(--primary-text-color);
@@ -47,7 +30,6 @@ const onFocus = (e: FocusEvent) => {
   padding: 0.5rem 0.75rem;
   height: 3rem;
   border-radius: $borderRadiusFull;
-  appearance: none;
   box-shadow: $innerShadow;
   border: 1px solid transparent;
 
@@ -70,11 +52,16 @@ const onFocus = (e: FocusEvent) => {
     @include focused();
   }
 
-  &.c-inputtext-sm {
+  &.c-select-xs {
+    padding: 0.25rem 0.75rem;
+    height: 2rem;
+  }
+
+  &.c-select-sm {
     height: 2.5rem;
   }
 
-  &.c-inputtext-lg {
+  &.c-select-lg {
     height: 3.5rem;
   }
 }

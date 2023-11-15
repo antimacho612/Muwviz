@@ -234,9 +234,9 @@ onBeforeUnmount(() => {
     ref="sliderElement"
     class="c-slider"
     :class="{
-      'c-slider-horizontal': !props.vertical,
-      'c-slider-vertical': props.vertical,
-      'c-disabled': props.disabled,
+      'c-slider-horizontal': !vertical,
+      'c-slider-vertical': vertical,
+      'c-disabled': disabled,
       dragging: dragging,
     }"
     @mousedown="onMouseDown"
@@ -246,10 +246,10 @@ onBeforeUnmount(() => {
       ref="dotElement"
       class="c-slider-dot"
       :style="dotStyle"
-      :tabindex="!props.disabled ? 0 : undefined"
+      :tabindex="!disabled ? 0 : undefined"
       @keydown="onKeyDown"
     ></span>
-    <span v-if="props.showTooltip" class="c-slider-tooltip" :style="tooltipStyle">
+    <span v-if="showTooltip" class="c-slider-tooltip" :style="tooltipStyle">
       {{ tooltipText }}
     </span>
   </div>
@@ -258,5 +258,144 @@ onBeforeUnmount(() => {
 <style scoped>
 .c-slider {
   --bar-width: v-bind(props.barWidth);
+}
+</style>
+
+<style lang="scss">
+.c-slider {
+  --bar-width: 1;
+
+  position: relative;
+  border-radius: $borderRadiusFull;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: $innerShadow;
+  cursor: pointer;
+  user-select: none;
+
+  &.c-slider-horizontal {
+    width: 100%;
+  }
+
+  &.c-slider-vertical {
+    height: 100%;
+  }
+}
+
+.c-slider-fill {
+  position: absolute;
+  display: block;
+  border-radius: $borderRadiusFull;
+}
+
+.c-slider-dot {
+  position: absolute;
+  width: calc(1rem * var(--bar-width) * 1.5);
+  height: calc(1rem * var(--bar-width) * 1.5);
+  border-radius: $borderRadiusFull;
+  background: #fff;
+  box-shadow: $shadowDark;
+  z-index: 20;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(1rem * var(--bar-width) * 1.5 * 0.4);
+    height: calc(1rem * var(--bar-width) * 1.5 * 0.4);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: $borderRadiusFull;
+    background: var(--primary-light-color);
+  }
+
+  &:focus {
+    outline: 5px solid rgba(var(--primary-lightest-color-rgb), 0.5);
+  }
+}
+
+.c-slider-tooltip {
+  position: absolute;
+  padding: 0.4rem 0.6rem;
+  font-size: map-get($fontSizes, sm);
+  line-height: 1;
+  color: var(--primary-text-color);
+  border-radius: $borderRadiusMd;
+  background: var(--background-color);
+  box-shadow: $shadowHover;
+  cursor: default;
+  opacity: 0;
+  transition: opacity $transitionDuration ease-in-out;
+  z-index: 30;
+}
+
+.c-slider-dot:hover ~ .c-slider-tooltip,
+.c-slider-dot:focus ~ .c-slider-tooltip,
+.c-slider.dragging .c-slider-tooltip {
+  opacity: 1;
+}
+
+.c-slider.c-slider-horizontal {
+  height: calc(1rem * var(--bar-width));
+
+  .c-slider-fill {
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light-color));
+  }
+
+  .c-slider-dot {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .c-slider-tooltip {
+    top: 0;
+    transform: translate(-50%, -130%);
+  }
+}
+
+.c-slider.c-slider-vertical {
+  width: calc(1rem * var(--bar-width));
+
+  .c-slider-fill {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, var(--primary-color), var(--primary-light-color));
+  }
+
+  .c-slider-dot {
+    left: 50%;
+    transform: translate(-50%, 50%);
+  }
+
+  .c-slider-tooltip {
+    left: 0;
+    transform: translate(-80%, -50%);
+  }
+}
+
+.c-slider.c-disabled {
+  .c-slider-fill {
+    background: var(--disabled-text-color);
+  }
+
+  .c-slider-dot {
+    pointer-events: all;
+
+    &:active {
+      pointer-events: none;
+    }
+
+    &::after {
+      background: var(--disabled-bg-color);
+    }
+  }
+
+  .c-slider-tooltip {
+    color: var(--disabled-text-color);
+  }
 }
 </style>

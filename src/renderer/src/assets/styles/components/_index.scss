@@ -1,6 +1,4 @@
-@use 'Button/button';
-@use 'Slider/slider';
-@use 'Toast/toast';
+@use './toast';
 
 .c-disabled,
 .c-disabled * {

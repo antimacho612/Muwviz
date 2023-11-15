@@ -3,7 +3,7 @@ import { createIpcMain } from 'electron-typescript-ipc';
 import { ElectronAPI } from '@preload/ipc';
 
 import { win } from '.';
-import { albumsStore, artistsStore, songsStore } from './stores';
+import { albumsStore, artistsStore, songsStore, lyricsStore } from './stores';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
@@ -36,6 +36,13 @@ export function registerIpcChannels() {
 
   // 全アーティスト情報を取得する
   ipcMain.handle('getAllArtists', async () => artistsStore.data);
+
+  // 全歌詞情報を取得する
+  ipcMain.handle('getAllLyrics', async () => {
+    const lyrics = lyricsStore.data;
+    lyricsStore.clearCache();
+    return lyrics;
+  });
 }
 
 export function registerWindowIpcListener(window: BrowserWindow) {

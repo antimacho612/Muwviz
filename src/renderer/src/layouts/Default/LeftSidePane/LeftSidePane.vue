@@ -9,11 +9,11 @@ import { Song } from '@shared/types';
 
 const isCollapsed = ref(false);
 
-const onSidebarToggleClick = () => {
+const onClickSidebarToggle = () => {
   isCollapsed.value = !isCollapsed.value;
 };
 
-const onLinkClick = () => (isCollapsed.value = false);
+const onClickLink = () => (isCollapsed.value = false);
 
 const isModalOpen = ref(false);
 const modalSong = ref<Song | undefined>();
@@ -24,13 +24,14 @@ const showSongDetailModal = (song: Song) => {
 };
 
 provide('showSongDetailModal', showSongDetailModal);
+provide('isSidebarCollapsed', isCollapsed);
 </script>
 
 <template>
   <aside class="left-side-pane" :class="{ 'is-collapsed': isCollapsed }">
     <div class="sidenav" :inert="isModalOpen">
       <div class="links-container">
-        <Links @click="onLinkClick" />
+        <Links @click="onClickLink" />
       </div>
       <div class="left-pane-toggle">
         <Button
@@ -38,7 +39,7 @@ provide('showSongDetailModal', showSongDetailModal);
           size="lg"
           text
           class="toggle-button"
-          @click="onSidebarToggleClick"
+          @click="onClickSidebarToggle"
         />
       </div>
     </div>
@@ -62,7 +63,7 @@ provide('showSongDetailModal', showSongDetailModal);
   gap: 1.5rem;
   height: 100%;
   width: $sidebarExpandedWidth;
-  max-width: 90vw;
+  max-width: 100vw;
   padding: 1rem $sidebarPaddingX;
   border-radius: $borderRadiusXl;
   transition: width $transitionDuration cubic-bezier(0.18, 0.89, 0.32, 1.1);
