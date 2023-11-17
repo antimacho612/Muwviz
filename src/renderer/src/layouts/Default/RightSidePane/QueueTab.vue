@@ -33,7 +33,7 @@ const showContextMenu = (_: MouseEvent) => {
           ref="scroller"
           class="queue-scroller"
           :items="queueItems"
-          :item-size="40"
+          :item-size="44"
           key-field="queueId"
           direction="vertical"
           @visible="scrollToCurrentSong"

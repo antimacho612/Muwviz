@@ -42,7 +42,12 @@ const close = () => {
 </script>
 
 <template>
-  <Modal v-model:is-open="opened">
+  <Modal
+    v-model:is-open="opened"
+    :close-on-click-outside="false"
+    :close-on-press-esc="false"
+    :z-index="1500"
+  >
     <div class="modal-content">
       <div class="content-grid">
         <div class="header">

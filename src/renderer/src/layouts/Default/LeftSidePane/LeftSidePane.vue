@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue';
-import { ChevronLeftIcon } from '@heroicons/vue/24/outline';
+import { Song } from '@shared/types';
+import { expandSidebarKey, showSongDetailModalKey } from '@renderer/utils/injectionKeys';
 
+import { ChevronLeftIcon } from '@heroicons/vue/24/outline';
+import Links from './Links.vue';
 import SongDetailModal from './SongDetailModal.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
-import Links from './Links.vue';
-import { Song } from '@shared/types';
 
 const isCollapsed = ref(false);
 
@@ -23,8 +24,10 @@ const showSongDetailModal = (song: Song) => {
   isModalOpen.value = true;
 };
 
-provide('showSongDetailModal', showSongDetailModal);
-provide('isSidebarCollapsed', isCollapsed);
+provide(showSongDetailModalKey, showSongDetailModal);
+provide(expandSidebarKey, () => {
+  isCollapsed.value = true;
+});
 </script>
 
 <template>

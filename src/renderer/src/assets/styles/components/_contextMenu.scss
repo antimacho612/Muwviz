@@ -1,0 +1,31 @@
+@use '../global/index' as *;
+
+//CSS Vars
+:root {
+  --mx-menu-backgroud: var(--background-color);
+  --mx-menu-hover-backgroud: rgba(var(--primary-color--lightest-rgb), 0.25);
+  --mx-menu-active-backgroud: rgba(var(--primary-color--lightest-rgb), 0.4);
+  --mx-menu-open-backgroud: #f1f1f1;
+  --mx-menu-open-hover-backgroud: #f1f1f1;
+  --mx-menu-divider: #f0f0f0;
+
+  --mx-menu-text: var(--primary-text-color);
+  --mx-menu-hover-text: var(--primary-text-color);
+  --mx-menu-active-text: var(--primary-text-color);
+  --mx-menu-open-text: var(--primary-text-color);
+  --mx-menu-open-hover-text: var(--primary-text-color);
+  --mx-menu-disabled-text: var(--disabled-text-color);
+
+  --mx-menu-shadow-color: var(--shadow-color--dark);
+  --mx-menu-backgroud-radius: #{$borderRadiusMd};
+}
+
+.mx-context-menu {
+  box-shadow: var(--shadow-flat--hover);
+  padding: 0.25rem 0;
+}
+
+.mx-context-menu-item {
+  padding: 0.5rem 1rem;
+  border-radius: $borderRadiusSm;
+}

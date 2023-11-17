@@ -1,6 +1,7 @@
-import ContextMenu, { MenuItem } from '@imengyu/vue3-context-menu';
-import { Song } from '@shared/types';
 import { inject, onMounted } from 'vue';
+import ContextMenu, { MenuItem } from '@imengyu/vue3-context-menu';
+import { showSongDetailModalKey } from '@renderer/utils/injectionKeys';
+import { Song } from '@shared/types';
 
 export type ContextMenuType = 'SONG' | 'SONGS';
 
@@ -17,7 +18,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
 
   onMounted(() => {
     if (type === 'SONG') {
-      showSongDetailModal = inject('showSongDetailModal') as (song: Song) => void;
+      showSongDetailModal = inject(showSongDetailModalKey);
     }
   });
 
@@ -29,6 +30,12 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
         items = [
           {
             label: '詳細情報',
+            svgIcon: '#icon-swatch',
+            svgProps: {
+              fill: 'var(--primary-text-color)',
+              width: '1rem',
+              height: '1rem',
+            },
             onClick: () => {
               // FIXME: asを使用しないように変更したい
               showSongDetailModal((args as ContextMenuArgs<'SONG'>).song);

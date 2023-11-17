@@ -3,11 +3,15 @@ import { ref } from 'vue';
 
 interface Props {
   isOpen?: boolean;
+  closeOnClickOutside?: boolean;
+  closeOnPressEsc?: boolean;
   zIndex?: number;
 }
 
 withDefaults(defineProps<Props>(), {
   isOpen: false,
+  closeOnClickOutside: true,
+  closeOnPressEsc: true,
   zIndex: 1050,
 });
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
@@ -40,8 +44,8 @@ const close = () => {
       tabindex="-1"
       role="dialog"
       aria-modal="true"
-      @click.self="close"
-      @keydown.esc.stop="close"
+      @click.self="closeOnClickOutside && close()"
+      @keydown.esc.stop="closeOnPressEsc && close()"
     >
       <slot></slot>
     </div>

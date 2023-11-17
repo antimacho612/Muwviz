@@ -1,36 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useDark } from '@vueuse/core';
+import { provide, ref } from 'vue';
 
 import LeftSidePane from './LeftSidePane/LeftSidePane.vue';
 import CenterPane from './CenterPane/CenterPane.vue';
 import RightSidePane from './RightSidePane/RightSidePane.vue';
 import ControlsPane from './ControlsPane/ControlsPane.vue';
 import SettingsModal from './SettingsModal/SettingsModal.vue';
+import { openSettingsModalKey } from '@renderer/utils/injectionKeys';
 
-useDark();
-const isSettingModalOpen = ref(true);
+const isSettingModalOpen = ref(false);
+provide(openSettingsModalKey, () => (isSettingModalOpen.value = true));
 </script>
 
 <template>
   <div class="layout">
-    <div class="layout-left">
+    <div class="layout-left" :inert="isSettingModalOpen">
       <LeftSidePane />
     </div>
 
-    <div class="layout-center">
+    <div class="layout-center" :inert="isSettingModalOpen">
       <CenterPane />
     </div>
 
-    <div class="layout-right">
+    <div class="layout-right" :inert="isSettingModalOpen">
       <RightSidePane />
     </div>
 
-    <div class="layout-bottom">
+    <div class="layout-bottom" :inert="isSettingModalOpen">
       <ControlsPane />
     </div>
 
-    <SettingsModal :is-open="isSettingModalOpen" />
+    <SettingsModal v-model:is-open="isSettingModalOpen" />
   </div>
 </template>
 

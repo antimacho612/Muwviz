@@ -67,8 +67,8 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 <style lang="scss" scoped>
 .queue-item {
   width: 100%;
-  height: 2.5rem;
-  padding: 0.25rem 0.25rem;
+  height: 2.75rem;
+  padding: 0 0.25rem;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;

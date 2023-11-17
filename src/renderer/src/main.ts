@@ -1,7 +1,14 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+
 import log from 'electron-log/renderer';
+
+import 'modern-css-reset/dist/reset.min.css';
+import 'animate.css';
+import 'primeflex/primeflex.min.css';
+
 import VWave from 'v-wave';
+
 import Toast, { POSITION, PluginOptions } from 'vue-toastification';
 
 import { createVfm } from 'vue-final-modal';
@@ -19,9 +26,6 @@ import router from '@renderer/router/index';
 import { useEntitiesStore } from './stores/entities';
 import { audioPlayerInjectionKey, audioPlayer } from './core/audioPlayer';
 
-import 'modern-css-reset/dist/reset.min.css';
-import 'primeflex/primeflex.min.css';
-import 'animate.css';
 import '@renderer/assets/styles/style.scss';
 
 // Consoleをオーバーライド

@@ -81,6 +81,7 @@ const TABS = [
     background: var(--background-color);
     border: none;
     cursor: pointer;
+    transition: color $transitionDuration;
 
     &.active {
       color: var(--primary-color);

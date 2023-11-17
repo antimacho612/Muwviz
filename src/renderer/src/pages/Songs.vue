@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Ref, computed, inject, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
+import { expandSidebarKey } from '@renderer/utils/injectionKeys';
 import { Order, Song, SongsSortKey } from '@shared/types';
 import { sortArrayOfObjects } from '@shared/utils';
 
@@ -14,10 +15,8 @@ import SongList from '@renderer/components/SongList/SongList.vue';
 const { setQueue } = useAudioPlayer();
 const { songList } = useEntitiesStore();
 
-const isSidebarCollapsed = inject('isSidebarCollapsed') as Ref<boolean>;
-const onClickCloseButton = () => {
-  isSidebarCollapsed.value = true;
-};
+const expandSidebar = inject(expandSidebarKey);
+const onClickCloseButton = () => expandSidebar?.();
 
 const searchText = ref('');
 const sortKey = ref<SongsSortKey>('Artist');
