@@ -2,14 +2,11 @@
 import { onMounted, ref } from 'vue';
 import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
-const isMaximized = ref(false);
-
 const onMinimizeButtonClick = async () => await window.electronAPI.invoke.minimizeWindow();
-
 const onMaximizeButtonClicked = async () => await window.electronAPI.invoke.maximizeWindow();
-
 const onCloseButtonClicked = async () => await window.electronAPI.invoke.closeWindow();
 
+const isMaximized = ref(false);
 onMounted(() => {
   window.electronAPI.on.windowResized(async (_, isWindowMaximized) => {
     isMaximized.value = isWindowMaximized;
@@ -67,7 +64,7 @@ onMounted(() => {
   height: 100%;
   width: 100vw;
   -webkit-app-region: drag;
-  box-shadow: 0.1rem 0.1rem 0.6rem var(--greyLight-3);
+  box-shadow: 1.5px 1.5px 8px var(--shadow-color--dark);
   z-index: 100;
 }
 

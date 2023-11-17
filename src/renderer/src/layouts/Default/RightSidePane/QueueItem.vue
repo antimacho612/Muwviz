@@ -49,7 +49,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
       :pause="!isPlaying"
       width="1rem"
       height="1.25rem"
-      color="var(--primary-light-color)"
+      color="var(--primary-color--lighter)"
       class="playing-animation"
     />
     <Button
@@ -90,7 +90,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
     }
 
     .artist-and-album {
-      color: var(--primary-light-color);
+      color: var(--primary-color--lighter);
     }
   }
 }
@@ -119,15 +119,13 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 }
 
 .title {
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 
 .artist-and-album {
   color: var(--secondary-text-color);
   font-size: map-get($fontSizes, xs);
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 
 .playing-animation {

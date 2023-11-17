@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
 import { ElectronAPI } from '@preload/ipc';
 
@@ -27,6 +27,9 @@ export function registerIpcChannels() {
 
   // ウィンドウを閉じる
   ipcMain.handle('closeWindow', async () => !win.isDestroyed() && win.close());
+
+  // 指定されたパスをデフォルトのアプリケーションで開く
+  ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
 
   // 全楽曲情報を取得する
   ipcMain.handle('getAllSongs', async () => songsStore.data);

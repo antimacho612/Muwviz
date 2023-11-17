@@ -89,6 +89,10 @@ const TABS = [
     &:hover {
       color: var(--primary-color);
     }
+
+    &:focus-visible {
+      @include focused();
+    }
   }
 
   .active-menu-color {

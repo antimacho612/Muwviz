@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import { useDark } from '@vueuse/core';
+
 import LeftSidePane from './LeftSidePane/LeftSidePane.vue';
 import CenterPane from './CenterPane/CenterPane.vue';
 import RightSidePane from './RightSidePane/RightSidePane.vue';
 import ControlsPane from './ControlsPane/ControlsPane.vue';
 import SettingsModal from './SettingsModal/SettingsModal.vue';
+
+useDark();
+const isSettingModalOpen = ref(true);
 </script>
 
 <template>
@@ -24,7 +30,7 @@ import SettingsModal from './SettingsModal/SettingsModal.vue';
       <ControlsPane />
     </div>
 
-    <SettingsModal :is-open="true" />
+    <SettingsModal :is-open="isSettingModalOpen" />
   </div>
 </template>
 

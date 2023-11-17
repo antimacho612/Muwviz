@@ -66,8 +66,7 @@ const onFocus = (e: FocusEvent) => {
   }
 
   &:focus {
-    border: 1px solid var(--primary-color);
-    @include focused();
+    @include focusedInput;
   }
 
   &.c-inputtext-sm {

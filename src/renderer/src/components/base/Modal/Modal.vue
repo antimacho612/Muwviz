@@ -60,7 +60,7 @@ const close = () => {
   inset: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  outline: 0;
+  outline: none;
 }
 
 .c-modal-fadeIn {

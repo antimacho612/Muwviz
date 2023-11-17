@@ -91,9 +91,7 @@ const { currentSong } = useAudioPlayer();
   text-align: center;
   font-size: map-get($fontSizes, lg);
   font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
   user-select: text;
   cursor: text;
 }

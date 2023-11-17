@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
   height: calc(1rem * var(--bar-width) * 1.5);
   border-radius: $borderRadiusFull;
   background: #fff;
-  box-shadow: $shadowDark;
+  box-shadow: 2.5px 2.5px 5px var(--shadow-color--dark);
   z-index: 20;
 
   &::after {
@@ -306,11 +306,11 @@ onBeforeUnmount(() => {
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: $borderRadiusFull;
-    background: var(--primary-light-color);
+    background: var(--primary-color--lighter);
   }
 
   &:focus {
-    outline: 5px solid rgba(var(--primary-lightest-color-rgb), 0.5);
+    outline: 5px solid var(--outline-color);
   }
 }
 
@@ -342,7 +342,7 @@ onBeforeUnmount(() => {
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(to right, var(--primary-color), var(--primary-light-color));
+    background: linear-gradient(to right, var(--primary-color), var(--primary-color--lighter));
   }
 
   .c-slider-dot {
@@ -363,7 +363,7 @@ onBeforeUnmount(() => {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(to top, var(--primary-color), var(--primary-light-color));
+    background: linear-gradient(to top, var(--primary-color), var(--primary-color--lighter));
   }
 
   .c-slider-dot {

@@ -1,5 +1,16 @@
 @use './variables' as *;
 
+@mixin singleLineClamp() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @mixin focused() {
-  outline: 2px solid rgba(var(--primary-lightest-color-rgb), 0.5);
+  outline: 2px solid var(--outline-color);
+}
+
+@mixin focusedInput() {
+  border: 1px solid var(--primary-color);
+  outline: 2px solid var(--outline-color--bordered);
 }

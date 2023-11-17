@@ -65,7 +65,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
         :pause="!isPlaying"
         width="1rem"
         height="1.25rem"
-        color="var(--primary-light-color)"
+        color="var(--primary-color--lighter)"
         class="playing-animation"
       />
     </div>
@@ -107,13 +107,13 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
     }
 
     .artist {
-      color: var(--primary-light-color);
+      color: var(--primary-color--lighter);
     }
   }
 
   &.selected {
     box-shadow: $innerShadow;
-    border: 1px solid var(--primary-lightest-color);
+    border: 1px solid var(--primary-color--lightest);
   }
 }
 
@@ -151,17 +151,13 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 
   .title {
     font-size: map-get($fontSizes, md);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    @include singleLineClamp;
   }
 
   .artist {
     font-size: map-get($fontSizes, sm);
     color: var(--secondary-text-color);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    @include singleLineClamp;
   }
 }
 
@@ -174,9 +170,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 
   .album {
     font-size: 1rem;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    @include singleLineClamp;
   }
 }
 </style>

@@ -2,42 +2,66 @@
 
 // CSS Variables
 :root {
-  --primary-light: #8abdff;
-  --primary: #6d5dfc;
-  --primary-dark: #5b0eeb;
-
-  --white: #ffffff;
-  --greyLight-1: #e4ebf5;
-  --greyLight-2: #c8d0e7;
-  --greyLight-3: #bec8e4;
-  --greyDark: #9baacf;
-
   --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --ripple-color: rgba(var(--primary-color-rgb), 0.4);
+}
 
-  --sidebar-bg-color: #ebecf0;
-  --background-color: var(--greyLight-1);
-  --background-color-dark: #0f172a; // = --tw-slate-900
-
-  // --tw-violet-600
+:root {
   --primary-color: #7c3aed;
   --primary-color-rgb: 147, 51, 234;
-  --primary-light-color: #a855f7;
-  --primary-lightest-color: #c4b5fd;
-  --primary-lightest-color-rgb: 196, 181, 253;
-  --primary-dark-color: #9333ea;
+  --primary-color--lighter: #a854f7;
+  --primary-color--lightest: #c4b5fd;
+  --primary-color--lightest-rgb: 196, 181, 253;
 
-  --primary-text-color: #111827;
+  --primary-text-color: #596377;
   --secondary-text-color: #6b7280;
+  --disabled-text-color: #71717a;
 
-  --disabled-text-color: #71717a; // = --tw-zinc-500
-  --disabled-bg-color: #d4d4d8; // = --tw-zinc-300
+  --background-color: #e4ebf5;
+  --disabled-bg-color: #d4d4d8;
 
-  // ripple
-  --ripple-color: rgba(124, 58, 237, 0.4);
+  --outline-color: rgba(var(--primary-color--lightest-rgb), 0.5);
+  --outline-color--bordered: rgba(var(--primary-color--lightest-rgb), 0.5);
 
-  // animation
-  --animate-duration: #{$transitionDuration};
+  --shadow-color--light: #fff;
+  --shadow-color--dark: #c8d0e7;
+  --shadow-flat: 6px 6px 12px var(--shadow-color--dark), -4px -4px 8px var(--shadow-color--light);
+  --shadow-flat--hover: 2.5px 2.5px 5px var(--shadow-color--dark),
+    -1.5px -1.5px 4px var(--shadow-color--light);
+  --shadow-pressed: inset 4px 4px 6px var(--shadow-color--dark),
+    inset -3px -3px 6px var(--shadow-color--light);
+
+  --radio-check-dot-color: #bec8e4;
+}
+
+.dark {
+  --primary-color: #a172f3;
+  --primary-color-rgb: 161, 114, 243;
+  --primary-color--lighter: #a854f7;
+  --primary-color--lightest: #d9c7fa;
+  --primary-color--lightest-rgb: 217, 199, 250;
+
+  --primary-text-color: #adadad;
+  --secondary-text-color: #777e8b;
+
+  --background-color: #2a2c31;
+
+  --disabled-text-color: #71717a;
+  --disabled-bg-color: #d4d4d8;
+
+  --outline-color: rgba(var(--primary-color--lightest-rgb), 0.5);
+  --outline-color--bordered: rgba(var(--primary-color--lightest-rgb), 0.15);
+
+  --shadow-color--light: #4d4e50;
+  --shadow-color--dark: #17181b;
+  --shadow-flat: 6px 6px 12px var(--shadow-color--dark), -3px -3px 6px var(--shadow-color--light);
+  --shadow-flat--hover: 2.5px 2.5px 5px var(--shadow-color--dark),
+    -1.5px -1.5px 4px var(--shadow-color--light);
+  --shadow-pressed: inset 3px 3px 6px var(--shadow-color--dark),
+    inset -2px -2px 6px var(--shadow-color--light);
+
+  --radio-check-dot-color: #838383;
 }
 
 *,
@@ -76,12 +100,12 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-light-color);
+  background: var(--primary-color--lighter);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(var(--primary-lightest-color-rgb), 0.5);
+  background: rgba(var(--primary-color--lightest-rgb), 0.5);
   box-shadow: $innerShadow;
   border-radius: 10px;
 }

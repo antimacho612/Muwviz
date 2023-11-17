@@ -2,12 +2,17 @@
 import { computed, ref } from 'vue';
 
 import { XMarkIcon } from '@heroicons/vue/24/outline';
-import { Cog6ToothIcon } from '@heroicons/vue/24/solid';
+import {
+  Cog6ToothIcon,
+  SparklesIcon,
+  BuildingLibraryIcon,
+  ChevronRightIcon,
+} from '@heroicons/vue/24/solid';
 
 import Modal from '@renderer/components/base/Modal/Modal.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import LibraryTab from './LibraryTab.vue';
-import ThemeTab from './ThemeTab.vue';
+import AppearanceTab from './AppearanceTab.vue';
 
 const props = defineProps<{ isOpen: boolean }>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
@@ -20,11 +25,13 @@ const opened = computed({
 const TABS = [
   {
     title: 'Library',
+    icon: BuildingLibraryIcon,
     component: LibraryTab,
   },
   {
-    title: 'Theme',
-    component: ThemeTab,
+    title: 'Appearance',
+    icon: SparklesIcon,
+    component: AppearanceTab,
   },
 ] as const;
 const activeMenuIndex = ref(0);
@@ -52,10 +59,14 @@ const close = () => {
             type="button"
             class="tab-button"
             :class="{ active: i === activeMenuIndex }"
+            @click="activeMenuIndex = i"
           >
-            {{ tab.title }}
+            <component :is="tab.icon" class="tab-button-icon"></component>
+            <span>{{ tab.title }}</span>
           </button>
-          <div class="active-menu-color"></div>
+          <div class="active-menu-color">
+            <ChevronRightIcon class="active-menu-color-icon" />
+          </div>
         </div>
         <div class="tab-panel">
           <Transition mode="out-in" enter-active-class="fadeIn" leave-active-class="fadeOut">
@@ -93,7 +104,7 @@ const close = () => {
   grid:
     'header  header' 4rem
     'tabMenu tabPanel' 1fr
-    / 10rem 1fr;
+    / 12.5rem 1fr;
 }
 
 .header {
@@ -111,31 +122,35 @@ const close = () => {
   align-items: center;
   gap: 0.25rem;
   font-size: map-get($fontSizes, 2xl);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 
 .tab-menu {
   grid-area: tabMenu;
   position: relative;
+  height: 100%;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 0.5rem;
-  height: 100%;
 }
 
 .tab-button {
-  height: 2rem;
+  position: relative;
+  height: 2.5rem;
+  padding-left: 0.75rem;
   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: map-get($fontSizes, lg);
   font-weight: 500;
   color: var(--secondary-text-color);
   background: var(--background-color);
   border: none;
+  border-radius: $borderRadiusSm;
   cursor: pointer;
+  transition: color $transitionDuration;
 
   &.active {
     color: var(--primary-color);
@@ -144,21 +159,50 @@ const close = () => {
   &:hover {
     color: var(--primary-color);
   }
+
+  &:focus-visible {
+    @include focused();
+  }
+
+  .tab-button-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 }
 
 .active-menu-color {
   position: absolute;
-  height: 2rem;
-  width: 4.5rem;
-  left: 0;
+  height: 2.5rem;
+  width: calc(100% - 1rem);
+  top: 0.5rem;
+  left: 0.5rem;
   border-radius: $borderRadiusSm;
   box-shadow: $innerShadow;
   transition: transform $transitionDuration cubic-bezier(0.66, -0.3, 0.33, 1.4);
   pointer-events: none;
+
+  .active-menu-color-icon {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1.25rem;
+    width: 1.25rem;
+    color: var(--primary-color);
+  }
+}
+
+@for $i from 1 through 5 {
+  .tab-button:nth-child(#{$i}).active ~ .active-menu-color {
+    $idx: $i - 1;
+    $y: (3rem * $idx);
+    transform: translateY($y);
+  }
 }
 
 .tab-panel {
   grid-area: tabPanel;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
 }
 
 .fadeIn {

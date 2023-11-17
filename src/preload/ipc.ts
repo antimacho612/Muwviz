@@ -30,6 +30,11 @@ export type ElectronAPI = GetApiType<
     closeWindow: () => Promise<void>;
 
     /**
+     * 指定されたパスをデフォルトのアプリケーションで開く
+     */
+    openPath: (path: string) => Promise<void>;
+
+    /**
      * 設定情報を取得する
      */
     getPreferences: () => Promise<string>;
@@ -72,6 +77,8 @@ export const electronAPI: ElectronAPI = {
     minimizeWindow: async () => await ipcRenderer.invoke('minimizeWindow'),
     maximizeWindow: async () => await ipcRenderer.invoke('maximizeWindow'),
     closeWindow: async () => await ipcRenderer.invoke('closeWindow'),
+
+    openPath: async (path: string) => await ipcRenderer.invoke('openPath', path),
 
     getPreferences: async () => await ipcRenderer.invoke('getPreferences'),
 

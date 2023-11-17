@@ -50,8 +50,7 @@ const { currentSong } = useAudioPlayer();
   margin-bottom: 0.5rem;
   font-size: map-get($fontSizes, xl);
   color: var(--primary-text-color);
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 
 .artist-and-album {
@@ -64,13 +63,11 @@ const { currentSong } = useAudioPlayer();
 
 .artist {
   flex: 0 1 auto;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 
 .album {
   flex: 0 1 auto;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 </style>

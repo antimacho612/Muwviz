@@ -48,8 +48,7 @@ withDefaults(defineProps<Props>(), {
   }
 
   &:focus {
-    border: 1px solid var(--primary-color);
-    @include focused();
+    @include focusedInput;
   }
 
   &.c-select-xs {

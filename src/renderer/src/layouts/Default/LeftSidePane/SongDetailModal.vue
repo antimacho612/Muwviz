@@ -126,9 +126,7 @@ const close = () => {
 
 .modal-title {
   font-size: map-get($fontSizes, lg);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  @include singleLineClamp;
 }
 
 .modal-main {
