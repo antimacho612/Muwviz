@@ -19,7 +19,7 @@ const TABS = [
     component: LyricsTab,
   },
   {
-    title: 'Visualizer',
+    title: 'Vizr',
     component: LyricsTab,
   },
 ] as const;
@@ -31,6 +31,7 @@ const TABS = [
       <button
         v-for="(tab, i) in TABS"
         :key="tab.title"
+        v-ripple
         type="button"
         class="tab-button"
         :class="{ active: i === activeMenuIndex }"

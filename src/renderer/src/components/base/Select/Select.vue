@@ -32,6 +32,8 @@ withDefaults(defineProps<Props>(), {
   border-radius: $borderRadiusFull;
   box-shadow: $innerShadow;
   border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
 
   transition:
     color $transitionDuration,

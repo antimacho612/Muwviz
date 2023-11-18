@@ -51,16 +51,17 @@ const close = () => {
     <div class="modal-content">
       <div class="content-grid">
         <div class="header">
-          <h3 class="title">
-            <Cog6ToothIcon style="width: 1.75rem; height: 1.75rem; color: inherit" />
-            設定
-          </h3>
+          <div class="title">
+            <Cog6ToothIcon />
+            <h3>設定</h3>
+          </div>
           <Button class="modal-close-button" :icon="XMarkIcon" text @click="close" />
         </div>
         <div class="tab-menu">
           <button
             v-for="(tab, i) in TABS"
             :key="tab.title"
+            v-ripple
             type="button"
             class="tab-button"
             :class="{ active: i === activeMenuIndex }"
@@ -74,7 +75,11 @@ const close = () => {
           </div>
         </div>
         <div class="tab-panel">
-          <Transition mode="out-in" enter-active-class="fadeIn" leave-active-class="fadeOut">
+          <Transition
+            mode="out-in"
+            enter-active-class="tab-panel-fade-in"
+            leave-active-class="tab-panel-fade-out"
+          >
             <KeepAlive>
               <component :is="TABS[activeMenuIndex].component" />
             </KeepAlive>
@@ -109,7 +114,7 @@ const close = () => {
   grid:
     'header  header' 4rem
     'tabMenu tabPanel' 1fr
-    / 12.5rem 1fr;
+    / 15rem 1fr;
 }
 
 .header {
@@ -125,9 +130,17 @@ const close = () => {
 .title {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: map-get($fontSizes, 2xl);
-  @include singleLineClamp;
+  gap: 1rem;
+
+  svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    color: inherit;
+  }
+
+  h3 {
+    font-size: map-get($fontSizes, 2xl);
+  }
 }
 
 .tab-menu {
@@ -147,7 +160,7 @@ const close = () => {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   font-size: map-get($fontSizes, lg);
   font-weight: 500;
   color: var(--secondary-text-color);
@@ -210,11 +223,11 @@ const close = () => {
   padding: 0.5rem 1rem 0.5rem 2.5rem;
 }
 
-.fadeIn {
+.tab-panel-fade-in {
   @include animation($name: fadeIn);
 }
 
-.fadeOut {
+.tab-panel-fade-out {
   @include animation($name: fadeOut);
 }
 </style>

@@ -38,13 +38,7 @@ watch(
 </script>
 
 <template>
-  <div
-    class="artwork"
-    :style="{ width, height }"
-    @click.stop="onClick"
-    @dblclick.stop
-    @pointerdown.stop
-  >
+  <div class="artwork" :style="{ width, height }" @click="onClick">
     <img
       v-if="!showAltIcon"
       :src="artworkImgSrc"
@@ -53,7 +47,7 @@ watch(
       class="artwork-img"
       @error="onImgError"
     />
-    <MusicalNoteIcon v-else class="artwork-img" style="color: var(--secondary-text-color)" />
+    <MusicalNoteIcon v-else class="icon-no-artwork" />
 
     <div v-if="showPlayIcon" class="play-button">
       <PlayIcon class="play-button-icon"></PlayIcon>
@@ -72,6 +66,14 @@ watch(
   height: 100%;
   width: 100%;
   object-fit: cover;
+  background: #fff;
+  border-radius: $borderRadiusMd;
+}
+
+.icon-no-artwork {
+  height: 100%;
+  width: 100%;
+  color: var(--secondary-text-color);
   border-radius: $borderRadiusMd;
 }
 
@@ -96,7 +98,7 @@ watch(
 }
 
 .play-button-icon {
-  color: var(--background-color);
+  color: #fff;
   height: 75%;
   width: 75%;
 }

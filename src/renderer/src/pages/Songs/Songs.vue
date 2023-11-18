@@ -1,22 +1,17 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
-import { expandSidebarKey } from '@renderer/utils/injectionKeys';
 import { Order, Song, SongsSortKey } from '@shared/types';
 import { sortArrayOfObjects } from '@shared/utils';
 
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/20/solid';
-import Button from '@renderer/components/base/Button/Button.vue';
-import InputText from '@renderer/components/base/InputText/InputText.vue';
+import PageHeader from '@renderer/components/PageHeader/PageHeader.vue';
 import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
+import QuickSearchWidget from '@renderer/components/QuickSearchWidget/QuickSearchWidget.vue';
 import SongList from '@renderer/components/SongList/SongList.vue';
 
 const { setQueue } = useAudioPlayer();
 const { songList } = useEntitiesStore();
-
-const expandSidebar = inject(expandSidebarKey);
-const onClickCloseButton = () => expandSidebar?.();
 
 const searchText = ref('');
 const sortKey = ref<SongsSortKey>('Artist');
@@ -67,17 +62,12 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
 
 <template>
   <div class="songs-page">
-    <div class="mb-2" style="display: flex; align-items: center; justify-content: space-between">
-      <h2 class="title">すべての曲 ({{ songList.length }})</h2>
-      <div>
-        <Button size="sm" :icon="XMarkIcon" text @click="onClickCloseButton" />
-      </div>
-    </div>
+    <PageHeader>
+      <template #title>すべての曲 ({{ songList.length }})</template>
+      <template #actions></template>
+    </PageHeader>
 
-    <div
-      class="mb-2 ml-3"
-      style="display: flex; align-items: center; justify-content: space-between"
-    >
+    <div class="widgets">
       <SortWidget
         v-model:sort-by="sortKey"
         v-model:order="order"
@@ -88,43 +78,7 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
           { key: 'PlayCount', title: '再生回数' },
         ]"
       />
-      <div>
-        <div style="position: relative; display: inline-block">
-          <MagnifyingGlassIcon
-            style="
-              position: absolute;
-              top: 50%;
-              left: 0.5rem;
-              transform: translateY(-50%);
-              color: var(--primary-color);
-              width: 1.5rem;
-              height: 1.5rem;
-            "
-          />
-          <InputText
-            v-model="searchText"
-            type="text"
-            size="sm"
-            select-all-on-focus
-            placeholder="検索..."
-            style="padding-left: 2.25rem; padding-right: 2.25rem"
-          />
-          <XMarkIcon
-            v-if="searchText !== ''"
-            style="
-              position: absolute;
-              top: 50%;
-              transform: translateY(-50%);
-              right: 0.5rem;
-              color: var(--secondary-text-color);
-              width: 1.5rem;
-              height: 1.5rem;
-              cursor: pointer;
-            "
-            @click="searchText = ''"
-          />
-        </div>
-      </div>
+      <QuickSearchWidget v-model="searchText" />
     </div>
 
     <SongList
@@ -142,12 +96,10 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
   overflow: hidden;
 }
 
-.title {
-  font-weight: bold;
-}
-
-.headers {
+.widgets {
+  margin: 0 0 0.5rem 1rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 </style>

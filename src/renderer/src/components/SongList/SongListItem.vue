@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Song } from '@shared/types';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
+import { Song } from '@shared/types';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
 import Button from '@renderer/components/base/Button/Button.vue';
@@ -39,8 +39,8 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 
 <template>
   <div
-    v-ripple="{ duration: 0.25 }"
-    class="list-item"
+    v-ripple
+    class="song-list-item"
     :class="{ selected, current }"
     @click="onClickRow"
     @dblclick="onDoubleClickRow"
@@ -52,7 +52,9 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
       height="40px"
       :show-play-icon="true"
       class="img-area"
-      @click="onClickArtwork"
+      @dblclick.stop
+      @click.stop="onClickArtwork"
+      @pointerdown.stop
     />
     <div class="main-area">
       <div class="title-and-artist">
@@ -65,7 +67,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
         :pause="!isPlaying"
         width="1rem"
         height="1.25rem"
-        color="var(--primary-color--lighter)"
+        color="var(--primary-color)"
         class="playing-animation"
       />
     </div>
@@ -87,7 +89,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 </template>
 
 <style lang="scss" scoped>
-.list-item {
+.song-list-item {
   width: 100%;
   height: 3rem;
   padding: 0.25rem 1rem;
@@ -99,6 +101,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
   border: 1px solid transparent;
   border-radius: $borderRadiusMd;
   cursor: default;
+  transition: box-shadow $transitionDuration;
 
   &.current {
     .title,
@@ -113,11 +116,11 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 
   &.selected {
     box-shadow: $innerShadow;
-    border: 1px solid var(--primary-color--lightest);
+    border: 1px solid var(--primary-color);
   }
 }
 
-.hover .list-item {
+.vue-recycle-scroller__item-view.hover .song-list-item {
   box-shadow: $innerShadow;
 }
 

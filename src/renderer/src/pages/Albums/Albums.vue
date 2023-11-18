@@ -1,17 +1,37 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useEntitiesStore } from '@renderer/stores/entities';
+
+import PageHeader from '@renderer/components/PageHeader/PageHeader.vue';
+
+const { albumList } = useEntitiesStore();
+</script>
 
 <template>
-  <div>
-    <h2 class="title">Albums</h2>
-    <RouterLink to="/albums/14">to 14</RouterLink>
-    <div>
-      <RouterView></RouterView>
-    </div>
+  <div class="albums-page">
+    <PageHeader>
+      <template #title>アルバム ({{ albumList.length }})</template>
+      <template #actions></template>
+    </PageHeader>
+
+    <RouterView></RouterView>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.title {
-  font-weight: bold;
+.albums-page {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.page-header {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .header-title {
+    font-weight: bold;
+  }
 }
 </style>

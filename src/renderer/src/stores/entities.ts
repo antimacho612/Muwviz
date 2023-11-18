@@ -3,7 +3,7 @@ import { Album, Artist, Song } from '@shared/types';
 
 type EntitiesStoreState = {
   songsMap: Map<string, Song>;
-  albums: Album[];
+  albumsMap: Map<string, Album>;
   artists: Artist[];
   playlists: Song[];
 };
@@ -12,16 +12,15 @@ export const useEntitiesStore = defineStore('entities', {
   state: (): EntitiesStoreState => {
     return {
       songsMap: new Map(),
-      albums: [],
+      albumsMap: new Map(),
       artists: [],
       playlists: [],
     };
   },
 
   getters: {
-    songList(state) {
-      return Array.from(state.songsMap.values());
-    },
+    songList: (state) => Array.from(state.songsMap.values()),
+    albumList: (state) => Array.from(state.albumsMap.values()),
   },
 
   actions: {
@@ -36,7 +35,7 @@ export const useEntitiesStore = defineStore('entities', {
         ]);
 
         this.songsMap = new Map(songs.map((song) => [song.id, song]));
-        this.albums = albums;
+        this.albumsMap = new Map(albums.map((album) => [album.id, album]));
         this.artists = artists;
 
         console.debug(

@@ -48,9 +48,13 @@ provide(expandSidebarKey, () => {
     </div>
     <div class="left-pane-main" :inert="isModalOpen">
       <RouterView v-slot="{ Component }">
-        <transition mode="out-in">
+        <Transition
+          mode="out-in"
+          enter-active-class="page-fade-in"
+          leave-active-class="page-fade-out"
+        >
           <component :is="Component"></component>
-        </transition>
+        </Transition>
       </RouterView>
     </div>
 
@@ -111,9 +115,21 @@ provide(expandSidebarKey, () => {
   overflow: hidden;
 }
 
-.left-side-pane.is-collapsed {
-  .left-pane-main {
-    visibility: hidden;
+.left-side-pane {
+  &:not(.is-collapsed) .left-pane-main {
+    @include animation($name: fadeIn, $delay: 0.25s, $fillMode: both);
   }
+
+  &.is-collapsed .left-pane-main {
+    display: none;
+  }
+}
+
+.page-fade-in {
+  @include animation($name: fadeIn);
+}
+
+.page-fade-out {
+  @include animation($name: fadeOut);
 }
 </style>

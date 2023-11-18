@@ -306,11 +306,11 @@ onBeforeUnmount(() => {
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: $borderRadiusFull;
-    background: var(--primary-color--lighter);
+    background: var(--primary-color);
   }
 
   &:focus {
-    outline: 5px solid var(--outline-color);
+    @include focused;
   }
 }
 

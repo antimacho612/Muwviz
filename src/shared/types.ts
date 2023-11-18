@@ -45,3 +45,5 @@ export type SortOption<T> = {
 };
 
 export type SongsSortKey = 'Artist' | 'Album' | 'Title' | 'PlayCount';
+
+export type Theme = 'Light' | 'Dark';

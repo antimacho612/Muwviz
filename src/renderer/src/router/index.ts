@@ -2,10 +2,10 @@ import { RouteRecordRaw, createRouter, createWebHashHistory, createWebHistory } 
 
 import DefaultLayout from '@renderer/layouts/Default/Default.vue';
 
-import Songs from '@renderer/pages/Songs.vue';
+import Songs from '@renderer/pages/Songs/Songs.vue';
 import Albums from '@renderer/pages/Albums/Albums.vue';
-import AlbumList from '@renderer/pages/Albums/AlbumList.vue';
-import Album from '@renderer/pages/Albums/Album.vue';
+import AlbumList from '@renderer/pages/Albums/AlbumList/AlbumList.vue';
+import Album from '@renderer/pages/Albums/Album/Album.vue';
 import Artists from '@renderer/pages/Artists.vue';
 import PLayLists from '@renderer/pages/Playlists.vue';
 

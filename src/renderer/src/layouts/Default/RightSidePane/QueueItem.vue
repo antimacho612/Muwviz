@@ -32,6 +32,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
 
 <template>
   <div
+    v-ripple
     class="queue-item"
     :class="{ current }"
     @dblclick="onDoubleClickRow"
@@ -49,7 +50,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
       :pause="!isPlaying"
       width="1rem"
       height="1.25rem"
-      color="var(--primary-color--lighter)"
+      color="var(--primary-color)"
       class="playing-animation"
     />
     <Button

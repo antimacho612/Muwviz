@@ -46,3 +46,40 @@ export const toHyphenIfEmpty = (value: string | number | undefined | null) => {
   // number
   return Number.isFinite(value) ? value.toString() : '-';
 };
+
+export const hexToRgb = (hex: string) => {
+  hex = hex.replace(/^#/, '');
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((s) => s + s)
+      .join('');
+  }
+
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+
+  return { r, g, b };
+};
+
+export const rgbToHex = (rgb: { r: number; g: number; b: number }) => {
+  return (
+    `#` +
+    rgb.r.toString(16).padStart(2, '0') +
+    rgb.g.toString(16).padStart(2, '0') +
+    rgb.b.toString(16).padStart(2, '0')
+  );
+};
+
+export const getNewShade = (baseColorHex: string, luminance: number) => {
+  const { r, g, b } = hexToRgb(baseColorHex);
+
+  const newRgb = {
+    r: Math.round(Math.min(Math.max(0, r + r * luminance), 255)),
+    g: Math.round(Math.min(Math.max(0, g + g * luminance), 255)),
+    b: Math.round(Math.min(Math.max(0, b + b * luminance), 255)),
+  };
+
+  return newRgb;
+};

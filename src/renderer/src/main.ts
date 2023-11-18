@@ -77,7 +77,7 @@ await fetch();
 app.use(router);
 
 // Ripple Effect Directive
-app.use(VWave, { directive: 'ripple', color: 'var(--ripple-color)' });
+app.use(VWave, { directive: 'ripple', color: 'var(--ripple-color)', duration: 0.25 });
 
 // Click Outside Directive
 app.directive('click-outside', {
