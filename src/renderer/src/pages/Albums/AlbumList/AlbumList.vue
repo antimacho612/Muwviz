@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useGridScroller } from '@renderer/utils/useGridScroller';
 import { useDebounceFn } from '@vueuse/core';
 import { useEntitiesStore } from '@renderer/stores/entities';
 
@@ -9,19 +11,16 @@ const { albumList } = useEntitiesStore();
 
 const [BASE_ITEM_WIDTH, ITEM_HEIGHT] = [176, 216];
 const SCROLLER_WRAPPER_PADDING = 40; // paddingX(32) + scrollbar(8);
-
 const scrollerWrapperEl = ref<HTMLDivElement>();
-const itemsPerRow = ref(1);
-const itemWidth = ref(BASE_ITEM_WIDTH);
-const resizeScroller = () => {
-  const scrollerWidth = scrollerWrapperEl.value?.clientWidth
-    ? scrollerWrapperEl.value.clientWidth - SCROLLER_WRAPPER_PADDING
-    : 0;
-  itemsPerRow.value = Math.floor(scrollerWidth / BASE_ITEM_WIDTH);
-  itemWidth.value = scrollerWidth / itemsPerRow.value;
-};
-onMounted(() => resizeScroller());
+const { itemWidth, itemsPerRow, resizeScroller } = useGridScroller(
+  scrollerWrapperEl,
+  SCROLLER_WRAPPER_PADDING,
+  BASE_ITEM_WIDTH
+);
 const onResizeScroller = useDebounceFn(resizeScroller, 300);
+
+const router = useRouter();
+const onClickItem = (albumId: string) => router.push(`albums/${albumId}`);
 </script>
 
 <template>
@@ -39,7 +38,7 @@ const onResizeScroller = useDebounceFn(resizeScroller, 300);
         @resize="onResizeScroller"
       >
         <template #default="{ item }">
-          <AlbumListItem :album="item" />
+          <AlbumListItem :album="item" @click-item="onClickItem(item.id)" />
         </template>
       </RecycleScroller>
     </div>

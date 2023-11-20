@@ -9,25 +9,36 @@ const props = defineProps<{ album: Album }>();
 
 const artistName = computed(() => {
   if (!props.album.artists) return '-';
-  if (props.album.artists.length > 1) return props.album.artists[0] + ' 他';
-  return props.album.artists[0];
+  if (props.album.artists.length === 1) return props.album.artists[0].name;
+  return props.album.artists[0].name + ' 他';
 });
 
-const onClickItem = () => {};
+const emits = defineEmits<{
+  clickItem: [e: MouseEvent];
+  clickPlayButton: [e: MouseEvent];
+}>();
+const onClickItem = (e: MouseEvent) => emits('clickItem', e);
+const onClickPlayButton = (e: MouseEvent) => emits('clickPlayButton', e);
 </script>
 
 <template>
   <div class="album-list-item-container">
-    <div class="albumn-list-item" @click="onClickItem">
-      <Artwork :src="album.artworkPath" width="128px" height="128px" :show-play-icon="false" />
+    <div v-ripple class="albumn-list-item" @click="onClickItem">
+      <Artwork
+        :src="album.artworkPath"
+        width="128px"
+        height="128px"
+        :show-play-icon="false"
+        class="artwork"
+      />
       <div>
         <div class="name" :title="album.name">{{ album.name }}</div>
         <div class="artist">{{ artistName }}</div>
       </div>
       <div class="song-count">{{ album.songCount }}</div>
-      <button class="play-button">
-        <PlayIcon></PlayIcon>
-      </button>
+      <div v-ripple class="play-button" @click.stop="onClickPlayButton" @pointerdown.stop>
+        <PlayIcon class="icon-play"></PlayIcon>
+      </div>
     </div>
   </div>
 </template>
@@ -54,16 +65,20 @@ const onClickItem = () => {};
   border-radius: $borderRadiusLg;
   cursor: pointer;
   transition: box-shadow $transitionDuration;
+}
 
-  &:hover {
-    box-shadow: $innerShadow;
-  }
+.vue-recycle-scroller__item-view.hover .albumn-list-item {
+  box-shadow: $innerShadow;
+}
+
+.artwork {
+  z-index: 1;
 }
 
 .song-count {
   position: absolute;
   top: 0.75rem;
-  right: 1.25rem;
+  left: 1.25rem;
   width: 1.5rem;
   height: 1.5rem;
   text-align: center;
@@ -72,12 +87,42 @@ const onClickItem = () => {};
   color: #fff;
   background: rgba(var(--primary-color-rgb), 0.6);
   border-radius: $borderRadiusFull;
+  z-index: 2;
 }
 
 .play-button {
   position: absolute;
   top: 6rem;
-  right: 0;
+  right: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: rgba(var(--primary-color-rgb), 0.4);
+  border-radius: $borderRadiusFull;
+  z-index: 3;
+
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    background-color $transitionDuration,
+    opacity $transitionDuration;
+
+  &:hover {
+    background: rgba(var(--primary-color-rgb), 1);
+  }
+
+  .icon-play {
+    width: 1.75rem;
+    height: 1.75rem;
+    color: #fff;
+  }
+}
+
+.vue-recycle-scroller__item-view.hover .play-button {
+  visibility: visible;
+  opacity: 1;
 }
 
 .name {

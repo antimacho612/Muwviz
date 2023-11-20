@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useEventListener } from '@vueuse/core';
 import { useContextMenu } from '@renderer/utils/useContextMenu';
 import { Song } from '@shared/types';
 
 import SongListItem from './SongListItem.vue';
 
-interface Props {
-  songs: Song[];
-}
-
-const props = defineProps<Props>();
+const props = defineProps<{ songs: Song[] }>();
 const emits = defineEmits<{
   clickArtwork: [songId: string];
   doubleClickRow: [songId: string];
@@ -20,10 +17,7 @@ const selectedSongs = ref(new Set<string>());
 const selectAll = () => {
   selectedSongs.value = new Set(props.songs.map((song) => song.id));
 };
-
-const clearSelection = () => {
-  selectedSongs.value.clear();
-};
+const clearSelection = () => selectedSongs.value.clear();
 
 let keyPressed: 'Shift' | 'Control' | undefined;
 let currentIndex = 0;
@@ -47,16 +41,6 @@ const onClickRow = (index: number, id: string) => {
   } else {
     selectedSongs.value = new Set([id]);
     currentIndex = index;
-  }
-};
-
-const songContextMenu = useContextMenu('SONG');
-const songsContextMenu = useContextMenu('SONGS');
-const showContextMenu = (e: MouseEvent, song: Song) => {
-  if (selectedSongs.value.size > 1) {
-    songsContextMenu.show(e, { selectedSongs: selectedSongs.value });
-  } else {
-    songContextMenu.show(e, { song });
   }
 };
 
@@ -84,15 +68,18 @@ const onKeyUp = (e: KeyboardEvent) => {
   }
 };
 
-onMounted(() => {
-  document.addEventListener('keydown', onKeyDown);
-  document.addEventListener('keyup', onKeyUp);
-});
+useEventListener(document, 'keydown', onKeyDown);
+useEventListener(document, 'keyup', onKeyUp);
 
-onUnmounted(() => {
-  document.removeEventListener('keydown', onKeyDown);
-  document.removeEventListener('keyup', onKeyUp);
-});
+const songContextMenu = useContextMenu('SONG');
+const songsContextMenu = useContextMenu('SONGS');
+const showContextMenu = (e: MouseEvent, song: Song) => {
+  if (selectedSongs.value.size > 1) {
+    songsContextMenu.show(e, { selectedSongs: selectedSongs.value });
+  } else {
+    songContextMenu.show(e, { song });
+  }
+};
 </script>
 
 <template>
@@ -123,7 +110,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .song-list {
-  height: calc(100% - 96px);
+  height: calc(100% - 48px - 56px);
   overflow: hidden;
 }
 

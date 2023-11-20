@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Song } from '@shared/types';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
-import { Song } from '@shared/types';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
 import ScrollerItem from '@renderer/components/base/ScrollerItem/ScrollerItem.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
-import Artwork from '@renderer/components/Artwork/Artwork.vue';
 import BarsAnimation from '@renderer/components/BarsAnimation/BarsAnimation.vue';
 
 interface Props {
@@ -22,10 +21,21 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<{
   clickRow: [e: MouseEvent];
   doubleClickRow: [e: MouseEvent];
-  clickArtwork: [e: MouseEvent];
   contextmenu: [e: MouseEvent];
   clickEllipsisButton: [e: MouseEvent];
 }>();
+
+const diskAndTrackNo = computed(() => {
+  if (props.song.trackNo !== undefined) {
+    if (props.song.diskNo !== undefined) {
+      return `${props.song.diskNo}-${props.song.trackNo.toString().padStart(2, '0')}`;
+    } else {
+      return `${props.song.trackNo.toString().padStart(2, '0')}`;
+    }
+  } else {
+    return '-';
+  }
+});
 
 const { isPlaying, currentSong } = useAudioPlayer();
 const current = computed(() => props.song.id === currentSong.value?.id);
@@ -33,29 +43,15 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 
 <template>
   <ScrollerItem
-    height="3rem"
-    :selected="selected"
+    height="2.5rem"
     :current="current"
     @click="emits('clickRow', $event)"
     @dblclick="emits('doubleClickRow', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <Artwork
-      :src="song.artworkPath"
-      width="40px"
-      height="40px"
-      :show-play-icon="true"
-      class="img-area"
-      @click.stop="emits('clickArtwork', $event)"
-      @dblclick.stop
-      @pointerdown.stop
-    />
-    <div class="main-area">
-      <div class="title-and-artist">
-        <span class="title">{{ song.title }}</span>
-        <span class="artist">{{ toHyphenIfEmpty(song.artist) }}</span>
-      </div>
-
+    <div class="disk-and-track-no">{{ diskAndTrackNo }}</div>
+    <div class="title-area">
+      <div class="title">{{ song.title }}</div>
       <BarsAnimation
         v-if="current"
         :pause="!isPlaying"
@@ -65,14 +61,12 @@ const current = computed(() => props.song.id === currentSong.value?.id);
         class="playing-animation"
       />
     </div>
-    <div class="trailing-area">
-      <span class="album">{{ toHyphenIfEmpty(song.album) }}</span>
-      <span>{{ formatTime(song.duration) }}</span>
-    </div>
-    <div>
+    <div class="artist">{{ toHyphenIfEmpty(song.artist) }}</div>
+    <div class="duration">{{ formatTime(song.duration) }}</div>
+    <div style="grid-area: menu">
       <Button
         :icon="EllipsisVerticalIcon"
-        size="sm"
+        size="xs"
         text
         @click.stop="emits('clickEllipsisButton', $event)"
         @pointerdown.stop
@@ -83,69 +77,52 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 </template>
 
 <style lang="scss" scoped>
-.scroller-item {
-  &.current {
-    .title,
-    .trailing-area {
-      color: var(--primary-color);
-    }
-
-    .artist {
-      color: var(--primary-color--lighter);
-    }
+.scroller-item.current {
+  .disk-and-track-no,
+  .title,
+  .artist,
+  .duration {
+    color: var(--primary-color);
   }
 }
 
-.img-area {
-  flex: 0 0 auto;
-  width: auto;
+.disk-and-track-no,
+.title,
+.artist,
+.duration {
+  font-size: map-get($fontSizes, md);
 }
 
-.main-area {
+.disk-and-track-no {
+  flex: 0 0 auto;
+  width: 2.5rem;
+}
+
+.title-area {
   flex: 1 1 auto;
   width: 40%;
-  height: 100%;
   display: flex;
-  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-}
-
-.playing-animation {
-  flex: 0 0 auto;
-  margin-left: 0.5rem;
-}
-
-.title-and-artist {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  line-height: 1.3;
-  overflow: hidden;
 
   .title {
-    font-size: map-get($fontSizes, md);
+    flex: 1 1 auto;
     @include singleLineClamp;
   }
 
-  .artist {
-    font-size: map-get($fontSizes, sm);
-    color: var(--secondary-text-color);
-    @include singleLineClamp;
+  .playing-animation {
+    flex: 0 0 auto;
+    margin-left: 0.5rem;
   }
 }
 
-.trailing-area {
-  flex: 0 0 auto;
-  width: 30%;
-  display: flex;
-  column-gap: 0.5rem;
-  justify-content: space-between;
+.artist {
+  flex: 1 1 auto;
+  width: 20%;
+  @include singleLineClamp;
+}
 
-  .album {
-    font-size: 1rem;
-    @include singleLineClamp;
-  }
+.duration {
+  flex: 0 0 auto;
 }
 </style>

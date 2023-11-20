@@ -45,6 +45,14 @@ export const useEntitiesStore = defineStore('entities', {
         console.error(e);
       }
     },
+
+    getAlbumById(albumId: string) {
+      return this.albumsMap.get(albumId);
+    },
+
+    getAlbumSongs(albumId: string) {
+      return this.songList.filter((song) => song.albumId === albumId);
+    },
   },
 
   // const state = reactive<EntitiesStoreState>({

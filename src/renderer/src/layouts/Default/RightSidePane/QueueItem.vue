@@ -95,7 +95,7 @@ const contextMenu = (e: MouseEvent) => emits('contextmenu', e);
     }
   }
 }
-.hover .queue-item {
+.vue-recycle-scroller__item-view.hover .queue-item {
   box-shadow: $innerShadow;
 }
 

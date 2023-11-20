@@ -14,29 +14,6 @@ export async function buildLibrary(parsedSongs: ParsedSong[]) {
       lyricsMap[parsedSong.id] = parsedSong.lyrics;
     }
 
-    // アルバム情報構築
-    let albumId: string;
-    const albumName = parsedSong.album;
-    if (!(albumName in albumsMap)) {
-      const id = crypto.randomUUID();
-      albumsMap[albumName] = {
-        id,
-        artists: [parsedSong.artist],
-        name: albumName,
-        artworkPath: parsedSong.artworkPath,
-        songCount: 1,
-      };
-
-      albumId = id;
-    } else {
-      const album = albumsMap[albumName];
-      if (album.artists.indexOf(parsedSong.artist) === -1) album.artists.push(parsedSong.artist);
-      if (!album.artworkPath && parsedSong.artworkPath) album.artworkPath = parsedSong.artworkPath;
-      album.songCount += 1;
-
-      albumId = album.id;
-    }
-
     // アーティスト情報構築
     let artistId: string;
     const artistName = parsedSong.artist;
@@ -54,6 +31,33 @@ export async function buildLibrary(parsedSongs: ParsedSong[]) {
       artist.songCount += 1;
 
       artistId = artist.id;
+    }
+
+    // アルバム情報構築
+    let albumId: string;
+    const albumName = parsedSong.album;
+    if (!(albumName in albumsMap)) {
+      const id = crypto.randomUUID();
+      albumsMap[albumName] = {
+        id,
+        artists: [{ id: artistId, name: artistName }],
+        name: albumName,
+        artworkPath: parsedSong.artworkPath,
+        songCount: 1,
+      };
+
+      albumId = id;
+    } else {
+      const album = albumsMap[albumName];
+      if (album.artists.every((artist) => artist.id !== artistId)) {
+        album.artists.push({ id: artistId, name: artistName });
+      }
+      if (!album.artworkPath && parsedSong.artworkPath) {
+        album.artworkPath = parsedSong.artworkPath;
+      }
+      album.songCount += 1;
+
+      albumId = album.id;
     }
 
     songs.push({

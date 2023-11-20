@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
-import { Order, Song, SongsSortKey } from '@shared/types';
-import { sortArrayOfObjects } from '@shared/utils';
+import { useSongsSort } from '@renderer/utils/useSort';
+import { useQuickSongsSearch } from '@renderer/utils/useQuickSearch';
 
 import PageHeader from '@renderer/components/PageHeader/PageHeader.vue';
 import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
@@ -13,49 +12,14 @@ import SongList from '@renderer/components/SongList/SongList.vue';
 const { setQueue } = useAudioPlayer();
 const { songList } = useEntitiesStore();
 
-const searchText = ref('');
-const sortKey = ref<SongsSortKey>('Artist');
-const order = ref<Order>('ASC');
-const sortedSongs = ref<Song[]>([...songList]);
-
-const filteredSongs = computed(() => {
-  // フィルタリング
-  if (searchText.value !== '') {
-    const searchString = searchText.value.toLocaleLowerCase();
-    return sortedSongs.value.filter(
-      (song) =>
-        song.title.toLocaleLowerCase().includes(searchString) ||
-        song.album.toLocaleLowerCase().includes(searchString) ||
-        song.artist.toLocaleLowerCase().includes(searchString)
-    );
-  } else {
-    return sortedSongs.value;
-  }
-});
-
-watch([sortKey, order], () => {
-  // ソート
-  if (sortKey.value === 'Artist' && order.value === 'ASC') {
-    sortedSongs.value = [...songList];
-  } else {
-    sortedSongs.value = sortArrayOfObjects(
-      [...songList],
-      [
-        {
-          key: 'title',
-          order: 'DESC',
-        },
-      ]
-    );
-  }
-});
+const { sortKey, order, sortedSongs } = useSongsSort(songList);
+const { searchText, searchedSongs } = useQuickSongsSearch(sortedSongs);
 
 const playSong = async (songId: string) => {
   const songIds = sortedSongs.value.map((song) => song.id);
   const theSongIndex = songIds.indexOf(songId);
   await setQueue(songIds, { firstSongIndex: theSongIndex });
 };
-
 const onClickArtwork = async (songId: string) => await playSong(songId);
 const onDoubleClickRow = async (songId: string) => await playSong(songId);
 </script>
@@ -82,7 +46,7 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
     </div>
 
     <SongList
-      :songs="filteredSongs"
+      :songs="searchedSongs"
       @click-artwork="onClickArtwork"
       @double-click-row="onDoubleClickRow"
     />
@@ -97,7 +61,7 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
 }
 
 .widgets {
-  margin: 0 0 0.5rem 1rem;
+  margin: 0 0.5rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -32,7 +32,7 @@ export const sortArrayOfObjects = <T>(array: T[], sortOptions: SortOption<T>[]) 
       const [first, second] =
         opt.order !== 'DESC' ? [a[opt.key], b[opt.key]] : [b[opt.key], a[opt.key]];
 
-      if (first && second) {
+      if (first !== second) {
         if (typeof first === 'number' && typeof second === 'number') {
           return first - second;
         }
@@ -42,23 +42,16 @@ export const sortArrayOfObjects = <T>(array: T[], sortOptions: SortOption<T>[]) 
           return collator.compare(first, second);
         }
 
-        if (Array.isArray(first) && Array.isArray(second)) {
-          if (!collator) collator = new Intl.Collator('ja');
-          return collator.compare(first.join(' '), second.join(' '));
+        if (first) {
+          return -1;
+        }
+
+        if (second) {
+          return 1;
         }
 
         return 0;
       }
-
-      if (first) {
-        return -1;
-      }
-
-      if (second) {
-        return 1;
-      }
-
-      return 0;
     }
 
     return 0;

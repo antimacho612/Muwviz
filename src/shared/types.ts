@@ -22,7 +22,10 @@ export type Song = {
 export type Album = {
   id: string;
   name: string;
-  artists: string[];
+  artists: {
+    id: string;
+    name: string;
+  }[];
   artworkPath?: string;
   songCount: number;
 };

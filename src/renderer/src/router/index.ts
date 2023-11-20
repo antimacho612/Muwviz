@@ -22,16 +22,18 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'albums',
-        name: 'albums',
         component: Albums,
         children: [
           {
             path: '',
+            name: 'albums',
             component: AlbumList,
           },
           {
-            path: ':id',
+            path: ':albumId',
+            name: 'album',
             component: Album,
+            props: true,
           },
         ],
       },
