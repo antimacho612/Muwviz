@@ -3,10 +3,10 @@ import { RouteRecordRaw, createRouter, createWebHashHistory, createWebHistory } 
 import DefaultLayout from '@renderer/layouts/Default/Default.vue';
 
 import Songs from '@renderer/pages/Songs/Songs.vue';
+import Album from '@renderer/pages/Album/Album.vue';
 import Albums from '@renderer/pages/Albums/Albums.vue';
-import AlbumList from '@renderer/pages/Albums/AlbumList/AlbumList.vue';
-import Album from '@renderer/pages/Albums/Album/Album.vue';
-import Artists from '@renderer/pages/Artists.vue';
+import Artist from '@renderer/pages/Artist/Artist.vue';
+import Artists from '@renderer/pages/Artists/Artists.vue';
 import PLayLists from '@renderer/pages/Playlists.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -22,12 +22,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'albums',
-        component: Albums,
         children: [
           {
             path: '',
             name: 'albums',
-            component: AlbumList,
+            component: Albums,
           },
           {
             path: ':albumId',
@@ -39,8 +38,19 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'artists',
-        name: 'artists',
-        component: Artists,
+        children: [
+          {
+            path: '',
+            name: 'artists',
+            component: Artists,
+          },
+          {
+            path: ':artistId',
+            name: 'artist',
+            component: Artist,
+            props: true,
+          },
+        ],
       },
       {
         path: 'playlists',

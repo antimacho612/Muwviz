@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface Props {
   modelValue?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   selectAllOnFocus?: boolean;
 }
 
@@ -31,7 +31,11 @@ const onFocus = (e: FocusEvent) => {
   <input
     class="c-inputtext"
     spellcheck="false"
-    :class="{ 'c-inputtext-sm': size === 'sm', 'c-inputtext-lg': size === 'lg' }"
+    :class="{
+      'c-inputtext-xs': size === 'xs',
+      'c-inputtext-sm': size === 'sm',
+      'c-inputtext-lg': size === 'lg',
+    }"
     :value="modelValue"
     @input="onInput"
     @focus="onFocus"
@@ -67,6 +71,11 @@ const onFocus = (e: FocusEvent) => {
 
   &:focus {
     @include focusedInput;
+  }
+
+  &.c-inputtext-xs {
+    height: 2rem;
+    padding: 0.25rem 0.75rem;
   }
 
   &.c-inputtext-sm {

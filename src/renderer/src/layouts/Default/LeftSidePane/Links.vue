@@ -70,6 +70,7 @@ const emits = defineEmits<{ click: [] }>();
 
   &:hover {
     color: var(--primary-color);
+    text-decoration: none;
   }
 
   &:focus-visible {

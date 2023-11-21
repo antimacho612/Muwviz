@@ -3,72 +3,60 @@ import { computed } from 'vue';
 import { Album } from '@shared/types';
 
 import { PlayIcon } from '@heroicons/vue/24/solid';
+import RecycleGridScrollerItem from '@renderer/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
 import Artwork from '@renderer/components/Artwork/Artwork.vue';
 
 const props = defineProps<{ album: Album }>();
+
+const emits = defineEmits<{
+  clickItem: [e: MouseEvent];
+  clickPlayButton: [e: MouseEvent];
+  contextmenu: [e: MouseEvent];
+}>();
 
 const artistName = computed(() => {
   if (!props.album.artists) return '-';
   if (props.album.artists.length === 1) return props.album.artists[0].name;
   return props.album.artists[0].name + ' 他';
 });
-
-const emits = defineEmits<{
-  clickItem: [e: MouseEvent];
-  clickPlayButton: [e: MouseEvent];
-}>();
-const onClickItem = (e: MouseEvent) => emits('clickItem', e);
-const onClickPlayButton = (e: MouseEvent) => emits('clickPlayButton', e);
 </script>
 
 <template>
-  <div class="album-list-item-container">
-    <div v-ripple class="albumn-list-item" @click="onClickItem">
-      <Artwork
-        :src="album.artworkPath"
-        width="128px"
-        height="128px"
-        :show-play-icon="false"
-        class="artwork"
-      />
-      <div>
-        <div class="name" :title="album.name">{{ album.name }}</div>
-        <div class="artist">{{ artistName }}</div>
-      </div>
-      <div class="song-count">{{ album.songCount }}</div>
-      <div v-ripple class="play-button" @click.stop="onClickPlayButton" @pointerdown.stop>
-        <PlayIcon class="icon-play"></PlayIcon>
-      </div>
+  <RecycleGridScrollerItem
+    class="album-grid-item"
+    @click="emits('clickItem', $event)"
+    @contextmenu="emits('contextmenu', $event)"
+  >
+    <Artwork
+      :src="album.artworkPath"
+      width="128px"
+      height="128px"
+      :show-play-icon="false"
+      class="artwork"
+    />
+    <div>
+      <div class="name" :title="album.name">{{ album.name }}</div>
+      <div class="artist">{{ artistName }}</div>
     </div>
-  </div>
+    <div class="song-count">{{ album.songCount }}</div>
+    <div
+      v-ripple
+      class="play-button"
+      @click.stop="emits('clickPlayButton', $event)"
+      @pointerdown.stop
+    >
+      <PlayIcon class="icon-play"></PlayIcon>
+    </div>
+  </RecycleGridScrollerItem>
 </template>
 
 <style lang="scss" scoped>
-.album-list-item-container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  overflow: hidden;
-}
-
-.albumn-list-item {
-  position: relative;
-  height: 100%;
+.album-grid-item {
   width: 10rem;
   padding: 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: $borderRadiusLg;
-  cursor: pointer;
-  transition: box-shadow $transitionDuration;
-}
-
-.vue-recycle-scroller__item-view.hover .albumn-list-item {
-  box-shadow: $innerShadow;
 }
 
 .artwork {
@@ -97,8 +85,8 @@ const onClickPlayButton = (e: MouseEvent) => emits('clickPlayButton', e);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2rem;
+  height: 2rem;
   background: rgba(var(--primary-color-rgb), 0.4);
   border-radius: $borderRadiusFull;
   z-index: 3;
@@ -114,8 +102,8 @@ const onClickPlayButton = (e: MouseEvent) => emits('clickPlayButton', e);
   }
 
   .icon-play {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
     color: #fff;
   }
 }

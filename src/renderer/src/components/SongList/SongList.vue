@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useEventListener } from '@vueuse/core';
+import { computed } from 'vue';
 import { useContextMenu } from '@renderer/utils/useContextMenu';
+import { useMultiSelectableSongList } from '@renderer/utils/useMultiSelectableSongList';
 import { Song } from '@shared/types';
 
 import SongListItem from './SongListItem.vue';
@@ -12,64 +12,8 @@ const emits = defineEmits<{
   doubleClickRow: [songId: string];
 }>();
 
-const selectedSongs = ref(new Set<string>());
-
-const selectAll = () => {
-  selectedSongs.value = new Set(props.songs.map((song) => song.id));
-};
-const clearSelection = () => selectedSongs.value.clear();
-
-let keyPressed: 'Shift' | 'Control' | undefined;
-let currentIndex = 0;
-
-const onClickRow = (index: number, id: string) => {
-  if (keyPressed === 'Control') {
-    if (selectedSongs.value.has(id)) {
-      selectedSongs.value.delete(id);
-    } else {
-      selectedSongs.value.add(id);
-    }
-    currentIndex = index;
-  } else if (keyPressed === 'Shift') {
-    if (selectedSongs.value.size === 0) {
-      selectedSongs.value.add(id);
-    } else {
-      const from = Math.min(currentIndex, index);
-      const to = Math.max(currentIndex, index);
-      selectedSongs.value = new Set(props.songs.slice(from, to + 1).map((song) => song.id));
-    }
-  } else {
-    selectedSongs.value = new Set([id]);
-    currentIndex = index;
-  }
-};
-
-const onKeyDown = (e: KeyboardEvent) => {
-  if ((e.target as HTMLElement)?.tagName?.toLocaleLowerCase() === 'input') {
-    clearSelection();
-    return;
-  }
-
-  if (e.shiftKey || e.ctrlKey) {
-    keyPressed = e.key as 'Shift' | 'Control';
-  }
-
-  if (e.ctrlKey && e.key === 'a') {
-    selectAll();
-  }
-};
-
-const onKeyUp = (e: KeyboardEvent) => {
-  if (
-    (e.key === 'Shift' && keyPressed === 'Shift') ||
-    (e.key === 'Control' && keyPressed === 'Control')
-  ) {
-    keyPressed = undefined;
-  }
-};
-
-useEventListener(document, 'keydown', onKeyDown);
-useEventListener(document, 'keyup', onKeyUp);
+const songList = computed(() => props.songs);
+const { selectedSongs, clearSelection, onSelectItem } = useMultiSelectableSongList(songList);
 
 const songContextMenu = useContextMenu('SONG');
 const songsContextMenu = useContextMenu('SONGS');
@@ -88,7 +32,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
       v-click-outside="clearSelection"
       class="songs-scroller"
       :items="songs"
-      :item-size="48"
+      :item-size="49"
       key-field="id"
       direction="vertical"
     >
@@ -97,7 +41,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
           :index="index"
           :song="item"
           :selected="selectedSongs.has(item.id)"
-          @click-row="onClickRow(index, item.id)"
+          @click-row="onSelectItem(index, item.id)"
           @click-artwork="emits('clickArtwork', item.id)"
           @double-click-row="emits('doubleClickRow', item.id)"
           @click-ellipsis-button="showContextMenu($event, item)"
@@ -110,7 +54,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
 
 <style lang="scss" scoped>
 .song-list {
-  height: calc(100% - 48px - 56px);
+  height: calc(100% - 48px - 48px);
   overflow: hidden;
 }
 

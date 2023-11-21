@@ -6,18 +6,17 @@ import { XMarkIcon } from '@heroicons/vue/24/solid';
 import Button from '@renderer/components/base/Button/Button.vue';
 
 const expandSidebar = inject(expandSidebarKey);
-const onClickCloseButton = () => expandSidebar?.();
 </script>
 
 <template>
   <div class="page-header">
-    <h2 class="header-title">
+    <h2 v-if="$slots.title" class="title">
       <slot name="title"></slot>
     </h2>
-    <div class="header-actions">
-      <slot name="actions"></slot>
+    <div class="trailing">
+      <slot></slot>
     </div>
-    <Button size="sm" :icon="XMarkIcon" text @click="onClickCloseButton" />
+    <Button size="sm" :icon="XMarkIcon" text class="close-button" @click="expandSidebar?.()" />
   </div>
 </template>
 
@@ -28,12 +27,16 @@ const onClickCloseButton = () => expandSidebar?.();
   align-items: center;
   justify-content: space-between;
 
-  .header-title {
+  .title {
     font-weight: bold;
   }
 
-  .header-actions {
+  .trailing {
     flex-grow: 1;
+  }
+
+  .close-button {
+    flex: 0 0 auto;
   }
 }
 </style>

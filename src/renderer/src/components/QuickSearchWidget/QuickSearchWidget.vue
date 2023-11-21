@@ -19,7 +19,7 @@ const text = computed({
     <InputText
       v-model="text"
       type="text"
-      size="sm"
+      size="xs"
       select-all-on-focus
       placeholder="検索..."
       class="input-text"

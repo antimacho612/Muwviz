@@ -2,7 +2,7 @@
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/stores/entities';
 import { useSongsSort } from '@renderer/utils/useSort';
-import { useQuickSongsSearch } from '@renderer/utils/useQuickSearch';
+import { useSongsQuickSearch } from '@renderer/utils/useQuickSearch';
 
 import PageHeader from '@renderer/components/PageHeader/PageHeader.vue';
 import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
@@ -13,7 +13,7 @@ const { setQueue } = useAudioPlayer();
 const { songList } = useEntitiesStore();
 
 const { sortKey, order, sortedSongs } = useSongsSort(songList);
-const { searchText, searchedSongs } = useQuickSongsSearch(sortedSongs);
+const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 
 const playSong = async (songId: string) => {
   const songIds = sortedSongs.value.map((song) => song.id);
@@ -46,7 +46,7 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
     </div>
 
     <SongList
-      :songs="searchedSongs"
+      :songs="filteredSongs"
       @click-artwork="onClickArtwork"
       @double-click-row="onDoubleClickRow"
     />

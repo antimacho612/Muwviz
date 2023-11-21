@@ -12,12 +12,6 @@
   --primary-color--lighter-rgb: 168, 85, 247;
   --primary-color--lightest: #c4b5fd;
   --primary-color--lightest-rgb: 196, 181, 253;
-
-  // --primary-color: #a172f3;
-  // --primary-color-rgb: 161, 114, 243;
-  // --primary-color--lighter: #a854f7;
-  // --primary-color--lightest: #d9c7fa;
-  // --primary-color--lightest-rgb: 217, 199, 250;
 }
 
 :root {
@@ -43,6 +37,8 @@
 
   --radio-check-dot-color: #bec8e4;
   --color-swatch-wrapper-color: #bec8e4;
+  --artist-img-bg-color: #e0e0e0;
+  --artist-img-icon-color: #888;
 }
 
 .dark {
@@ -69,6 +65,8 @@
 
   --radio-check-dot-color: #838383;
   --color-swatch-wrapper-color: #3d3d3d;
+  --artist-img-bg-color: #393939;
+  --artist-img-icon-color: #adadad;
 }
 
 *,
@@ -85,7 +83,12 @@ body {
 }
 
 a {
+  color: var(--primary-text-color);
   text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 a,

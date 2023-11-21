@@ -22,7 +22,6 @@ const emits = defineEmits<{
     v-ripple
     class="scroller-item"
     :class="{ selected, current }"
-    :style="{ height }"
     @click="emits('click', $event)"
     @dblclick="emits('dblclick', $event)"
     @contextmenu="emits('contextmenu', $event)"
@@ -34,10 +33,11 @@ const emits = defineEmits<{
 <style lang="scss" scoped>
 .scroller-item {
   width: 100%;
+  height: v-bind(height);
+  padding: 0.25rem 1rem;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  padding: 0.25rem 1rem;
   column-gap: 0.5rem;
   cursor: default;
 

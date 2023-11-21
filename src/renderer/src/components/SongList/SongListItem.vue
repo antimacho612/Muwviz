@@ -5,7 +5,7 @@ import { formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
 import { Song } from '@shared/types';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
-import ScrollerItem from '@renderer/components/base/ScrollerItem/ScrollerItem.vue';
+import RecycleScrollerItem from '@renderer/components/RecycleScrollerItem/RecycleScrollerItem.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import Artwork from '@renderer/components/Artwork/Artwork.vue';
 import BarsAnimation from '@renderer/components/BarsAnimation/BarsAnimation.vue';
@@ -32,7 +32,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 </script>
 
 <template>
-  <ScrollerItem
+  <RecycleScrollerItem
     height="3rem"
     :selected="selected"
     :current="current"
@@ -66,7 +66,9 @@ const current = computed(() => props.song.id === currentSong.value?.id);
       />
     </div>
     <div class="trailing-area">
-      <span class="album">{{ toHyphenIfEmpty(song.album) }}</span>
+      <RouterLink :to="`/albums/${song.albumId}`" class="album">
+        {{ toHyphenIfEmpty(song.album) }}
+      </RouterLink>
       <span>{{ formatTime(song.duration) }}</span>
     </div>
     <div>
@@ -79,7 +81,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
         @dblclick.stop
       />
     </div>
-  </ScrollerItem>
+  </RecycleScrollerItem>
 </template>
 
 <style lang="scss" scoped>

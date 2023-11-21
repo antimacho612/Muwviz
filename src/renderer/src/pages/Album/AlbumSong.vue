@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Song } from '@shared/types';
 import { useAudioPlayer } from '@renderer/utils/useAudioPlayer';
-import { formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
+import { formatDiskAndTrackNo, formatTime, toHyphenIfEmpty } from '@renderer/utils/utils';
+import { Song } from '@shared/types';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
-import ScrollerItem from '@renderer/components/base/ScrollerItem/ScrollerItem.vue';
+import RecycleScrollerItem from '@renderer/components/RecycleScrollerItem/RecycleScrollerItem.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import BarsAnimation from '@renderer/components/BarsAnimation/BarsAnimation.vue';
 
@@ -25,31 +25,20 @@ const emits = defineEmits<{
   clickEllipsisButton: [e: MouseEvent];
 }>();
 
-const diskAndTrackNo = computed(() => {
-  if (props.song.trackNo !== undefined) {
-    if (props.song.diskNo !== undefined) {
-      return `${props.song.diskNo}-${props.song.trackNo.toString().padStart(2, '0')}`;
-    } else {
-      return `${props.song.trackNo.toString().padStart(2, '0')}`;
-    }
-  } else {
-    return '-';
-  }
-});
-
 const { isPlaying, currentSong } = useAudioPlayer();
 const current = computed(() => props.song.id === currentSong.value?.id);
 </script>
 
 <template>
-  <ScrollerItem
+  <RecycleScrollerItem
     height="2.5rem"
+    :selected="selected"
     :current="current"
     @click="emits('clickRow', $event)"
     @dblclick="emits('doubleClickRow', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <div class="disk-and-track-no">{{ diskAndTrackNo }}</div>
+    <div class="disk-and-track-no">{{ formatDiskAndTrackNo(song.diskNo, song.trackNo) }}</div>
     <div class="title-area">
       <div class="title">{{ song.title }}</div>
       <BarsAnimation
@@ -63,17 +52,15 @@ const current = computed(() => props.song.id === currentSong.value?.id);
     </div>
     <div class="artist">{{ toHyphenIfEmpty(song.artist) }}</div>
     <div class="duration">{{ formatTime(song.duration) }}</div>
-    <div style="grid-area: menu">
-      <Button
-        :icon="EllipsisVerticalIcon"
-        size="xs"
-        text
-        @click.stop="emits('clickEllipsisButton', $event)"
-        @pointerdown.stop
-        @dblclick.stop
-      />
-    </div>
-  </ScrollerItem>
+    <Button
+      :icon="EllipsisVerticalIcon"
+      size="xs"
+      text
+      @click.stop="emits('clickEllipsisButton', $event)"
+      @pointerdown.stop
+      @dblclick.stop
+    />
+  </RecycleScrollerItem>
 </template>
 
 <style lang="scss" scoped>

@@ -59,6 +59,7 @@ watch(
 .artwork {
   position: relative;
   line-height: 1;
+  background: var(--artist-img-bg-color);
   border-radius: $borderRadiusMd;
 }
 
@@ -71,9 +72,10 @@ watch(
 }
 
 .icon-no-artwork {
-  height: 100%;
-  width: 100%;
-  color: var(--secondary-text-color);
+  height: 90%;
+  width: 90%;
+  margin: 5%;
+  color: var(--artist-img-icon-color);
   border-radius: $borderRadiusMd;
 }
 

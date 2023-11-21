@@ -39,6 +39,19 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   return `${calculated.toFixed(decimals)} ${UNITS[unitIndex]}`;
 };
 
+export const formatDiskAndTrackNo = (diskNo?: number, trackNo?: number) => {
+  if (trackNo === undefined) {
+    return '-';
+  }
+
+  const formattedTrackNo = trackNo.toString().padStart(2, '0');
+  if (diskNo === undefined) {
+    return formattedTrackNo;
+  }
+
+  return `${diskNo}-${formattedTrackNo}`;
+};
+
 export const toHyphenIfEmpty = (value: string | number | undefined | null) => {
   if (value == null) return '-';
   // string

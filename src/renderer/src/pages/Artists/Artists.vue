@@ -5,42 +5,42 @@ import { useEntitiesStore } from '@renderer/stores/entities';
 
 import PageHeader from '@renderer/components/PageHeader/PageHeader.vue';
 import RecycleGridScroller from '@renderer/components/RecycleGridScroller/RecycleGridScroller.vue';
-import AlbumGridItem from './AlbumGridItem.vue';
+import ArtistGridItem from './ArtistGridItem.vue';
 
-const { albumList, getAlbumSongs } = useEntitiesStore();
+const { artistList, getArtistSongs } = useEntitiesStore();
 
 const router = useRouter();
-const onClickItem = (albumId: string) => router.push(`albums/${albumId}`);
+const onClickItem = (artistId: string) => router.push(`artists/${artistId}`);
 
 const { setQueue } = useAudioPlayer();
-const onClickPlayButton = async (albumId: string) => {
-  const albumSongs = getAlbumSongs(albumId);
+const onClickPlayButton = async (artistId: string) => {
+  const albumSongs = getArtistSongs(artistId);
   const songIds = albumSongs.map((song) => song.id);
   await setQueue(songIds);
 };
 
-const showContextMenu = (_e: MouseEvent, _albumId: string) => {
+const showContextMenu = (_e: MouseEvent, _artistId: string) => {
   // TODO: 未実装（コンテキストメニュー表示）
 };
 </script>
 
 <template>
-  <div class="albums-page">
+  <div class="artist-list-page">
     <PageHeader>
-      <template #title>アルバム ({{ albumList.length }})</template>
-      <template #default></template>
+      <template #title>アーティスト ({{ artistList.length }})</template>
+      <template #actions></template>
     </PageHeader>
 
     <RecycleGridScroller
       scroller-height="calc(100% - 96px)"
-      :items="albumList"
+      :items="artistList"
       key-field="id"
-      :item-height="208"
+      :item-height="192"
       :base-item-width="176"
     >
       <template #default="{ item }">
-        <AlbumGridItem
-          :album="item"
+        <ArtistGridItem
+          :artist="item"
           @click-item="onClickItem(item.id)"
           @click-play-button="onClickPlayButton(item.id)"
           @contextmenu="showContextMenu($event, item.id)"
@@ -51,7 +51,7 @@ const showContextMenu = (_e: MouseEvent, _albumId: string) => {
 </template>
 
 <style lang="scss" scoped>
-.albums-page {
+.artist-list-page {
   height: 100%;
   width: 100%;
   overflow: hidden;
