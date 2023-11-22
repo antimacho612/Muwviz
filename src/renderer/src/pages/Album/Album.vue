@@ -10,6 +10,7 @@ import { useContextMenu } from '@renderer/utils/useContextMenu';
 import { Song } from '@shared/types';
 
 import PageHeader from '@renderer/components/PageHeader/PageHeader.vue';
+import BackButton from '@renderer/components/BackButton/BackButton.vue';
 import { PlayIcon } from '@heroicons/vue/24/solid';
 import AlbumSong from './AlbumSong.vue';
 import SortWidget from '@renderer/components/SortWidget/SortWidget.vue';
@@ -56,7 +57,9 @@ useResizeObserver(headerEl, (entries) => {
 
 <template>
   <div class="album-page">
-    <PageHeader>アルバム一覧へ</PageHeader>
+    <PageHeader>
+      <BackButton to="/albums" />
+    </PageHeader>
 
     <div ref="headerEl" class="header">
       <Artwork :src="album?.artworkPath" :width="artworkWidth" class="artwork" />

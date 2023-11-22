@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Artist } from '@shared/types';
 
-import { UserIcon, PlayIcon } from '@heroicons/vue/24/solid';
+import { PlayIcon } from '@heroicons/vue/24/solid';
 import RecycleGridScrollerItem from '@renderer/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
+import ArtistImage from '@renderer/components/ArtistImage/ArtistImage.vue';
 
 defineProps<{ artist: Artist }>();
 const emits = defineEmits<{
@@ -18,9 +19,8 @@ const emits = defineEmits<{
     @click="emits('clickItem', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <div class="artist-img">
-      <UserIcon class="icon" />
-    </div>
+    <ArtistImage class=".artist-image" />
+
     <div class="name" :title="artist.name">{{ artist.name }}</div>
     <div class="song-count">{{ artist.songCount }}</div>
     <div
@@ -43,19 +43,10 @@ const emits = defineEmits<{
   justify-content: space-between;
 }
 
-.artist-img {
+.artist-image {
   width: 8rem;
   height: 8rem;
   padding: 0.5rem;
-  background: var(--artist-img-bg-color);
-  border-radius: $borderRadiusMd;
-  z-index: 1;
-
-  .icon {
-    height: 7rem;
-    width: 7rem;
-    color: var(--artist-img-icon-color);
-  }
 }
 
 .name {

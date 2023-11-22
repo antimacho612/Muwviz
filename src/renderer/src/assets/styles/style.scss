@@ -124,3 +124,9 @@ img {
   box-shadow: $innerShadow;
   border-radius: 10px;
 }
+
+.single-line-clamp {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

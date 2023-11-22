@@ -3,12 +3,12 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import * as path from 'path';
 import log from 'electron-log/main';
 import icon from '../../resources/icon.png?asset';
-import { deleteOldLog } from './logger';
 import { registerIpcChannels, registerWindowIpcListener } from './ipc';
 import { scanDirectory } from './core/directoryScanner';
 import { ParsedSong, parseSongFile } from './core/songFileParser';
 import { songsStore, albumsStore, artistsStore, lyricsStore } from './stores';
 import { buildLibrary } from './core/libraryBuilder';
+import { deleteOldLog } from './utils';
 
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) {

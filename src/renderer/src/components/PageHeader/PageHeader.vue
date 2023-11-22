@@ -9,34 +9,22 @@ const expandSidebar = inject(expandSidebarKey);
 </script>
 
 <template>
-  <div class="page-header">
-    <h2 v-if="$slots.title" class="title">
+  <div
+    class="flex align-items-centere justify-content-between"
+    style="height: 2.5rem; margin-bottom: 0.5rem"
+  >
+    <h2 v-if="$slots.title" class="font-bold">
       <slot name="title"></slot>
     </h2>
-    <div class="trailing">
+    <div class="flex-grow-1">
       <slot></slot>
     </div>
-    <Button size="sm" :icon="XMarkIcon" text class="close-button" @click="expandSidebar?.()" />
+    <Button
+      size="sm"
+      :icon="XMarkIcon"
+      text
+      class="flex-grow-0 flex-shrink-0"
+      @click="expandSidebar?.()"
+    />
   </div>
 </template>
-
-<style lang="scss">
-.page-header {
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  .title {
-    font-weight: bold;
-  }
-
-  .trailing {
-    flex-grow: 1;
-  }
-
-  .close-button {
-    flex: 0 0 auto;
-  }
-}
-</style>
