@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { inject } from 'vue';
+import { useSettingsStore } from '@renderer/stores/settings';
+import { openLibraryEditModalKey } from '@renderer/utils/injectionKeys';
+
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
-import InputText from '@renderer/components/base/InputText/InputText.vue';
 
-const onClick = async () => {
-  await window.electronAPI.invoke.openPath('D:\\');
+const settings = useSettingsStore();
+
+const openSettingsModal = inject(openLibraryEditModalKey);
+
+const openArtworkDir = async () => {
+  await window.electronAPI.invoke.openPath(settings.artworkPath);
 };
 </script>
 
@@ -26,11 +33,20 @@ const onClick = async () => {
           </tr>
         </tbody>
       </table>
-      <Button size="sm" style="display: flex; margin: 1.5rem auto 0; width: 50%">変更...</Button>
+      <Button
+        size="sm"
+        style="display: flex; margin: 1.5rem auto 0; width: 50%"
+        @click="openSettingsModal"
+      >
+        変更...
+      </Button>
     </BaseSettingsItem>
+
     <BaseSettingsItem title="アートワークの保存場所">
-      <InputText size="sm" :readonly="true" style="width: 80%"></InputText>
-      <Button size="sm" @click="onClick">open</Button>
+      <div class="flex align-items-center justify-content-between column-gap-1">
+        <span class="artwork-dir">{{ settings.artworkPath }}</span>
+        <Button size="sm" class="flex-shrink-0" @click="openArtworkDir">フォルダを開く</Button>
+      </div>
     </BaseSettingsItem>
   </BaseSettingsTabPanel>
 </template>
@@ -47,11 +63,15 @@ const onClick = async () => {
 
   th {
     color: var(--secondary-text-color);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    border-bottom: 2px solid var(--divider-color);
   }
 
   td {
     font-weight: 500;
   }
+}
+
+.artwork-dir {
+  @include singleLineClamp;
 }
 </style>

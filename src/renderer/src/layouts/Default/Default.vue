@@ -6,31 +6,38 @@ import CenterPane from './CenterPane/CenterPane.vue';
 import RightSidePane from './RightSidePane/RightSidePane.vue';
 import ControlsPane from './ControlsPane/ControlsPane.vue';
 import SettingsModal from './SettingsModal/SettingsModal.vue';
-import { openSettingsModalKey } from '@renderer/utils/injectionKeys';
+import LibraryEditModal from './LibraryEditModal/LibraryEditModal.vue';
+import { openSettingsModalKey, openLibraryEditModalKey } from '@renderer/utils/injectionKeys';
 
 const isSettingModalOpen = ref(false);
 provide(openSettingsModalKey, () => (isSettingModalOpen.value = true));
+
+const isLibraryEditModalOpen = ref(false);
+provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
 </script>
 
 <template>
   <div class="layout">
-    <div class="layout-left" :inert="isSettingModalOpen">
+    <div class="layout-left" :inert="isSettingModalOpen || isLibraryEditModalOpen">
       <LeftSidePane />
     </div>
 
-    <div class="layout-center" :inert="isSettingModalOpen">
+    <div class="layout-center" :inert="isSettingModalOpen || isLibraryEditModalOpen">
       <CenterPane />
     </div>
 
-    <div class="layout-right" :inert="isSettingModalOpen">
+    <div class="layout-right" :inert="isSettingModalOpen || isLibraryEditModalOpen">
       <RightSidePane />
     </div>
 
-    <div class="layout-bottom" :inert="isSettingModalOpen">
+    <div class="layout-bottom" :inert="isSettingModalOpen || isLibraryEditModalOpen">
       <ControlsPane />
     </div>
 
-    <SettingsModal v-model:is-open="isSettingModalOpen" />
+    <div :inert="isLibraryEditModalOpen">
+      <SettingsModal v-model:is-open="isSettingModalOpen"></SettingsModal>
+    </div>
+    <LibraryEditModal v-model:is-open="isLibraryEditModalOpen"></LibraryEditModal>
   </div>
 </template>
 

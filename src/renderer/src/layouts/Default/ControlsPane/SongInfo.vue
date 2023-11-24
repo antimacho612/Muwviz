@@ -9,13 +9,24 @@ const { currentSong } = useAudioPlayer();
 
 <template>
   <div class="song-info">
-    <Artwork :src="currentSong?.filePath" width="48px" height="48px" />
+    <Artwork :src="currentSong?.artworkPath" width="56px" height="56px" class="flex-shrink-0" />
+
     <div class="info">
       <div class="title">{{ toHyphenIfEmpty(currentSong?.title) }}</div>
       <div class="artist-and-album">
-        <a class="artist">{{ toHyphenIfEmpty(currentSong?.artist) }}</a>
-        <span>／</span>
-        <a class="album">{{ toHyphenIfEmpty(currentSong?.album) }}</a>
+        <div class="artist">
+          <RouterLink v-if="currentSong" :to="`/artists/${currentSong.artistId}`">
+            {{ toHyphenIfEmpty(currentSong.artist) }}
+          </RouterLink>
+          <span v-else>-</span>
+        </div>
+        ／
+        <div class="album">
+          <RouterLink v-if="currentSong" :to="`/albums/${currentSong.albumId}`">
+            {{ toHyphenIfEmpty(currentSong.album) }}
+          </RouterLink>
+          <span v-else>-</span>
+        </div>
       </div>
     </div>
   </div>
@@ -29,17 +40,10 @@ const { currentSong } = useAudioPlayer();
   gap: 0.5rem;
 }
 
-.artwork {
-  flex: 0 0 3.5rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: $borderRadiusSm;
-}
-
 .info {
   flex: auto 1;
   display: flex;
-  line-height: 1.2;
+  line-height: 1.3;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
@@ -61,11 +65,7 @@ const { currentSong } = useAudioPlayer();
   color: var(--secondary-text-color);
 }
 
-.artist {
-  flex: 0 1 auto;
-  @include singleLineClamp;
-}
-
+.artist,
 .album {
   flex: 0 1 auto;
   @include singleLineClamp;

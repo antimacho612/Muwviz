@@ -73,7 +73,7 @@ const close = () => {
           <div class="row">
             <div class="prop-name" style="width: 20%">ビットレート</div>
             <div class="prop-value" style="width: 30%">
-              {{ song?.bitrate ? `${(song.bitrate / 1000000).toFixed(2)} Mbps` : '-' }}
+              {{ song?.bitrate ? `${(song.bitrate / 1000).toFixed(2)} kbps` : '-' }}
             </div>
             <div class="prop-name" style="width: 20%">サンプルレート</div>
             <div class="prop-value" style="width: 30%">

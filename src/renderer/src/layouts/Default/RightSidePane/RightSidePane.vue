@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
+import TabMenu from '@renderer/components/TabMenu/TabMenu.vue';
 import InfoTab from './InfoTab.vue';
 import QueueTab from './QueueTab.vue';
 import LyricsTab from './LyricsTab.vue';
@@ -27,20 +29,14 @@ const TABS = [
 
 <template>
   <div class="right-side-pane">
-    <div class="tab-menu">
-      <button
-        v-for="(tab, i) in TABS"
-        :key="tab.title"
-        v-ripple
-        type="button"
-        class="tab-button"
-        :class="{ active: i === activeMenuIndex }"
-        @click="activeMenuIndex = i"
-      >
-        {{ tab.title }}
-      </button>
-      <div class="active-menu-color"></div>
-    </div>
+    <TabMenu
+      v-model:active-menu-index="activeMenuIndex"
+      :tabs="TABS.map((tab) => ({ title: tab.title }))"
+      direction="horizontal"
+      tab-button-class="right-side-tab-menu-button"
+    >
+    </TabMenu>
+
     <div class="tab-panel">
       <Transition mode="out-in" enter-active-class="fadeIn" leave-active-class="fadeOut">
         <KeepAlive>
@@ -58,63 +54,15 @@ const TABS = [
   gap: 1rem;
   width: 100%;
   height: 100%;
-  padding: 1rem;
+  padding: 1rem 0.5rem;
   border-radius: $borderRadiusXl;
   background: var(--background-color);
   box-shadow: $shadow;
   overflow: hidden;
 }
 
-.tab-menu {
-  position: relative;
-  display: flex;
-  align-items: center;
+:deep(.right-side-tab-menu-button) {
   justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-
-  .tab-button {
-    height: 2rem;
-    width: 4.5rem;
-    font-size: map-get($fontSizes, sm);
-    font-weight: 500;
-    color: var(--secondary-text-color);
-    background: var(--background-color);
-    border: none;
-    cursor: pointer;
-    transition: color $transitionDuration;
-
-    &.active {
-      color: var(--primary-color);
-    }
-
-    &:hover {
-      color: var(--primary-color);
-    }
-
-    &:focus-visible {
-      @include focused();
-    }
-  }
-
-  .active-menu-color {
-    position: absolute;
-    height: 2rem;
-    width: 4.5rem;
-    left: 0;
-    border-radius: $borderRadiusSm;
-    box-shadow: $innerShadow;
-    transition: transform $transitionDuration cubic-bezier(0.66, -0.3, 0.33, 1.4);
-    pointer-events: none;
-  }
-
-  @for $i from 1 through 5 {
-    .tab-button:nth-child(#{$i}).active ~ .active-menu-color {
-      $idx: $i - 1;
-      $x: (5rem * $idx);
-      transform: translateX($x);
-    }
-  }
 }
 
 .tab-panel {

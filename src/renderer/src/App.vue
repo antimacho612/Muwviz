@@ -6,6 +6,6 @@ useAppearance();
 </script>
 
 <template>
-  <Titlebar />
-  <RouterView />
+  <Titlebar></Titlebar>
+  <RouterView></RouterView>
 </template>

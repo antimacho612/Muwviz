@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import { isRejected } from '@shared/utils';
 
 import log from 'electron-log/renderer';
 
@@ -23,6 +24,7 @@ import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
 import App from './App.vue';
 import router from '@renderer/router/index';
 
+import { useSettingsStore } from './stores/settings';
 import { useEntitiesStore } from './stores/entities';
 import { audioPlayerInjectionKey, audioPlayer } from './core/audioPlayer';
 
@@ -68,10 +70,7 @@ app.use(VueVirtualScroller);
 // Store
 const pinia = createPinia();
 app.use(pinia);
-
-// Entities
-const { fetch } = useEntitiesStore();
-await fetch();
+await fetchDatas();
 
 // Router
 app.use(router);
@@ -98,3 +97,12 @@ app.directive('click-outside', {
 app.provide(audioPlayerInjectionKey, audioPlayer());
 
 app.mount('#app');
+
+async function fetchDatas() {
+  const { fetch: fecthSettings } = useSettingsStore();
+  const { fetch: fecthEntities } = useEntitiesStore();
+
+  const results = await Promise.allSettled([fecthSettings(), fecthEntities()]);
+
+  results.filter(isRejected).forEach((result) => console.error(result.reason.toString()));
+}

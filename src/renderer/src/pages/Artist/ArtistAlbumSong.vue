@@ -31,15 +31,18 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 <template>
   <div
     v-ripple
-    class="artist-song"
+    class="artist-album-song"
     :class="{ current, selected }"
     @click="emits('clickRow', $event)"
     @dblclick="emits('doubleClickRow', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <div class="disk-and-track-no">{{ formatDiskAndTrackNo(song.diskNo, song.trackNo) }}</div>
+    <div class="disk-and-track-no" style="width: 2.5rem">
+      {{ formatDiskAndTrackNo(song.diskNo, song.trackNo) }}
+    </div>
+
     <div class="title-area">
-      <div class="title">{{ song.title }}</div>
+      <div class="title flex-auto single-line-clamp">{{ song.title }}</div>
       <BarsAnimation
         v-if="current"
         :pause="!isPlaying"
@@ -49,7 +52,9 @@ const current = computed(() => props.song.id === currentSong.value?.id);
         class="playing-animation"
       />
     </div>
+
     <div class="duration">{{ formatTime(song.duration) }}</div>
+
     <Button
       :icon="EllipsisVerticalIcon"
       size="xs"
@@ -62,19 +67,17 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 </template>
 
 <style lang="scss" scoped>
-.artist-song {
+.artist-album-song {
   width: 100%;
+  padding: 0 0.5rem;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   column-gap: 0.5rem;
-  padding: 0 0.5rem;
-  font-size: map-get($fontSizes, md);
-  cursor: default;
-
   border: 1px solid transparent;
   border-radius: $borderRadiusMd;
   transition: box-shadow $transitionDuration;
+  cursor: default;
 
   &:hover {
     box-shadow: $innerShadow;
@@ -85,7 +88,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
   }
 }
 
-.artist-song.current {
+.artist-album-song.current {
   .disk-and-track-no,
   .title,
   .duration {
@@ -95,7 +98,6 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 
 .disk-and-track-no {
   flex: 0 0 auto;
-  width: 2.5rem;
 }
 
 .title-area {

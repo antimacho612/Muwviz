@@ -1,4 +1,3 @@
-import { app } from 'electron';
 import { parseFile as parseMetadata, IPicture } from 'music-metadata';
 import { xxHash32 } from 'js-xxhash';
 import Jimp from 'jimp';
@@ -8,8 +7,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { Song } from '@shared/types';
 import { ensureDirectory } from '@main/utils';
-
-const ARTWORK_DIR = path.join(app.getPath('userData'), 'artworks');
+import { ARTWORK_DIR } from './paths';
 
 export type ParsedSong = Omit<Song, 'artistId' | 'albumId'> & { lyrics?: string };
 
@@ -17,16 +15,12 @@ async function storePicture(picture: IPicture) {
   const hashedFileName = xxHash32(picture.data).toString(16);
 
   const filePath = path.join(ARTWORK_DIR, `${hashedFileName}.png`);
-  const filePathSm = path.join(ARTWORK_DIR, `${hashedFileName}_s.png`);
   if (!fs.existsSync(filePath)) {
     console.debug('Saving artwork...', filePath);
     try {
       const image = await Jimp.read(picture.data);
-      image.contain(300, 300);
+      image.contain(256, 256);
       await image.writeAsync(filePath);
-
-      image.contain(48, 48);
-      await image.writeAsync(filePathSm);
     } catch (e) {
       console.error('Failed to save artwork', e);
     }

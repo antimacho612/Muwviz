@@ -57,9 +57,7 @@ const onFocus = (e: FocusEvent) => {
 
   transition:
     color $transitionDuration,
-    background-color $transitionDuration,
-    border-color $transitionDuration,
-    box-shadow $transitionDuration;
+    border-color $transitionDuration;
 
   &:enabled:hover {
     border: 1px solid var(--primary-color);

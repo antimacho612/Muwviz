@@ -27,13 +27,12 @@ import VolumeControl from './VolumeControl.vue';
 <style lang="scss" scoped>
 .controls-pane {
   height: 100%;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border-radius: $borderRadiusXl;
   box-shadow: $shadow;
-}
-
-.timeline-container {
-  margin-bottom: 0.75rem;
 }
 
 .controls-pane-bottom {

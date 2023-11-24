@@ -10,6 +10,7 @@ import {
 } from '@heroicons/vue/24/solid';
 
 import Modal from '@renderer/components/base/Modal/Modal.vue';
+import TabMenu from '@renderer/components/TabMenu/TabMenu.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import LibraryTab from './LibraryTab.vue';
 import AppearanceTab from './AppearanceTab.vue';
@@ -36,9 +37,7 @@ const TABS = [
 ] as const;
 const activeMenuIndex = ref(0);
 
-const close = () => {
-  emits('update:isOpen', false);
-};
+const close = () => emits('update:isOpen', false);
 </script>
 
 <template>
@@ -48,40 +47,37 @@ const close = () => {
     :close-on-press-esc="false"
     :z-index="1500"
   >
-    <div class="modal-content">
+    <div class="settings-modal">
       <div class="content-grid">
         <div class="header">
-          <div class="title">
-            <Cog6ToothIcon />
+          <div class="title" style="">
+            <Cog6ToothIcon style="width: 1.75rem; height: 1.75rem" />
             <h3>設定</h3>
           </div>
-          <Button class="modal-close-button" :icon="XMarkIcon" text @click="close" />
+          <Button :icon="XMarkIcon" text @click="close"></Button>
         </div>
-        <div class="tab-menu">
-          <button
-            v-for="(tab, i) in TABS"
-            :key="tab.title"
-            v-ripple
-            type="button"
-            class="tab-button"
-            :class="{ active: i === activeMenuIndex }"
-            @click="activeMenuIndex = i"
-          >
-            <component :is="tab.icon" class="tab-button-icon"></component>
-            <span>{{ tab.title }}</span>
-          </button>
-          <div class="active-menu-color">
+
+        <TabMenu
+          v-model:active-menu-index="activeMenuIndex"
+          :tabs="TABS.map((tab) => ({ title: tab.title, icon: tab.icon }))"
+          direction="vertical"
+          size="lg"
+          tab-button-class="settings-tab-menu-button"
+          class="settings-tab-menu"
+        >
+          <template #active-menu-color>
             <ChevronRightIcon class="active-menu-color-icon" />
-          </div>
-        </div>
-        <div class="tab-panel">
+          </template>
+        </TabMenu>
+
+        <div class="tab-panel-container">
           <Transition
             mode="out-in"
             enter-active-class="tab-panel-fade-in"
             leave-active-class="tab-panel-fade-out"
           >
             <KeepAlive>
-              <component :is="TABS[activeMenuIndex].component" />
+              <component :is="TABS[activeMenuIndex].component"></component>
             </KeepAlive>
           </Transition>
         </div>
@@ -91,136 +87,74 @@ const close = () => {
 </template>
 
 <style lang="scss" scoped>
-.modal-content {
+.settings-modal {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  @include positionCenterXY;
   width: 90%;
   max-width: 75rem;
   height: 90%;
-
-  background-color: var(--background-color);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  background: var(--background-color);
   border-radius: $borderRadiusLg;
-  cursor: default;
+  box-shadow:
+    0px 9px 46px 8px rgba(0, 0, 0, 0.12),
+    0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0px 11px 15px rgba(0, 0, 0, 0.2);
 }
 
 .content-grid {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
   display: grid;
   grid:
     'header  header' 4rem
     'tabMenu tabPanel' 1fr
     / 15rem 1fr;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .header {
   grid-area: header;
+  padding: 0.5rem 1rem;
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
   overflow: hidden;
-}
 
-.title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  .title {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
 
-  svg {
-    width: 1.75rem;
-    height: 1.75rem;
-    color: inherit;
-  }
-
-  h3 {
-    font-size: map-get($fontSizes, 2xl);
+    h3 {
+      font-size: map-get($map: $fontSizes, $key: 2xl);
+    }
   }
 }
 
-.tab-menu {
+.settings-tab-menu {
   grid-area: tabMenu;
-  position: relative;
-  height: 100%;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
 
-.tab-button {
-  position: relative;
-  height: 2.5rem;
-  padding-left: 0.75rem;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: map-get($fontSizes, lg);
-  font-weight: 500;
-  color: var(--secondary-text-color);
-  background: var(--background-color);
-  border: none;
-  border-radius: $borderRadiusSm;
-  cursor: pointer;
-  transition: color $transitionDuration;
-
-  &.active {
-    color: var(--primary-color);
+  :deep(.settings-tab-menu-button) {
+    padding-left: 0.75rem;
+    font-size: map-get($map: $fontSizes, $key: lg);
   }
-
-  &:hover {
-    color: var(--primary-color);
-  }
-
-  &:focus-visible {
-    @include focused();
-  }
-
-  .tab-button-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-}
-
-.active-menu-color {
-  position: absolute;
-  height: 2.5rem;
-  width: calc(100% - 1rem);
-  top: 0.5rem;
-  left: 0.5rem;
-  border-radius: $borderRadiusSm;
-  box-shadow: $innerShadow;
-  transition: transform $transitionDuration cubic-bezier(0.66, -0.3, 0.33, 1.4);
-  pointer-events: none;
 
   .active-menu-color-icon {
     position: absolute;
+    @include positionCenterY;
     right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
     height: 1.25rem;
     width: 1.25rem;
     color: var(--primary-color);
+    transition: color var(--transition-duration);
   }
 }
 
-@for $i from 1 through 5 {
-  .tab-button:nth-child(#{$i}).active ~ .active-menu-color {
-    $idx: $i - 1;
-    $y: (3rem * $idx);
-    transform: translateY($y);
-  }
-}
-
-.tab-panel {
+.tab-panel-container {
   grid-area: tabPanel;
   padding: 0.5rem 1rem 0.5rem 2.5rem;
+  overflow: hidden;
 }
 
 .tab-panel-fade-in {

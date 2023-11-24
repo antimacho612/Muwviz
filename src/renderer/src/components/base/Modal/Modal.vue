@@ -18,13 +18,9 @@ const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
 
 const wapperEl = ref<HTMLElement>();
 
-const onOpened = () => {
-  wapperEl.value?.focus();
-};
+const onOpened = () => wapperEl.value?.focus();
 
-const close = () => {
-  emits('update:isOpen', false);
-};
+const close = () => emits('update:isOpen', false);
 </script>
 
 <template>

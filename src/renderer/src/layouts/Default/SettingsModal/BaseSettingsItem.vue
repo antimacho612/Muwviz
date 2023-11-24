@@ -6,8 +6,9 @@ withDefaults(defineProps<{ title?: string }>(), {
 
 <template>
   <div class="settings-item">
-    <h4 class="title">{{ title }}</h4>
-    <div class="main">
+    <h4 class="settings-item-title">{{ title }}</h4>
+
+    <div class="settings-item-main">
       <slot></slot>
     </div>
   </div>
@@ -15,24 +16,27 @@ withDefaults(defineProps<{ title?: string }>(), {
 
 <style lang="scss" scoped>
 .settings-item {
-  .title {
-    font-size: map-get($fontSizes, lg);
-    margin-bottom: 0.5rem;
-  }
+  width: 100%;
+  overflow: hidden;
+}
 
-  .main {
-    position: relative;
-    padding: 1rem 3rem;
+.settings-item-title {
+  font-size: map-get($map: $fontSizes, $key: lg);
+  margin-bottom: 0.5rem;
+}
 
-    &::before {
-      content: '';
-      position: absolute;
-      height: 100%;
-      width: 1px;
-      top: 0;
-      left: 1.5rem;
-      background: rgba(0, 0, 0, 0.1);
-    }
+.settings-item-main {
+  position: relative;
+  padding: 1rem 3rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    top: 0;
+    left: 1.5rem;
+    background: var(--divider-color);
   }
 }
 </style>

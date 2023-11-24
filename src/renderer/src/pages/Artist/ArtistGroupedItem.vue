@@ -2,7 +2,7 @@
 import { GroupedItem } from './grouping';
 
 import Artwork from '@renderer/components/Artwork/Artwork.vue';
-import ArtistSong from './ArtistSong.vue';
+import ArtistAlbumSong from './ArtistAlbumSong.vue';
 import { computed } from 'vue';
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 const props = defineProps<Props>();
 
 type Emits = {
+  clickPlay: [e: MouseEvent];
   clickSongRow: [index: number, songId: string];
   doubleClickSongRow: [index: number, songId: string];
   contextmenu: [e: MouseEvent, index: number, songId: string];
@@ -28,16 +29,19 @@ const computedSelectedSongs = computed(() => props.selectedSongs);
       :src="groupedItem.artworkPath"
       height="4rem"
       width="4rem"
-      style="grid-area: artwork"
+      class="album-artwork"
       show-play-icon
+      @click="emits('clickPlay', $event)"
     />
-    <div class="single-line-clamp" style="grid-area: album">
+
+    <div class="album-name">
       <RouterLink :to="`/albums/${groupedItem.albumId}`">
         {{ groupedItem.album }}
       </RouterLink>
     </div>
-    <div class="flex flex-column" style="grid-area: songs; row-gap: 1px" @click.stop>
-      <ArtistSong
+
+    <div class="album-songs" style="grid-area: songs; row-gap: 1px" @click.stop>
+      <ArtistAlbumSong
         v-for="(song, index) in groupedItem.songs"
         :key="song.id"
         :song="song"
@@ -51,13 +55,27 @@ const computedSelectedSongs = computed(() => props.selectedSongs);
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .grouped-songs {
   display: grid;
   padding: 0.5rem;
   grid-template:
-    'artwork album songs' 100%
+    'artwork albumName songs' 100%
     / 4rem 13rem 1fr;
   gap: 0.5rem;
+}
+
+.album-artwork {
+  grid-area: artwork;
+}
+
+.album-name {
+  grid-area: albumName;
+  @include singleLineClamp;
+}
+
+.album-songs {
+  display: flex;
+  flex-direction: column;
 }
 </style>

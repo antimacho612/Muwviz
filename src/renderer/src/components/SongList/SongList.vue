@@ -32,7 +32,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
       v-click-outside="clearSelection"
       class="songs-scroller"
       :items="songs"
-      :item-size="49"
+      :item-size="57"
       key-field="id"
       direction="vertical"
     >

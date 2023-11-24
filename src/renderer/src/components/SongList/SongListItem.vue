@@ -33,27 +33,31 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 
 <template>
   <RecycleScrollerItem
-    height="3rem"
+    height="3.5rem"
     :selected="selected"
     :current="current"
+    class="song-list-item"
     @click="emits('clickRow', $event)"
     @dblclick="emits('doubleClickRow', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
     <Artwork
       :src="song.artworkPath"
-      width="40px"
-      height="40px"
+      width="44px"
+      height="44px"
       :show-play-icon="true"
-      class="img-area"
+      class="song-artwork"
       @click.stop="emits('clickArtwork', $event)"
       @dblclick.stop
       @pointerdown.stop
     />
+
     <div class="main-area">
       <div class="title-and-artist">
         <span class="title">{{ song.title }}</span>
-        <span class="artist">{{ toHyphenIfEmpty(song.artist) }}</span>
+        <RouterLink :to="`/artists/${song.artistId}`" class="artist">
+          {{ toHyphenIfEmpty(song.artist) }}
+        </RouterLink>
       </div>
 
       <BarsAnimation
@@ -65,42 +69,40 @@ const current = computed(() => props.song.id === currentSong.value?.id);
         class="playing-animation"
       />
     </div>
+
     <div class="trailing-area">
       <RouterLink :to="`/albums/${song.albumId}`" class="album">
         {{ toHyphenIfEmpty(song.album) }}
       </RouterLink>
-      <span>{{ formatTime(song.duration) }}</span>
+      <span class="duration">{{ formatTime(song.duration) }}</span>
     </div>
-    <div>
-      <Button
-        :icon="EllipsisVerticalIcon"
-        size="sm"
-        text
-        @click.stop="emits('clickEllipsisButton', $event)"
-        @pointerdown.stop
-        @dblclick.stop
-      />
-    </div>
+
+    <Button
+      :icon="EllipsisVerticalIcon"
+      size="sm"
+      text
+      @click.stop="emits('clickEllipsisButton', $event)"
+      @pointerdown.stop
+      @dblclick.stop
+    />
   </RecycleScrollerItem>
 </template>
 
 <style lang="scss" scoped>
-.scroller-item {
-  &.current {
-    .title,
-    .trailing-area {
-      color: var(--primary-color);
-    }
+.song-list-item.current {
+  .title,
+  .album,
+  .duration {
+    color: var(--primary-color);
+  }
 
-    .artist {
-      color: var(--primary-color--lighter);
-    }
+  .artist {
+    color: var(--primary-color--lighter);
   }
 }
 
-.img-area {
+.song-artwork {
   flex: 0 0 auto;
-  width: auto;
 }
 
 .main-area {
@@ -121,13 +123,12 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 .title-and-artist {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   height: 100%;
-  line-height: 1.3;
+  line-height: 1.4;
   overflow: hidden;
 
   .title {
-    font-size: map-get($fontSizes, md);
     @include singleLineClamp;
   }
 

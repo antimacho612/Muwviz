@@ -2,34 +2,38 @@ import { app, BrowserWindow, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
 import { ElectronAPI } from '@preload/ipc';
 
-import { win } from '.';
-import { albumsStore, artistsStore, songsStore, lyricsStore } from './stores';
+import { albumsStore, artistsStore, songsStore, lyricsStore, settingsStore } from './stores';
+import { KeyValue, Settings } from '@shared/types';
+import mainWindow from './mainWindow';
+import { ARTWORK_DIR } from './core/paths';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
 export function registerIpcChannels() {
-  // アプリのバージョン取得
+  // アプリのバージョンを取得する
   ipcMain.handle('getAppVersion', async () => app.getVersion());
 
-  // ウィンドウ最小化
-  ipcMain.handle('minimizeWindow', async () => win.minimizable && win.minimize());
-
-  // ウィンドウ最大化切り替え
-  ipcMain.handle('maximizeWindow', async () => {
-    if (win.maximizable) {
-      if (win.isMaximized()) {
-        win.restore();
-      } else {
-        win.maximize();
-      }
-    }
-  });
-
-  // ウィンドウを閉じる
-  ipcMain.handle('closeWindow', async () => !win.isDestroyed() && win.close());
+  // アートワークの保存先を取得する
+  ipcMain.handle('getArtworkPath', async () => ARTWORK_DIR);
 
   // 指定されたパスをデフォルトのアプリケーションで開く
   ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
+
+  // ウィンドウを最小化する
+  ipcMain.handle('minimizeWindow', async () => mainWindow.minimize());
+
+  // ウィンドウの最大化⇔最大化解除を切り替える
+  ipcMain.handle('maximizeWindow', async () => mainWindow.maximize());
+
+  // ウィンドウを閉じる
+  ipcMain.handle('closeWindow', async () => mainWindow.close());
+
+  // 設定を取得する
+  ipcMain.handle('getSettings', async () => settingsStore.data);
+  // 設定を更新する
+  ipcMain.handle('updateSettings', async (_, items: KeyValue<Settings>[]) =>
+    items.forEach((item) => settingsStore.update(item.key, item.value))
+  );
 
   // 全楽曲情報を取得する
   ipcMain.handle('getAllSongs', async () => songsStore.data);

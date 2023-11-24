@@ -1,3 +1,10 @@
+export type KeyValue<T> = {
+  [K in keyof T]: {
+    key: K;
+    value: T[K];
+  };
+}[keyof T];
+
 export type Song = {
   id: string;
   filePath: string;
@@ -50,3 +57,20 @@ export type SortOption<T> = {
 export type SongsSortKey = 'Artist' | 'Album' | 'Title' | 'PlayCount';
 
 export type Theme = 'Light' | 'Dark';
+
+export type Settings = {
+  // library
+  songDirectories: string[];
+
+  // appearance
+  fontFamily: string;
+  theme: Theme;
+  primaryColor: string;
+};
+
+export const DEFAULT_SETTINGS: Settings = {
+  songDirectories: new Array<string>(),
+  fontFamily: 'system-ui',
+  primaryColor: '#7c3aed',
+  theme: 'Light',
+};

@@ -1,13 +1,13 @@
-import { app } from 'electron';
 import path from 'path';
+import { STORES_DIR } from '@main/core/paths';
 import SongsStore from './songs';
 import AlbumsStore from './albums';
 import ArtistsStore from './artists';
 import LyricsStore from './lyrics';
+import SettingsStore from './settings';
 
-const storesDirectory = path.join(app.getPath('userData'), 'stores');
-
-export const songsStore = new SongsStore(path.join(storesDirectory, 'songs.json'));
-export const albumsStore = new AlbumsStore(path.join(storesDirectory, 'albums.json'));
-export const artistsStore = new ArtistsStore(path.join(storesDirectory, 'artists.json'));
-export const lyricsStore = new LyricsStore(path.join(storesDirectory, 'lyrics.json'));
+export const songsStore = new SongsStore(path.join(STORES_DIR, 'songs.json'));
+export const albumsStore = new AlbumsStore(path.join(STORES_DIR, 'albums.json'));
+export const artistsStore = new ArtistsStore(path.join(STORES_DIR, 'artists.json'));
+export const lyricsStore = new LyricsStore(path.join(STORES_DIR, 'lyrics.json'));
+export const settingsStore = new SettingsStore(path.join(STORES_DIR, 'settings.json'));

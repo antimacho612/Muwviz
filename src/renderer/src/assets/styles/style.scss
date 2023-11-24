@@ -2,8 +2,7 @@
 
 // CSS Variables
 :root {
-  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-family: system-ui;
   --ripple-color: rgba(var(--primary-color-rgb), 0.4);
 
   --primary-color: #7c3aed;
@@ -12,6 +11,8 @@
   --primary-color--lighter-rgb: 168, 85, 247;
   --primary-color--lightest: #c4b5fd;
   --primary-color--lightest-rgb: 196, 181, 253;
+
+  --transition-duration: #{$transitionDuration};
 }
 
 :root {
@@ -23,6 +24,8 @@
 
   --background-color: #e4ebf5;
   --disabled-bg-color: #d4d4d8;
+
+  --divider-color: #d4d4d8;
 
   --outline-color: rgba(var(--primary-color--lightest-rgb), 0.5);
   --outline-color--bordered: rgba(var(--primary-color--lightest-rgb), 0.5);
@@ -51,6 +54,8 @@
 
   --disabled-text-color: #71717a;
   --disabled-bg-color: #d4d4d8;
+
+  --divider-color: #3a3a3a;
 
   --outline-color: rgba(var(--primary-color--lightest-rgb), 0.5);
   --outline-color--bordered: rgba(var(--primary-color--lightest-rgb), 0.15);
@@ -83,7 +88,7 @@ body {
 }
 
 a {
-  color: var(--primary-text-color);
+  color: inherit;
   text-decoration: none;
 
   &:hover {
@@ -125,8 +130,60 @@ img {
   border-radius: 10px;
 }
 
+.position-center-y {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.position-center-x {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.position-center-xy {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .single-line-clamp {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.bg-default {
+  background-color: var(--background-color);
+}
+
+.border-radius-sm {
+  border-radius: 0.5rem;
+}
+
+.border-radius-md {
+  border-radius: 0.75rem;
+}
+
+.border-radius-lg {
+  border-radius: 1rem;
+}
+
+.border-radius-xl {
+  border-radius: 1.25rem;
+}
+
+.border-radius-full {
+  border-radius: 9999px;
+}
+
+.color-primary {
+  color: var(--primary-color);
+}
+
+.active-menu-color {
+  position: absolute;
+  border-radius: $borderRadiusSm;
+  box-shadow: $innerShadow;
+  pointer-events: none;
+  transition: transform $transitionDuration cubic-bezier(0.66, -0.3, 0.33, 1.4);
 }

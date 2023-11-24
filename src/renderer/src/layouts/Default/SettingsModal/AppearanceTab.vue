@@ -1,35 +1,77 @@
 <script setup lang="ts">
+import { reactive, unref, watchEffect } from 'vue';
 import { useSettingsStore } from '@renderer/stores/settings';
+import { storeToRefs } from 'pinia';
 
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 import InputText from '@renderer/components/base/InputText/InputText.vue';
 import Radio from '@renderer/components/base/Radio/Radio.vue';
-import { storeToRefs } from 'pinia';
+import { Settings } from '@shared/types';
 
-const { fontFamily, theme, primaryColor } = storeToRefs(useSettingsStore());
+const settings = useSettingsStore();
+const { fontFamily, theme, primaryColor } = storeToRefs(settings);
+
+const items = reactive({
+  fontFamily: {
+    initialValue: unref(fontFamily),
+    refValue: fontFamily,
+  },
+  theme: {
+    initialValue: unref(theme),
+    refValue: theme,
+  },
+  primaryColor: {
+    initialValue: unref(primaryColor),
+    refValue: primaryColor,
+  },
+});
+
+const changedItemKeys: Set<keyof Settings> = new Set();
+
+watchEffect(async () => {
+  Object.keys(items).forEach((key) => {
+    if (items[key].initialValue !== items[key].refValue.value) {
+      changedItemKeys.add(key as keyof Settings);
+    } else {
+      changedItemKeys.delete(key as keyof Settings);
+    }
+  });
+
+  if (changedItemKeys.size) {
+    await settings.saveChanges(changedItemKeys);
+  }
+});
 </script>
 
 <template>
   <BaseSettingsTabPanel>
     <BaseSettingsItem title="フォント">
-      <InputText v-model="fontFamily" size="sm" style="width: 80%"></InputText>
+      <InputText v-model="items.fontFamily.refValue" size="sm" style="width: 75%"></InputText>
     </BaseSettingsItem>
+
     <BaseSettingsItem title="テーマ">
-      <div class="theme-radios">
-        <Radio v-model="theme" name="theme" label="ライト" value="Light" />
-        <Radio v-model="theme" name="theme" label="ダーク" value="Dark" />
+      <div class="flex" style="column-gap: 2rem">
+        <Radio v-model="items.theme.refValue" name="theme" label="ライト" value="Light" />
+        <Radio v-model="items.theme.refValue" name="theme" label="ダーク" value="Dark" />
       </div>
     </BaseSettingsItem>
+
     <BaseSettingsItem title="プライマリーカラー">
-      <div class="primary-color">
-        <input v-model="primaryColor" type="color" class="primary-color-picker" />
-        <div class="primary-color-preview">
+      <div class="flex align-items-center" style="gap: 3rem">
+        <input v-model="items.primaryColor.refValue" type="color" class="primary-color-picker" />
+
+        <div
+          class="flex align-items-center border-radius-lg column-gap-3"
+          style="padding: 0.75rem 1.5rem; border: 1px solid var(--divider-color)"
+        >
           プレビュー
           <div class="preview-swatch" style="background: var(--primary-color)" />
           <span style="color: var(--primary-color)">Primary</span>
+
           <div class="preview-swatch" style="background: var(--primary-color--lighter)" />
           <span style="color: var(--primary-color--lighter)">Lighter</span>
+
           <div class="preview-swatch" style="background: var(--primary-color--lightest)" />
           <span style="color: var(--primary-color--lightest)">Lightest</span>
         </div>
@@ -39,17 +81,6 @@ const { fontFamily, theme, primaryColor } = storeToRefs(useSettingsStore());
 </template>
 
 <style lang="scss" scoped>
-.theme-radios {
-  display: flex;
-  gap: 2rem;
-}
-
-.primary-color {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-}
-
 .primary-color-picker {
   appearance: none;
   background-color: transparent;
@@ -68,15 +99,6 @@ const { fontFamily, theme, primaryColor } = storeToRefs(useSettingsStore());
   &::-webkit-color-swatch {
     border-radius: 50%;
   }
-}
-
-.primary-color-preview {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: $borderRadiusLg;
-  border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 .preview-swatch {

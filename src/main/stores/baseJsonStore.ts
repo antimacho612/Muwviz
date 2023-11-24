@@ -43,7 +43,19 @@ export default abstract class BaseJSONStore<T extends Record<string, any>> {
     this.caching = false;
   }
 
-  public async save(newData: T) {
+  public update<K extends keyof T>(key: K, value: T[K]) {
+    if (!this.caching) {
+      this.readJson();
+    }
+
+    if (!this.storedData) {
+      throw new Error();
+    }
+
+    this.storedData[key] = value;
+  }
+
+  public async save(newData = this.storedData) {
     await ensureDirectory(this.jsonDirectory);
 
     const json = JSON.stringify(newData);

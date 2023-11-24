@@ -1,18 +1,31 @@
 import { ipcRenderer } from 'electron';
 import { GetApiType } from 'electron-typescript-ipc';
-import { Album, Artist, LyricsMap, Song } from '@shared/types';
+import { Album, Artist, KeyValue, LyricsMap, Settings, Song } from '@shared/types';
 
 export type ElectronAPI = GetApiType<
   {
+    /**
+     * アプリのバージョンを取得する
+     */
+    getAppVersion: () => Promise<string>;
+
+    /**
+     * アートワークの保存先を取得する
+     */
+    getArtworkPath: () => Promise<string>;
+
+    /**
+     * ファイルブラウザを開く
+     */
     openFileBrowser: (
       file: boolean,
       filters?: Electron.FileFilter[]
     ) => Promise<Electron.OpenDialogReturnValue>;
 
     /**
-     * アプリのバージョンを取得する
+     * 指定されたパスをデフォルトのアプリケーションで開く
      */
-    getAppVersion: () => Promise<string>;
+    openPath: (path: string) => Promise<void>;
 
     /**
      * ウィンドウを最小化する
@@ -30,14 +43,14 @@ export type ElectronAPI = GetApiType<
     closeWindow: () => Promise<void>;
 
     /**
-     * 指定されたパスをデフォルトのアプリケーションで開く
+     * 設定を取得する
      */
-    openPath: (path: string) => Promise<void>;
+    getSettings: () => Promise<Settings>;
 
     /**
-     * 設定情報を取得する
+     * 設定を更新する
      */
-    getPreferences: () => Promise<string>;
+    updateSettings: (items: KeyValue<Settings>[]) => Promise<void>;
 
     /**
      * 全楽曲情報を取得する
@@ -69,18 +82,20 @@ export type ElectronAPI = GetApiType<
 
 export const electronAPI: ElectronAPI = {
   invoke: {
+    getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
+    getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
+
     openFileBrowser: async (file: boolean, filters?: Electron.FileFilter[]) =>
       await ipcRenderer.invoke('openFileDialog', file, filters),
-
-    getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
+    openPath: async (path: string) => await ipcRenderer.invoke('openPath', path),
 
     minimizeWindow: async () => await ipcRenderer.invoke('minimizeWindow'),
     maximizeWindow: async () => await ipcRenderer.invoke('maximizeWindow'),
     closeWindow: async () => await ipcRenderer.invoke('closeWindow'),
 
-    openPath: async (path: string) => await ipcRenderer.invoke('openPath', path),
-
-    getPreferences: async () => await ipcRenderer.invoke('getPreferences'),
+    getSettings: async () => await ipcRenderer.invoke('getSettings'),
+    updateSettings: async (items: KeyValue<Settings>[]) =>
+      await ipcRenderer.invoke('updateSettings', items),
 
     getAllSongs: async () => await ipcRenderer.invoke('getAllSongs'),
 

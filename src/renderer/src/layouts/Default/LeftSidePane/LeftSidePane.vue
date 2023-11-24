@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue';
-import { Song } from '@shared/types';
+import { onBeforeRouteUpdate } from 'vue-router';
 import { expandSidebarKey, showSongDetailModalKey } from '@renderer/utils/injectionKeys';
+import { Song } from '@shared/types';
 
 import { ChevronLeftIcon } from '@heroicons/vue/24/outline';
 import Links from './Links.vue';
@@ -10,10 +11,7 @@ import Button from '@renderer/components/base/Button/Button.vue';
 
 const isCollapsed = ref(false);
 
-const onClickSidebarToggle = () => {
-  isCollapsed.value = !isCollapsed.value;
-};
-
+const onClickSidebarToggle = () => (isCollapsed.value = !isCollapsed.value);
 const onClickLink = () => (isCollapsed.value = false);
 
 const isModalOpen = ref(false);
@@ -24,10 +22,13 @@ const showSongDetailModal = (song: Song) => {
   isModalOpen.value = true;
 };
 
-provide(showSongDetailModalKey, showSongDetailModal);
-provide(expandSidebarKey, () => {
-  isCollapsed.value = true;
+onBeforeRouteUpdate((_to, _from, next) => {
+  isCollapsed.value = false;
+  next();
 });
+
+provide(showSongDetailModalKey, showSongDetailModal);
+provide(expandSidebarKey, () => (isCollapsed.value = true));
 </script>
 
 <template>
@@ -104,7 +105,7 @@ provide(expandSidebarKey, () => {
 
 .left-pane-toggle {
   padding-top: 1rem;
-  border-top: 2px solid rgba(200, 200, 200, 0.4);
+  border-top: 2px solid var(--divider-color);
   text-align: center;
 }
 

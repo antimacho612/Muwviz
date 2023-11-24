@@ -33,6 +33,11 @@ const { selectedSongs, clearSelection, onSelectItem } = useMultiSelectableSongLi
 
 // イベント
 const { setQueue } = useAudioPlayer();
+const onClickPlay = async (songs: Song[]) => {
+  const songIds = songs.map((song) => song.id);
+  await setQueue(songIds);
+};
+
 const onDoubleClickSongRow = async (songs: Song[], index: number) => {
   const songIds = songs.map((song) => song.id);
   await setQueue(songIds, { firstSongIndex: index });
@@ -73,6 +78,7 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
           <ArtistGroupedItem
             :grouped-item="item"
             :selected-songs="selectedSongs"
+            @click-play="onClickPlay(item.songs)"
             @click-song-row="(index, songId) => onSelectItem(item.baseIndex + index, songId)"
             @double-click-song-row="
               async (index, _) => await onDoubleClickSongRow(item.songs, index)

@@ -1,39 +1,13 @@
-// import { app } from 'electron';
-// import * as path from 'path';
-// import Store from './baseJsonStore';
+import BaseJSONStore from './baseJsonStore';
+import { DEFAULT_SETTINGS, Settings } from '@shared/types';
 
-// const defaultMusicPaths = () => {
-//   try {
-//     return app.getPath('music');
-//   } catch (e) {
-//     console.error(e);
-//   }
-// };
+export default class SettingsStore extends BaseJSONStore<Settings> {
+  constructor(jsonPath: string) {
+    console.log('Initializing settings store...');
+    super(jsonPath);
 
-// const defaultPreferences = () => {
-//   const defaultMusicPath = defaultMusicPaths();
-
-//   return {
-//     isFirstLaunch: true,
-//     musicPaths: defaultMusicPath ? [defaultMusicPath] : [],
-//     desktopNotifications: true,
-//     theme: 'default',
-//     volume: 100,
-//   };
-// };
-
-// const preferencesStore = await Store.initialize(
-//   path.join(app.getPath('userData'), 'stores', 'preferences.json')
-// );
-
-// function loadPreferences() {
-//   return preferencesStore.data;
-// }
-
-// export default {
-//   loadPreferences,
-// };
-
-// // export function resetPreferencesToDefault() {
-// // preferencesStore.save({});
-// // }
+    if (!this.data) {
+      this.save(DEFAULT_SETTINGS);
+    }
+  }
+}

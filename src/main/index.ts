@@ -1,14 +1,14 @@
-import { app, shell, BrowserWindow, protocol } from 'electron';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { app, BrowserWindow, protocol } from 'electron';
+import { electronApp, optimizer } from '@electron-toolkit/utils';
 import * as path from 'path';
 import log from 'electron-log/main';
-import icon from '../../resources/icon.png?asset';
-import { registerIpcChannels, registerWindowIpcListener } from './ipc';
+import { registerIpcChannels } from './ipc';
 import { scanDirectory } from './core/directoryScanner';
 import { ParsedSong, parseSongFile } from './core/songFileParser';
 import { songsStore, albumsStore, artistsStore, lyricsStore } from './stores';
 import { buildLibrary } from './core/libraryBuilder';
 import { deleteOldLog } from './utils';
+import window from './mainWindow';
 
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) {
@@ -26,8 +26,6 @@ if (process.defaultApp) {
 initializeLogger();
 
 registerProtocols();
-
-export let win: BrowserWindow;
 
 app.whenReady().then(async () => {
   // test ---------------------------------------
@@ -68,11 +66,11 @@ app.whenReady().then(async () => {
 
   registerIpcChannels();
 
-  win = await createWindow();
+  await window.create();
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      win = await createWindow();
+      await window.create();
     }
   });
 });
@@ -121,59 +119,4 @@ function registerProtocols() {
     { scheme: 'muwviz', privileges: { secure: true, standard: true } },
     { scheme: 'media', privileges: { corsEnabled: true, supportFetchAPI: true } },
   ]);
-}
-
-async function createWindow() {
-  const hasFrame = process.platform === 'linux' || process.platform === 'darwin';
-
-  const window = new BrowserWindow({
-    title: 'Muwviz',
-    titleBarStyle: hasFrame ? 'default' : 'hidden',
-    frame: hasFrame,
-    width: 900,
-    minWidth: 900,
-    height: 670,
-    minHeight: 612,
-    show: false,
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      devTools: true,
-      preload: path.join(__dirname, '../preload/index.js'),
-      sandbox: false,
-    },
-  });
-
-  window.on('ready-to-show', () => {
-    window.show();
-  });
-
-  window.webContents.session.webRequest.onHeadersReceived(
-    { urls: ['*://*.genius.com/*'] },
-    (details, callback) => {
-      if (details.responseHeaders) {
-        // 強制的にCORSブロックを回避する
-        delete details.responseHeaders['Access-Control-Allow-Origin'];
-        delete details.responseHeaders['access-control-allow-origin'];
-        details.responseHeaders['Access-Control-Allow-Origin'] = ['*'];
-      }
-
-      callback({ responseHeaders: details.responseHeaders });
-    }
-  );
-
-  window.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
-    return { action: 'deny' };
-  });
-
-  registerWindowIpcListener(window);
-
-  if (is.dev && process.env.ELECTRON_RENDERER_URL) {
-    await window.loadURL(process.env.ELECTRON_RENDERER_URL);
-  } else {
-    await window.loadFile(path.join(__dirname, '../renderer/index.html'));
-  }
-
-  return window;
 }

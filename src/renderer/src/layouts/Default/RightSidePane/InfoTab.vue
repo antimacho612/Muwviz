@@ -10,7 +10,12 @@ const { currentSong } = useAudioPlayer();
   <div class="info-tab">
     <template v-if="!currentSong">曲を再生すると情報が表示されます</template>
     <template v-else>
-      <Artwork :src="currentSong.artworkPath" width="120px" height="120px" class="artwork" />
+      <Artwork
+        :src="currentSong.artworkPath"
+        width="120px"
+        height="120px"
+        class="flex-shrink-0 mx-auto"
+      />
       <div class="title">{{ currentSong.title }}</div>
       <div class="detail-info">
         <div class="row">
@@ -42,7 +47,7 @@ const { currentSong } = useAudioPlayer();
         <div class="row">
           <div class="prop-name">ビットレート</div>
           <div class="prop-value">
-            {{ currentSong.bitrate ? `${(currentSong.bitrate / 1000000).toFixed(2)} Mbps` : '-' }}
+            {{ currentSong.bitrate ? `${(currentSong.bitrate / 1000).toFixed(2)} kbps` : '-' }}
           </div>
         </div>
         <div class="row">
@@ -81,10 +86,7 @@ const { currentSong } = useAudioPlayer();
   gap: 0.5rem;
   overflow: hidden;
 }
-.artwork {
-  flex-shrink: 0;
-  margin: 0 auto;
-}
+
 .title {
   flex-shrink: 0;
   width: 100%;
@@ -108,10 +110,10 @@ const { currentSong } = useAudioPlayer();
     flex-wrap: nowrap;
     width: 100%;
     padding: 0.375rem 0.5rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--divider-color);
 
     &:last-child {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid var(--divider-color);
     }
 
     .prop-name {

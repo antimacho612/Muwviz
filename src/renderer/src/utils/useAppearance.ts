@@ -1,4 +1,5 @@
 import { watch } from 'vue';
+import { watchDebounced } from '@vueuse/core';
 import { useSettingsStore } from '@renderer/stores/settings';
 import { storeToRefs } from 'pinia';
 import { getNewShade, hexToRgb, rgbToHex } from './utils';
@@ -7,19 +8,33 @@ export const useAppearance = () => {
   const { fontFamily, theme, primaryColor } = storeToRefs(useSettingsStore());
   const el = document.documentElement;
 
-  watch(
+  watchDebounced(
     fontFamily,
     () => {
-      el.style.setProperty(
-        '--font-family',
-        fontFamily.value ??
-          'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif'
-      );
+      el.style.setProperty('--font-family', fontFamily.value ?? 'system-ui');
     },
-    { immediate: true }
+    {
+      immediate: true,
+      debounce: 500,
+      maxWait: 1000,
+    }
   );
 
   watch(
+    theme,
+    () => {
+      if (theme.value === 'Light') {
+        el.classList.remove('dark');
+      } else {
+        el.classList.add('dark');
+      }
+    },
+    {
+      immediate: true,
+    }
+  );
+
+  watchDebounced(
     primaryColor,
     () => {
       const { r, g, b } = hexToRgb(primaryColor.value);
@@ -42,20 +57,8 @@ export const useAppearance = () => {
     },
     {
       immediate: true,
-    }
-  );
-
-  watch(
-    theme,
-    () => {
-      if (theme.value === 'Light') {
-        el.classList.remove('dark');
-      } else {
-        el.classList.add('dark');
-      }
-    },
-    {
-      immediate: true,
+      debounce: 500,
+      maxWait: 1000,
     }
   );
 };

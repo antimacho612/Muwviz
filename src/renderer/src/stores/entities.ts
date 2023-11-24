@@ -26,25 +26,21 @@ export const useEntitiesStore = defineStore('entities', {
 
   actions: {
     async fetch() {
-      try {
-        console.debug('Fetching entities...');
+      console.debug('Fetching entities...');
 
-        const [songs, albums, artists] = await Promise.all([
-          window.electronAPI.invoke.getAllSongs(),
-          window.electronAPI.invoke.getAllAlbums(),
-          window.electronAPI.invoke.getAllArtists(),
-        ]);
+      const [songs, albums, artists] = await Promise.all([
+        window.electronAPI.invoke.getAllSongs(),
+        window.electronAPI.invoke.getAllAlbums(),
+        window.electronAPI.invoke.getAllArtists(),
+      ]);
 
-        this.songsMap = new Map(songs.map((song) => [song.id, song]));
-        this.albumsMap = new Map(albums.map((album) => [album.id, album]));
-        this.artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
+      this.songsMap = new Map(songs.map((song) => [song.id, song]));
+      this.albumsMap = new Map(albums.map((album) => [album.id, album]));
+      this.artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
 
-        console.debug(
-          `Fetched entities(${songs.length} songs, ${albums.length} albums, ${artists.length} artists)`
-        );
-      } catch (e) {
-        console.error(e);
-      }
+      console.debug(
+        `Fetched entities(${this.songsMap.size} songs, ${this.albumsMap.size} albums, ${this.artistsMap.size} artists)`
+      );
     },
 
     getAlbumById(albumId: string) {
