@@ -55,9 +55,11 @@ const current = computed(() => props.song.id === currentSong.value?.id);
     <div class="main-area">
       <div class="title-and-artist">
         <span class="title">{{ song.title }}</span>
-        <RouterLink :to="`/artists/${song.artistId}`" class="artist">
-          {{ toHyphenIfEmpty(song.artist) }}
-        </RouterLink>
+        <div class="artist">
+          <RouterLink :to="`/artists/${song.artistId}`">
+            {{ toHyphenIfEmpty(song.artist) }}
+          </RouterLink>
+        </div>
       </div>
 
       <BarsAnimation

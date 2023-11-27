@@ -3,11 +3,15 @@ import { DEFAULT_SETTINGS, Settings } from '@shared/types';
 
 export default class SettingsStore extends BaseJSONStore<Settings> {
   constructor(jsonPath: string) {
-    console.log('Initializing settings store...');
     super(jsonPath);
 
-    if (!this.data) {
+    if (!this.cachedData) {
       this.save(DEFAULT_SETTINGS);
     }
+  }
+
+  public update<K extends keyof Omit<Settings, 'scannedFolders'>>(key: K, value: Settings[K]) {
+    if (!this.cachedData) throw new Error();
+    this.cachedData[key] = value;
   }
 }

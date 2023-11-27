@@ -1,6 +1,15 @@
 import { ipcRenderer } from 'electron';
 import { GetApiType } from 'electron-typescript-ipc';
-import { Album, Artist, KeyValue, LyricsMap, Settings, Song } from '@shared/types';
+import {
+  Album,
+  Artist,
+  KeyValue,
+  Lyrics,
+  ScanProgress,
+  ScannedFolder,
+  Settings,
+  Song,
+} from '@shared/types';
 
 export type ElectronAPI = GetApiType<
   {
@@ -18,7 +27,7 @@ export type ElectronAPI = GetApiType<
      * ファイルブラウザを開く
      */
     openFileBrowser: (
-      file: boolean,
+      mode: 'File' | 'Folder',
       filters?: Electron.FileFilter[]
     ) => Promise<Electron.OpenDialogReturnValue>;
 
@@ -50,7 +59,22 @@ export type ElectronAPI = GetApiType<
     /**
      * 設定を更新する
      */
-    updateSettings: (items: KeyValue<Settings>[]) => Promise<void>;
+    updateSettings: (items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) => Promise<void>;
+
+    /**
+     * スキャン済みフォルダ情報を取得する
+     */
+    getScannedFolders: () => Promise<ScannedFolder[]>;
+
+    /**
+     * フォルダをスキャンし楽曲ライブラリを構築する
+     */
+    scanFolder: (folderPath: string, resortLibrary?: boolean) => Promise<void>;
+
+    /**
+     * スキャンIDに紐づく楽曲、その他関連情報をライブラリから削除する
+     */
+    deleteEntitiesByScanId: (scanId: string) => Promise<void>;
 
     /**
      * 全楽曲情報を取得する
@@ -70,13 +94,18 @@ export type ElectronAPI = GetApiType<
     /**
      * 全歌詞情報を取得する
      */
-    getAllLyrics: () => Promise<LyricsMap>;
+    getAllLyrics: () => Promise<Lyrics>;
   },
   {
     /**
      * ウィンドウのサイズ変更時
      */
-    windowResized: (isMaximized: boolean) => Promise<void>;
+    resizeWindow: (isMaximized: boolean) => Promise<void>;
+
+    /**
+     * スキャンの進捗状況送信時
+     */
+    updateScanProgress: (progress: ScanProgress) => Promise<void>;
   }
 >;
 
@@ -85,8 +114,8 @@ export const electronAPI: ElectronAPI = {
     getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
     getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
 
-    openFileBrowser: async (file: boolean, filters?: Electron.FileFilter[]) =>
-      await ipcRenderer.invoke('openFileDialog', file, filters),
+    openFileBrowser: async (mode: 'File' | 'Folder', filters?: Electron.FileFilter[]) =>
+      await ipcRenderer.invoke('openFileBrowser', mode, filters),
     openPath: async (path: string) => await ipcRenderer.invoke('openPath', path),
 
     minimizeWindow: async () => await ipcRenderer.invoke('minimizeWindow'),
@@ -94,18 +123,23 @@ export const electronAPI: ElectronAPI = {
     closeWindow: async () => await ipcRenderer.invoke('closeWindow'),
 
     getSettings: async () => await ipcRenderer.invoke('getSettings'),
-    updateSettings: async (items: KeyValue<Settings>[]) =>
+    updateSettings: async (items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) =>
       await ipcRenderer.invoke('updateSettings', items),
 
+    getScannedFolders: async () => await ipcRenderer.invoke('getScannedFolders'),
+    scanFolder: async (folderPath: string, resortLibrary?: boolean) =>
+      await ipcRenderer.invoke('scanFolder', folderPath, resortLibrary),
+    deleteEntitiesByScanId: async (scanId: string) =>
+      await ipcRenderer.invoke('deleteEntitiesByScanId', scanId),
+
     getAllSongs: async () => await ipcRenderer.invoke('getAllSongs'),
-
     getAllAlbums: async () => await ipcRenderer.invoke('getAllAlbums'),
-
     getAllArtists: async () => await ipcRenderer.invoke('getAllArtists'),
-
     getAllLyrics: async () => await ipcRenderer.invoke('getAllLyrics'),
   },
   on: {
-    windowResized: (listener) => ipcRenderer.on('windowResized', listener),
+    resizeWindow: (listener) => ipcRenderer.on('resizeWindow', listener),
+
+    updateScanProgress: (listener) => ipcRenderer.on('updateScanProgress', listener),
   },
 };

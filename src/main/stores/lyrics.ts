@@ -1,9 +1,20 @@
 import BaseJSONStore from './baseJsonStore';
-import { LyricsMap } from '@shared/types';
+import { Lyrics } from '@shared/types';
 
-export default class LyricsStore extends BaseJSONStore<LyricsMap> {
+export default class LyricsStore extends BaseJSONStore<Lyrics> {
   constructor(jsonPath: string) {
-    console.debug('Initializing lyrics store...');
     super(jsonPath);
+  }
+
+  public add(songId: string, lyrics: string) {
+    if (this.cachedData) {
+      this.cachedData[songId] = lyrics;
+    } else {
+      this.cachedData = { songId: lyrics };
+    }
+  }
+
+  public delete(songId: string) {
+    if (this.cachedData) delete this.cachedData[songId];
   }
 }

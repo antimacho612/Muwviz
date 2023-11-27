@@ -1,14 +1,25 @@
-import { app, BrowserWindow, protocol } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import * as path from 'path';
+import { BrowserWindow, app, protocol } from 'electron';
 import log from 'electron-log/main';
+import path from 'path';
+import { STORES_DIR } from './core/paths';
 import { registerIpcChannels } from './ipc';
-import { scanDirectory } from './core/directoryScanner';
-import { ParsedSong, parseSongFile } from './core/songFileParser';
-import { songsStore, albumsStore, artistsStore, lyricsStore } from './stores';
-import { buildLibrary } from './core/libraryBuilder';
+import AlbumsStore from './stores/albums';
+import ArtistsStore from './stores/artists';
+import LyricsStore from './stores/lyrics';
+import ScannedFoldersStore from './stores/scannedFolders';
+import SettingsStore from './stores/settings';
+import SongsStore from './stores/songs';
 import { deleteOldLog } from './utils';
-import window from './mainWindow';
+import { createWindow } from './window';
+
+export let mainWindow: BrowserWindow;
+export let songsStore: SongsStore;
+export let albumsStore: AlbumsStore;
+export let artistsStore: ArtistsStore;
+export let lyricsStore: LyricsStore;
+export let settingsStore: SettingsStore;
+export let scannedFoldersStore: ScannedFoldersStore;
 
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) {
@@ -25,30 +36,11 @@ if (process.defaultApp) {
 
 initializeLogger();
 
+initializeStore();
+
 registerProtocols();
 
 app.whenReady().then(async () => {
-  // test ---------------------------------------
-  console.debug('Scanning directory...');
-  const files = await scanDirectory('D:\\Music\\Perfume');
-
-  const parsedSongs: ParsedSong[] = [];
-  for (const file of files) {
-    const parsedSong = await parseSongFile(file);
-    if (parsedSong) {
-      parsedSongs.push(parsedSong);
-    }
-  }
-
-  console.debug('Building library...');
-  const { songs, albums, artists, lyricsMap } = await buildLibrary(parsedSongs);
-
-  await albumsStore.save(albums);
-  await artistsStore.save(artists);
-  await songsStore.save(songs);
-  await lyricsStore.save(lyricsMap);
-  // test ---------------------------------------
-
   electronApp.setAppUserModelId('com.electron');
 
   app.on('browser-window-created', (_, window) => {
@@ -66,11 +58,11 @@ app.whenReady().then(async () => {
 
   registerIpcChannels();
 
-  await window.create();
+  mainWindow = await createWindow();
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      await window.create();
+      mainWindow = await createWindow();
     }
   });
 });
@@ -112,6 +104,15 @@ function initializeLogger() {
   });
 
   deleteOldLog(log.variables.electronDefaultDir ?? app.getPath('logs'));
+}
+
+function initializeStore() {
+  songsStore = new SongsStore(path.join(STORES_DIR, 'songs.json'));
+  albumsStore = new AlbumsStore(path.join(STORES_DIR, 'albums.json'));
+  artistsStore = new ArtistsStore(path.join(STORES_DIR, 'artists.json'));
+  lyricsStore = new LyricsStore(path.join(STORES_DIR, 'lyrics.json'));
+  settingsStore = new SettingsStore(path.join(STORES_DIR, 'settings.json'));
+  scannedFoldersStore = new ScannedFoldersStore(path.join(STORES_DIR, 'scannedFolders.json'));
 }
 
 function registerProtocols() {

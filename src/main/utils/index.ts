@@ -5,7 +5,7 @@ import path from 'path';
 export const ensureDirectory = async (path: string) =>
   await fsAsync.mkdir(path, { recursive: true });
 
-export function deleteOldLog(dir: string, days = 3) {
+export const deleteOldLog = (dir: string, days = 3) => {
   const daysAgo = new Date();
   daysAgo.setDate(daysAgo.getDate() - days);
 
@@ -28,4 +28,4 @@ export function deleteOldLog(dir: string, days = 3) {
       }
     }
   });
-}
+};

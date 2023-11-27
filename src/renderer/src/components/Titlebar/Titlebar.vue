@@ -8,7 +8,7 @@ const onCloseButtonClicked = async () => await window.electronAPI.invoke.closeWi
 
 const isMaximized = ref(false);
 onMounted(() => {
-  window.electronAPI.on.windowResized(async (_, isWindowMaximized) => {
+  window.electronAPI.on.resizeWindow(async (_, isWindowMaximized) => {
     isMaximized.value = isWindowMaximized;
   });
 });

@@ -23,7 +23,7 @@ export type Song = {
   duration: number;
   artworkPath?: string;
   createdAt: Date;
-  parsedAt: Date;
+  scanId: string;
 };
 
 export type Album = {
@@ -43,7 +43,7 @@ export type Artist = {
   songCount: number;
 };
 
-export type LyricsMap = {
+export type Lyrics = {
   [songId: string]: string;
 };
 
@@ -56,21 +56,34 @@ export type SortOption<T> = {
 
 export type SongsSortKey = 'Artist' | 'Album' | 'Title' | 'PlayCount';
 
+export type ScannedFolder = {
+  id: string;
+  path: string;
+  scannedSongsCount: number;
+  scannedAt: Date;
+};
+
 export type Theme = 'Light' | 'Dark';
 
 export type Settings = {
-  // library
-  songDirectories: string[];
-
-  // appearance
   fontFamily: string;
   theme: Theme;
   primaryColor: string;
+  showDesktopNotification: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
-  songDirectories: new Array<string>(),
   fontFamily: 'system-ui',
   primaryColor: '#7c3aed',
   theme: 'Light',
+  showDesktopNotification: true,
+};
+
+export type ScanProgress = {
+  path: string;
+  totalFilesCount: number;
+  currentIndex: number;
+  scannedFilesCount: number;
+  skippedFilesCount: number;
+  done: boolean;
 };

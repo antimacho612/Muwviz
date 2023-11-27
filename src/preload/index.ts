@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron';
+import { contextBridge } from 'electron-typescript-ipc';
 import { electronAPI } from './ipc';
 
 // Use `contextBridge` APIs to expose Electron APIs to

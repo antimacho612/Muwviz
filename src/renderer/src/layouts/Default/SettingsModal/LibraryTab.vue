@@ -54,7 +54,7 @@ const openArtworkDir = async () => {
 <style lang="scss" scoped>
 .path-table {
   width: 100%;
-  border-collapse: collapse;
+  border-spacing: 0;
 
   th,
   td {
@@ -64,10 +64,6 @@ const openArtworkDir = async () => {
   th {
     color: var(--secondary-text-color);
     border-bottom: 2px solid var(--divider-color);
-  }
-
-  td {
-    font-weight: 500;
   }
 }
 

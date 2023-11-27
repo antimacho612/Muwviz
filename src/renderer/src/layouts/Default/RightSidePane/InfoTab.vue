@@ -69,7 +69,7 @@ const { currentSong } = useAudioPlayer();
         <div class="row">
           <div class="prop-name">作成日</div>
           <div class="prop-value">
-            {{ currentSong.createdAt.toLocaleDateString('ja') }}
+            {{ new Date(currentSong.createdAt).toLocaleDateString('ja') }}
           </div>
         </div>
       </div>

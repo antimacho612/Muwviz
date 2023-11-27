@@ -4,11 +4,11 @@ import fsAsync from 'fs/promises';
 import path from 'path';
 import { ensureDirectory } from '@main/utils';
 
-export default abstract class BaseJSONStore<T extends Record<string, any>> {
+export default abstract class BaseJSONStore<T> {
   protected readonly jsonDirectory: string;
   protected readonly jsonPath: string;
-  protected storedData?: T;
-  private caching = true;
+  private _cachedData?: T;
+  private _caching = true;
 
   constructor(jsonPath: string, initialize = true) {
     this.jsonDirectory = path.dirname(jsonPath);
@@ -18,19 +18,28 @@ export default abstract class BaseJSONStore<T extends Record<string, any>> {
     }
   }
 
-  public get data(): T | undefined {
-    if (!this.caching) {
+  protected get cachedData() {
+    if (!this._caching) {
       this.readJson();
     }
-    return this.storedData;
+    return this._cachedData;
+  }
+
+  protected set cachedData(data: T | undefined) {
+    this._caching = true;
+    this._cachedData = data;
+  }
+
+  public getData(): T | undefined {
+    return structuredClone(this.cachedData);
   }
 
   private readJson() {
-    this.caching = true;
+    this._caching = true;
 
     try {
       const text = fs.readFileSync(this.jsonPath, { encoding: 'utf-8' });
-      this.storedData = JSON.parse(text);
+      this._cachedData = JSON.parse(text);
     } catch (e) {
       if ((e as any)?.code !== 'ENOENT') {
         throw e;
@@ -39,30 +48,18 @@ export default abstract class BaseJSONStore<T extends Record<string, any>> {
   }
 
   public clearCache() {
-    this.storedData = undefined;
-    this.caching = false;
+    this._cachedData = undefined;
+    this._caching = false;
   }
 
-  public update<K extends keyof T>(key: K, value: T[K]) {
-    if (!this.caching) {
-      this.readJson();
-    }
-
-    if (!this.storedData) {
-      throw new Error();
-    }
-
-    this.storedData[key] = value;
-  }
-
-  public async save(newData = this.storedData) {
+  public async save(newData = this._cachedData) {
     await ensureDirectory(this.jsonDirectory);
 
     const json = JSON.stringify(newData);
     await fsAsync.writeFile(this.jsonPath, json, { encoding: 'utf-8', mode: 0o666 });
 
-    if (this.caching) {
-      this.storedData = newData;
+    if (this._caching) {
+      this._cachedData = newData;
     }
   }
 }

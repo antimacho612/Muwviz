@@ -52,5 +52,5 @@ $vt-text-color-error: #ff5252;
 }
 
 .#{$vt-namespace}__close-button {
-  color: #000;
+  color: var(--primary-text-color);
 }
