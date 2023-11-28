@@ -7,6 +7,10 @@ export default class SongsStore extends BaseJSONStore<Song[]> {
     super(jsonPath);
   }
 
+  public getAll() {
+    return this.cachedData ?? [];
+  }
+
   public add(song: Song) {
     if (this.cachedData) {
       this.cachedData.push(song);

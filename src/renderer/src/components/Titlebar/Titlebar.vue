@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useWindowStore } from '@renderer/stores/window';
+
 import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
 const onMinimizeButtonClick = async () => await window.electronAPI.invoke.minimizeWindow();
 const onMaximizeButtonClicked = async () => await window.electronAPI.invoke.maximizeWindow();
 const onCloseButtonClicked = async () => await window.electronAPI.invoke.closeWindow();
 
-const isMaximized = ref(false);
-onMounted(() => {
-  window.electronAPI.on.resizeWindow(async (_, isWindowMaximized) => {
-    isMaximized.value = isWindowMaximized;
-  });
-});
+const { isWindowMaximized } = storeToRefs(useWindowStore());
 </script>
 
 <template>
@@ -45,7 +42,7 @@ onMounted(() => {
         <MinusIcon class="icon" />
       </div>
       <div class="button" @click="onMaximizeButtonClicked">
-        <Square2StackIcon v-if="isMaximized" class="icon icon-unmiximize" style="" />
+        <Square2StackIcon v-if="isWindowMaximized" class="icon icon-unmiximize" style="" />
         <StopIcon v-else class="icon" style="" />
       </div>
       <div class="button button-close" @click="onCloseButtonClicked">

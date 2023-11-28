@@ -66,17 +66,21 @@ export type ScannedFolder = {
 export type Theme = 'Light' | 'Dark';
 
 export type Settings = {
+  isFirstLaunch: boolean;
   fontFamily: string;
   theme: Theme;
   primaryColor: string;
   showDesktopNotification: boolean;
+  windowSize: { width: number; height: number };
 };
 
 export const DEFAULT_SETTINGS: Settings = {
+  isFirstLaunch: true,
   fontFamily: 'system-ui',
   primaryColor: '#7c3aed',
   theme: 'Light',
   showDesktopNotification: true,
+  windowSize: { width: 960, height: 640 },
 };
 
 export type ScanProgress = {

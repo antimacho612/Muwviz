@@ -28,7 +28,6 @@ const isIconOnly = computed(() => props.icon && !props.label && !slots.default);
     type="button"
     class="c-btn"
     :class="{
-      'c-disalbed': disabled,
       'c-btn-xs': size === 'xs',
       'c-btn-sm': size === 'sm',
       'c-btn-lg': size === 'lg',
@@ -77,7 +76,8 @@ const isIconOnly = computed(() => props.icon && !props.label && !slots.default);
     color: var(--disabled-text-color);
     background: var(--disabled-bg-color);
     box-shadow: none;
-    cursor: default;
+    pointer-events: none;
+    user-select: none;
   }
 
   &:enabled:hover {

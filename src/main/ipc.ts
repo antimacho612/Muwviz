@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@preload/ipc';
-import { KeyValue, Settings } from '@shared/types';
+import { KeyValue, ScanProgress, Settings } from '@shared/types';
 import { app, dialog, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
 import {
@@ -55,10 +55,11 @@ export const registerIpcChannels = () => {
   );
 
   // スキャン済みフォルダ情報を取得する
-  ipcMain.handle('getScannedFolders', async () => await scannedFoldersStore.getData());
+  ipcMain.handle('getScannedFolders', async () => scannedFoldersStore.getData());
   // フォルダをスキャンし楽曲ライブラリを構築する
-  ipcMain.handle('scanFolder', async (_, folderPath, resortLibrary) =>
-    scanFolder(folderPath, resortLibrary)
+  ipcMain.handle(
+    'scanFolder',
+    async (_, folderPath, resortLibrary) => await scanFolder(folderPath, resortLibrary)
   );
   // スキャンIDに紐づく楽曲、その他関連情報をライブラリから削除する
   ipcMain.handle(
@@ -83,4 +84,22 @@ export const registerIpcChannels = () => {
   });
 };
 
-export const sendToRenderer = ipcMain.send;
+/**
+ * ウィンドウが最大化されているかどうかをメインウィンドウに通知する
+ * @param isMaximized ウィンドウが最大化されているかどうか
+ */
+export const sendWindowMaximizedToMain = (isMaximized: boolean) =>
+  ipcMain.send(mainWindow, 'resizeWindow', isMaximized);
+
+/**
+ * スキャンの進捗状況をメインウィンドウに通知する
+ * @param progress 進捗状況
+ */
+export const sendScanProgressToMain = (progress: ScanProgress) =>
+  ipcMain.send(mainWindow, 'updateScanProgress', progress);
+
+/**
+ * スキャン済みフォルダ情報をメインウィンドウに通知する
+ */
+export const sendScannedFoldersToMain = () =>
+  ipcMain.send(mainWindow, 'updateScannedFolders', scannedFoldersStore.getAll());

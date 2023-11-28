@@ -7,6 +7,10 @@ export default class ArtistsStore extends BaseJSONStore<Artist[]> {
     super(jsonPath);
   }
 
+  public getAll() {
+    return this.cachedData ?? [];
+  }
+
   public findById(artistId: string) {
     return this.cachedData?.find((artist) => artist.id === artistId);
   }

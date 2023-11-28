@@ -1,9 +1,2 @@
 @use './contextMenu';
 @use './toast';
-
-.c-disabled,
-.c-disabled * {
-  cursor: default !important;
-  pointer-events: none;
-  user-select: none;
-}

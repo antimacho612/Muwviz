@@ -7,6 +7,10 @@ export default class AlbumsStore extends BaseJSONStore<Album[]> {
     super(jsonPath);
   }
 
+  public getAll() {
+    return this.cachedData ?? [];
+  }
+
   public findById(albumId: string) {
     return this.cachedData?.find((album) => album.id === albumId);
   }

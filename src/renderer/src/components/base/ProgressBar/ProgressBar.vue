@@ -37,7 +37,7 @@ withDefaults(defineProps<{ value: number }>(), {
   background: linear-gradient(to right, var(--primary-color), var(--primary-color--lighter));
   border-radius: $borderRadiusFull;
   overflow: hidden;
-  transition: width $transitionDuration ease-in-out;
+  transition: width 0.1s ease-in-out;
 
   &::before {
     content: '';

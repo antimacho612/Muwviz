@@ -6,45 +6,44 @@ import { openLibraryEditModalKey } from '@renderer/utils/injectionKeys';
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
+import { storeToRefs } from 'pinia';
 
-const settings = useSettingsStore();
+const { scannedFolders, artworkPath } = storeToRefs(useSettingsStore());
 
 const openSettingsModal = inject(openLibraryEditModalKey);
-
-const openArtworkDir = async () => {
-  await window.electronAPI.invoke.openPath(settings.artworkPath);
-};
+const openArtworkDir = async () => await window.electronAPI.invoke.openPath(artworkPath.value);
 </script>
 
 <template>
   <BaseSettingsTabPanel>
-    <BaseSettingsItem title="曲のフォルダ">
-      <table class="path-table">
-        <thead>
-          <tr>
-            <th style="text-align: left">パス</th>
-            <th style="width: 10rem">曲数</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>D:\hogehogenroibnaepoinairgnpeaoirbreoain</td>
-            <td style="text-align: right">1,128</td>
-          </tr>
-        </tbody>
-      </table>
-      <Button
-        size="sm"
-        style="display: flex; margin: 1.5rem auto 0; width: 50%"
-        @click="openSettingsModal"
-      >
-        変更...
+    <BaseSettingsItem title="スキャン済みフォルダ">
+      <div class="max-h-15rem overflow-auto">
+        <table class="scanned-folders-table">
+          <thead>
+            <tr>
+              <th class="text-left">パス</th>
+              <th class="w-10rem">曲数</th>
+              <th class="w-12rem text-center">スキャン日</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="folder in scannedFolders" :key="folder.id">
+              <td>{{ folder.path }}</td>
+              <td class="text-right">{{ folder.scannedSongsCount.toLocaleString() }}</td>
+              <td class="text-center">{{ new Date(folder.scannedAt).toLocaleString('ja') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Button size="sm" class="add-folder-button" @click="openSettingsModal">
+        フォルダを追加...
       </Button>
     </BaseSettingsItem>
 
     <BaseSettingsItem title="アートワークの保存場所">
       <div class="flex align-items-center justify-content-between column-gap-1">
-        <span class="artwork-dir">{{ settings.artworkPath }}</span>
+        <span class="artwork-dir">{{ artworkPath }}</span>
         <Button size="sm" class="flex-shrink-0" @click="openArtworkDir">フォルダを開く</Button>
       </div>
     </BaseSettingsItem>
@@ -52,19 +51,30 @@ const openArtworkDir = async () => {
 </template>
 
 <style lang="scss" scoped>
-.path-table {
+.scanned-folders-table {
   width: 100%;
+  max-height: 20rem;
   border-spacing: 0;
 
-  th,
-  td {
-    padding: 0.5rem 1rem;
-  }
-
   th {
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
     color: var(--secondary-text-color);
+    background: var(--background-color);
     border-bottom: 2px solid var(--divider-color);
   }
+
+  td {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+.add-folder-button {
+  display: flex;
+  width: 50%;
+  margin: 2rem auto 0;
 }
 
 .artwork-dir {

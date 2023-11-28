@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { inject } from 'vue';
-import { expandSidebarKey } from '@renderer/utils/injectionKeys';
+import { useWindowStore } from '@renderer/stores/window';
 
 import { XMarkIcon } from '@heroicons/vue/24/solid';
 import Button from '@renderer/components/base/Button/Button.vue';
 
-const expandSidebar = inject(expandSidebarKey);
+const { collapseLeftSidePane } = useWindowStore();
 </script>
 
 <template>
@@ -24,7 +23,7 @@ const expandSidebar = inject(expandSidebarKey);
       :icon="XMarkIcon"
       text
       class="flex-grow-0 flex-shrink-0"
-      @click="expandSidebar?.()"
+      @click="collapseLeftSidePane"
     />
   </div>
 </template>

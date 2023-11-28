@@ -6,6 +6,10 @@ export default class LyricsStore extends BaseJSONStore<Lyrics> {
     super(jsonPath);
   }
 
+  public getAll() {
+    return this.cachedData ?? [];
+  }
+
   public add(songId: string, lyrics: string) {
     if (this.cachedData) {
       this.cachedData[songId] = lyrics;

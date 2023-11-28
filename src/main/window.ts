@@ -1,28 +1,33 @@
 import { is } from '@electron-toolkit/utils';
-import { BrowserWindow, shell } from 'electron';
+import { BrowserWindow, Event, shell } from 'electron';
 import path from 'path';
 import { settingsStore } from '.';
 import icon from '../../resources/icon.png?asset';
-import { sendToRenderer } from './ipc';
+import { sendWindowMaximizedToMain } from './ipc';
+import { DEFAULT_SETTINGS } from '@shared/types';
+
+const onCloseWindow = async (_event: Event, window: BrowserWindow) => {
+  const [width, height] = window.getSize();
+  settingsStore.setWindowSize({ width, height });
+  await settingsStore.save();
+};
 
 const registerWindowEvents = (window: BrowserWindow) => {
   window.on('ready-to-show', () => {
     window.show();
   });
 
-  window.on('close', async () => {
-    console.log('Saving settings...');
-    await settingsStore.save();
+  window.on('close', async (e: Event) => {
+    await onCloseWindow(e, window);
   });
 
-  window.on('session-end', async () => {
-    console.log('Saving settings...');
-    await settingsStore.save();
+  window.on('session-end', async (e: Event) => {
+    await onCloseWindow(e, window);
   });
 
   window.on('resize', () => {
     // ウィンドウリサイズ時: リサイズ後のウィンドウが最大化された状態かどうかを通知する
-    sendToRenderer(window, 'resizeWindow', window.isMaximized());
+    sendWindowMaximizedToMain(window.isMaximized());
   });
 
   window.webContents.session.webRequest.onHeadersReceived(
@@ -51,14 +56,14 @@ const createTray = async () => {
 
 export const createWindow = async () => {
   const hasFrame = process.platform === 'linux' || process.platform === 'darwin';
+  const windowSize = settingsStore.getData()?.windowSize ?? DEFAULT_SETTINGS.windowSize;
 
   const window = new BrowserWindow({
     title: 'Muwviz',
     titleBarStyle: hasFrame ? 'default' : 'hidden',
     frame: hasFrame,
-    width: 900,
+    ...windowSize,
     minWidth: 900,
-    height: 670,
     minHeight: 612,
     show: false,
     autoHideMenuBar: true,

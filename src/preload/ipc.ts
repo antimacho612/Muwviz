@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+import { FileFilter, OpenDialogReturnValue, ipcRenderer } from 'electron';
 import { GetApiType } from 'electron-typescript-ipc';
 import {
   Album,
@@ -25,11 +25,13 @@ export type ElectronAPI = GetApiType<
 
     /**
      * ファイルブラウザを開く
+     * @param mode モード（ファイル選択 or フォルダ選択）
+     * @param filters ファイルフィルタ（ファイル選択モード時のみ有効）
      */
     openFileBrowser: (
       mode: 'File' | 'Folder',
-      filters?: Electron.FileFilter[]
-    ) => Promise<Electron.OpenDialogReturnValue>;
+      filters?: FileFilter[]
+    ) => Promise<OpenDialogReturnValue>;
 
     /**
      * 指定されたパスをデフォルトのアプリケーションで開く
@@ -68,6 +70,8 @@ export type ElectronAPI = GetApiType<
 
     /**
      * フォルダをスキャンし楽曲ライブラリを構築する
+     * @param folderPath スキャン対象のフォルダパス
+     * @param resortLibrary スキャン後にライブラリ（楽曲、アルバム、アーティスト）をソートしなおすかどうか
      */
     scanFolder: (folderPath: string, resortLibrary?: boolean) => Promise<void>;
 
@@ -106,6 +110,11 @@ export type ElectronAPI = GetApiType<
      * スキャンの進捗状況送信時
      */
     updateScanProgress: (progress: ScanProgress) => Promise<void>;
+
+    /**
+     * スキャン済みフォルダの情報変更時
+     */
+    updateScannedFolders: (scannedFolders: ScannedFolder[]) => Promise<void>;
   }
 >;
 
@@ -139,7 +148,7 @@ export const electronAPI: ElectronAPI = {
   },
   on: {
     resizeWindow: (listener) => ipcRenderer.on('resizeWindow', listener),
-
     updateScanProgress: (listener) => ipcRenderer.on('updateScanProgress', listener),
+    updateScannedFolders: (listener) => ipcRenderer.on('updateScannedFolders', listener),
   },
 };

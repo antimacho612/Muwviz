@@ -1,118 +1,95 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
-import { useSettingsStore } from '@renderer/stores/settings';
-import { ScanProgress } from '@shared/types';
 
-import { FolderPlusIcon, ArrowPathRoundedSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { FolderPlusIcon, MagnifyingGlassCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Modal from '@renderer/components/base/Modal/Modal.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import ProgressBar from '@renderer/components/base/ProgressBar/ProgressBar.vue';
 
+type ScanStatus = {
+  path: string;
+  status: string;
+  isScanning: boolean;
+};
+
 const props = defineProps<{ isOpen: boolean }>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
-
-const toast = useToast();
 
 const opened = computed({
   get: () => props.isOpen,
   set: (value: boolean) => emits('update:isOpen', value),
 });
 
-const foldersToScan = ref<{ path: string; scannedCount: number; status: string }[]>([]);
-const currentProcessing = ref<{ path: string; scannedCount: number; status: string }>();
-const progressBarValue = ref(0);
+const toast = useToast();
 
-const isProcessing = ref(false);
+const foldersToScan = ref<ScanStatus[]>([]);
+const status = ref<'WAITING' | 'SCANNING' | 'DONE'>('WAITING');
 
-const onClickReScanButton = async () => {
-  await window.electronAPI.invoke.scanFolder('D:\\Music\\Ado');
-};
-
-const alreadyScanned = (path: string) =>
-  foldersToScan.value.findIndex(
+const alreadyAdded = (path: string) =>
+  foldersToScan.value.some(
     (folder) => folder.path.toLocaleLowerCase() === path.toLocaleLowerCase()
-  ) >= 0;
-
-const execScan = async (path: string) => {
-  currentProcessing.value = {
-    path,
-    scannedCount: 0,
-    status: '',
-  };
-  foldersToScan.value.push(currentProcessing.value);
-
-  try {
-    await window.electronAPI.invoke.scanFolder(path);
-  } catch (e) {
-    console.error(e);
-    currentProcessing.value.status = 'エラーが発生しました。';
-    toast.error(`『${path}』のスキャンに失敗しました。`);
-  }
-  currentProcessing.value = undefined;
-};
+  );
 
 const onClickAddFolderButton = async () => {
   const result = await window.electronAPI.invoke.openFileBrowser('Folder');
-  if (result.canceled) {
-    return;
-  }
+  if (result.canceled) return;
 
-  isProcessing.value = true;
   for (const path of result.filePaths) {
-    if (alreadyScanned(path)) {
-      toast.warning(`『${path}』は既にスキャン対象のフォルダに登録されています。`, {
+    if (alreadyAdded(path)) {
+      toast.warning(`『${path}』は既にスキャン対象のフォルダに追加されています。`, {
         timeout: 3000,
       });
       continue;
     }
 
-    await execScan(path);
-  }
-
-  isProcessing.value = false;
-};
-
-const onClickDeleteButton = async () => {
-  if (confirm('ライブラリからスキャン済みの楽曲を削除します。よろしいですか？')) {
-    // TODO: delete
+    foldersToScan.value.push({ path, status: 'スキャン待ち', isScanning: false });
   }
 };
 
-const updateScanProgress = async (progress: ScanProgress) => {
-  if (currentProcessing.value?.path !== progress.path) {
-    return;
+const onClickDeleteButton = (index: number) => {
+  foldersToScan.value.splice(index, 1);
+};
+
+const onClickScanButton = async () => {
+  status.value = 'SCANNING';
+
+  for (const folder of foldersToScan.value) {
+    folder.isScanning = true;
+    try {
+      await window.electronAPI.invoke.scanFolder(folder.path);
+    } catch (e) {
+      console.error(e);
+      folder.status = 'エラーが発生しました。';
+      toast.error(`『${folder.path}』のスキャンに失敗しました。`);
+    } finally {
+      folder.isScanning = false;
+    }
   }
 
-  currentProcessing.value.scannedCount = progress.scannedFilesCount;
-  if (progress.done) {
-    currentProcessing.value.status = `スキャン終了(スキャン: ${progress.scannedFilesCount}曲, スキップ: ${progress.skippedFilesCount}曲)`;
-    currentProcessing.value = undefined;
+  status.value = 'DONE';
+};
+
+const progressBarValue = ref(0);
+window.electronAPI.on.updateScanProgress(async (_, progress) => {
+  const target = foldersToScan.value.find((folder) => folder.path === progress.path);
+  if (!target) return;
+
+  const { done, scannedFilesCount, currentIndex, skippedFilesCount, totalFilesCount } = progress;
+  if (done) {
+    target.status = `スキャン終了\n(スキャン: ${scannedFilesCount}曲, スキップ: ${skippedFilesCount}曲)`;
   } else {
-    currentProcessing.value.status = `スキャン中...(${progress.currentIndex}/${progress.totalFilesCount})`;
-    progressBarValue.value = Math.floor((progress.currentIndex / progress.totalFilesCount) * 100);
+    target.status = `スキャン中...(${currentIndex}/${totalFilesCount})`;
+    progressBarValue.value = Math.floor((currentIndex / totalFilesCount) * 100);
   }
-};
-
-onMounted(() => {
-  window.electronAPI.on.updateScanProgress(
-    async (_, progress) => await updateScanProgress(progress)
-  );
 });
 
 watch(
   () => props.isOpen,
   () => {
-    if (!props.isOpen) {
-      return;
-    }
-    const { scannedFolders } = useSettingsStore();
-
-    foldersToScan.value = scannedFolders.map((folder) => ({
-      path: folder.path,
-      scannedCount: folder.scannedSongsCount,
-      status: '',
-    }));
+    if (!props.isOpen) return;
+    foldersToScan.value = [];
+    status.value = 'WAITING';
   },
   { immediate: true }
 );
@@ -128,9 +105,9 @@ watch(
     <div class="library-edit-modal">
       <div class="header">
         <div class="title">スキャン対象のフォルダ</div>
-        <Button size="sm" text :disabled="isProcessing" @click="onClickReScanButton">
-          <ArrowPathRoundedSquareIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
-          再スキャン
+        <Button v-if="status === 'WAITING'" size="sm" text @click="onClickAddFolderButton">
+          <FolderPlusIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
+          フォルダを追加...
         </Button>
       </div>
 
@@ -139,31 +116,25 @@ watch(
           <thead>
             <tr>
               <th style="width: 3.5rem"></th>
-              <th style="text-align: left">パス</th>
-              <th style="width: 6.5rem">スキャン済</th>
+              <th class="text-left">パス</th>
               <th style="width: 18rem">ステータス</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="folder in foldersToScan" :key="folder.path">
-              <td>
-                <div
-                  v-if="folder.path === currentProcessing?.path"
-                  class="scanning-animation"
-                ></div>
+            <tr v-for="(folder, index) in foldersToScan" :key="folder.path">
+              <td class="text-center">
                 <Button
-                  v-else
+                  v-if="status === 'WAITING'"
                   :icon="TrashIcon"
                   size="sm"
                   text
-                  :disabled="isProcessing"
                   class="delete-button"
-                  @click="onClickDeleteButton"
+                  @click="onClickDeleteButton(index)"
                 />
+                <div v-else-if="folder.isScanning" class="scanning-animation"></div>
               </td>
               <td>{{ folder.path }}</td>
-              <td style="text-align: right">{{ folder.scannedCount.toLocaleString() }} 曲</td>
-              <td>{{ folder.status }}</td>
+              <td style="white-space: pre-line">{{ folder.status }}</td>
             </tr>
           </tbody>
         </table>
@@ -171,13 +142,24 @@ watch(
 
       <div class="footer">
         <div class="progress-bar-container">
-          <ProgressBar v-if="currentProcessing" :value="progressBarValue" />
+          <ProgressBar v-if="status === 'SCANNING'" :value="progressBarValue" />
         </div>
-        <Button size="sm" :disabled="isProcessing" @click="onClickAddFolderButton">
-          <FolderPlusIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
-          フォルダを追加...
+
+        <Button
+          v-if="status === 'WAITING'"
+          size="sm"
+          :disabled="!foldersToScan.length"
+          @click="onClickScanButton"
+        >
+          <MagnifyingGlassCircleIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
+          スキャン
         </Button>
-        <Button size="sm" text :disabled="isProcessing" @click="emits('update:isOpen', false)">
+        <Button
+          size="sm"
+          text
+          :disabled="status === 'SCANNING'"
+          @click="emits('update:isOpen', false)"
+        >
           閉じる
         </Button>
       </div>
@@ -266,9 +248,13 @@ watch(
 .delete-button {
   --ripple-color: rgba(255, 0, 0, 0.3);
 
-  &:hover {
+  &:enabled:hover {
     color: red !important;
     background: rgba(255, 0, 0, 0.1) !important;
+  }
+
+  &:enabled:active {
+    color: red !important;
   }
 }
 

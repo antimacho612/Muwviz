@@ -236,7 +236,7 @@ onBeforeUnmount(() => {
     :class="{
       'c-slider-horizontal': !vertical,
       'c-slider-vertical': vertical,
-      'c-disabled': disabled,
+      'c-slider-disabled': disabled,
       dragging: dragging,
     }"
     @mousedown="onMouseDown"
@@ -377,7 +377,11 @@ onBeforeUnmount(() => {
   }
 }
 
-.c-slider.c-disabled {
+.c-slider.c-slider-disabled {
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+
   .c-slider-fill {
     background: var(--disabled-text-color);
   }

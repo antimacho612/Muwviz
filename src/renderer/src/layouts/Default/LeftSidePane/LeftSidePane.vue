@@ -1,18 +1,26 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
-import { expandSidebarKey, showSongDetailModalKey } from '@renderer/utils/injectionKeys';
+import { storeToRefs } from 'pinia';
+import { useWindowStore } from '@renderer/stores/window';
+import { showSongDetailModalKey } from '@renderer/utils/injectionKeys';
 import { Song } from '@shared/types';
 
 import { ChevronLeftIcon } from '@heroicons/vue/24/outline';
+import Button from '@renderer/components/base/Button/Button.vue';
 import Links from './Links.vue';
 import SongDetailModal from './SongDetailModal.vue';
-import Button from '@renderer/components/base/Button/Button.vue';
 
-const isCollapsed = ref(false);
+const windowStore = useWindowStore();
+const { isLeftSidePaneCollapsed } = storeToRefs(windowStore);
 
-const onClickSidebarToggle = () => (isCollapsed.value = !isCollapsed.value);
-const onClickLink = () => (isCollapsed.value = false);
+const onClickSidebarToggle = () => windowStore.toggleLeftSidePaneCollapsed();
+const onClickLink = () => windowStore.expandLeftSidePane();
+
+onBeforeRouteUpdate((_to, _from, next) => {
+  windowStore.expandLeftSidePane();
+  next();
+});
 
 const isModalOpen = ref(false);
 const modalSong = ref<Song | undefined>();
@@ -21,18 +29,11 @@ const showSongDetailModal = (song: Song) => {
   modalSong.value = song;
   isModalOpen.value = true;
 };
-
-onBeforeRouteUpdate((_to, _from, next) => {
-  isCollapsed.value = false;
-  next();
-});
-
 provide(showSongDetailModalKey, showSongDetailModal);
-provide(expandSidebarKey, () => (isCollapsed.value = true));
 </script>
 
 <template>
-  <aside class="left-side-pane" :class="{ 'is-collapsed': isCollapsed }">
+  <aside class="left-side-pane" :class="{ 'is-collapsed': isLeftSidePaneCollapsed }">
     <div class="sidenav" :inert="isModalOpen">
       <div class="links-container">
         <Links @click="onClickLink" />
