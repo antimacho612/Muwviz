@@ -2,6 +2,7 @@
 interface Props {
   size?: 'xs' | 'sm' | 'md' | 'lg';
 }
+
 withDefaults(defineProps<Props>(), {
   size: 'md',
 });

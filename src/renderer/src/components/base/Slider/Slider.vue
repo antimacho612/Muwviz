@@ -13,6 +13,10 @@ interface Props {
   lazy?: boolean;
 }
 
+type Emits = {
+  'update:modelValue': [value: number];
+};
+
 const props = withDefaults(defineProps<Props>(), {
   modelValue: 0,
   disabled: false,
@@ -25,9 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   lazy: true,
 });
 
-const emits = defineEmits<{
-  'update:modelValue': [value: number];
-}>();
+const emits = defineEmits<Emits>();
 
 const sliderElement = ref<HTMLDivElement>();
 const dotElement = ref<HTMLSpanElement>();
@@ -35,18 +37,12 @@ const dragging = ref<boolean>(false);
 const current = ref<number>(props.modelValue);
 
 const modelValue = computed({
-  get: () => {
-    return dragging.value ? current.value : props.modelValue;
-  },
-  set: (value: number) => {
-    emits('update:modelValue', value);
-  },
+  get: () => (dragging.value ? current.value : props.modelValue),
+  set: (value: number) => emits('update:modelValue', value),
 });
 
 const getBarRect = () => {
-  if (!sliderElement.value) {
-    throw new Error();
-  }
+  if (!sliderElement.value) throw new Error();
 
   const { left, top } = sliderElement.value.getBoundingClientRect();
   const doc = document.documentElement;
@@ -63,9 +59,7 @@ const getBarRect = () => {
 
 const updateCurrentValue = (newValue: number, emit = true) => {
   current.value = Math.min(Math.max(newValue, props.min), props.max);
-  if (emit) {
-    modelValue.value = current.value;
-  }
+  if (emit) modelValue.value = current.value;
 };
 
 const getSliderValue = (event: MouseEvent): number => {
@@ -107,9 +101,7 @@ const unbindDragListeners = () => {
 };
 
 const onMouseDown = (event: MouseEvent) => {
-  if (props.disabled) {
-    return;
-  }
+  if (props.disabled) return;
 
   dragging.value = true;
 

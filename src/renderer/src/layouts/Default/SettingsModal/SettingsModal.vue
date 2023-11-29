@@ -7,6 +7,7 @@ import {
   SparklesIcon,
   BuildingLibraryIcon,
   ChevronRightIcon,
+  ComputerDesktopIcon,
 } from '@heroicons/vue/24/solid';
 
 import Modal from '@renderer/components/base/Modal/Modal.vue';
@@ -14,6 +15,7 @@ import TabMenu from '@renderer/components/TabMenu/TabMenu.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 import LibraryTab from './LibraryTab.vue';
 import AppearanceTab from './AppearanceTab.vue';
+import SystemTab from './SystemTab.vue';
 
 const props = defineProps<{ isOpen: boolean }>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
@@ -33,6 +35,11 @@ const TABS = [
     title: 'Appearance',
     icon: SparklesIcon,
     component: AppearanceTab,
+  },
+  {
+    title: 'System',
+    icon: ComputerDesktopIcon,
+    component: SystemTab,
   },
 ] as const;
 const activeMenuIndex = ref(0);

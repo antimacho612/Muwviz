@@ -7,12 +7,16 @@ import Visualizer from './Visualizer.vue';
 import Button from '@renderer/components/base/Button/Button.vue';
 
 const openSettingsModal = inject(openSettingsModalKey);
+
+const onOn = async () => await window.electronAPI.invoke.openVisualizerConfigWindow();
 </script>
 
 <template>
   <div class="center-pane">
     <div class="head">
-      HEAD
+      <div>
+        <button type="button" @click="onOn">aaa</button>
+      </div>
       <Button text :icon="Cog6ToothIcon" title="設定" @click="openSettingsModal?.()" />
     </div>
     <div class="visualizer-container">

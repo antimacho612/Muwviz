@@ -10,16 +10,19 @@ interface Props {
   disabled?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  disabled: false,
-});
-const emits = defineEmits<{
+type Emits = {
   'update:modelValue': [modelValue: unknown];
   click: [e: MouseEvent];
   change: [e: Event];
   focus: [e: FocusEvent];
   blur: [e: FocusEvent];
-}>();
+};
+
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+});
+
+const emits = defineEmits<Emits>();
 
 const inputEl = ref<HTMLInputElement>();
 

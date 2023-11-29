@@ -1,19 +1,25 @@
 import { ElectronAPI } from '@preload/ipc';
 import { KeyValue, ScanProgress, Settings } from '@shared/types';
-import { app, dialog, shell } from 'electron';
+import { app, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
 import {
   albumsStore,
   artistsStore,
   lyricsStore,
-  mainWindow,
   scannedFoldersStore,
   settingsStore,
   songsStore,
 } from '.';
 import { ARTWORK_DIR } from './core/paths';
 import { scanFolder } from './core/scanner';
-import { closeWindow, maximizeWindow, minimizeWindow } from './window';
+import {
+  closeWindow,
+  createSubWindow,
+  getWindow,
+  maximizeWindow,
+  minimizeWindow,
+  openFileBrowser,
+} from './window';
 import { deleteEntitiesByScanId } from './core/libraryManager';
 
 const ipcMain = createIpcMain<ElectronAPI>();
@@ -26,26 +32,27 @@ export const registerIpcChannels = () => {
   ipcMain.handle('getArtworkPath', async () => ARTWORK_DIR);
 
   // ファイルブラウザを開く
-  ipcMain.handle(
-    'openFileBrowser',
-    async (_, mode, filters) =>
-      await dialog.showOpenDialog(mainWindow, {
-        properties: [mode === 'File' ? 'openFile' : 'openDirectory'],
-        filters,
-      })
+  ipcMain.handle('openFileBrowser', async (_, isMainWindow, mode, filters) =>
+    openFileBrowser(isMainWindow, {
+      properties: [mode === 'File' ? 'openFile' : 'openDirectory'],
+      filters,
+    })
   );
+
+  // ビジュアライザー設定ウィンドウを開く
+  ipcMain.handle('openVisualizerConfigWindow', async () => createSubWindow());
 
   // 指定されたパスをデフォルトのアプリケーションで開く
   ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
 
   // ウィンドウを最小化する
-  ipcMain.handle('minimizeWindow', async () => minimizeWindow(mainWindow));
+  ipcMain.handle('minimizeWindow', async (_, isMainWindow) => minimizeWindow(isMainWindow));
 
   // ウィンドウの最大化⇔最大化解除を切り替える
-  ipcMain.handle('maximizeWindow', async () => maximizeWindow(mainWindow));
+  ipcMain.handle('maximizeWindow', async (_, isMainWindow) => maximizeWindow(isMainWindow));
 
   // ウィンドウを閉じる
-  ipcMain.handle('closeWindow', async () => closeWindow(mainWindow));
+  ipcMain.handle('closeWindow', async (_, isMainWindow) => closeWindow(isMainWindow));
 
   // 設定を取得する
   ipcMain.handle('getSettings', async () => settingsStore.getData());
@@ -85,21 +92,28 @@ export const registerIpcChannels = () => {
 };
 
 /**
- * ウィンドウが最大化されているかどうかをメインウィンドウに通知する
+ * ウィンドウが最大化されているかどうかをウィンドウに通知する
+ * @param isMainWindow 通知対象がメインウィンドウかどうか
  * @param isMaximized ウィンドウが最大化されているかどうか
  */
-export const sendWindowMaximizedToMain = (isMaximized: boolean) =>
-  ipcMain.send(mainWindow, 'resizeWindow', isMaximized);
+export const sendWindowMaximized = (isMainWindow: boolean, isMaximized: boolean) => {
+  const window = getWindow(isMainWindow);
+  window && ipcMain.send(window, 'resizeWindow', isMaximized);
+};
 
 /**
  * スキャンの進捗状況をメインウィンドウに通知する
  * @param progress 進捗状況
  */
-export const sendScanProgressToMain = (progress: ScanProgress) =>
-  ipcMain.send(mainWindow, 'updateScanProgress', progress);
+export const sendScanProgressToMain = (progress: ScanProgress) => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'updateScanProgress', progress);
+};
 
 /**
  * スキャン済みフォルダ情報をメインウィンドウに通知する
  */
-export const sendScannedFoldersToMain = () =>
-  ipcMain.send(mainWindow, 'updateScannedFolders', scannedFoldersStore.getAll());
+export const sendScannedFoldersToMain = () => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'updateScannedFolders', scannedFoldersStore.getAll());
+};

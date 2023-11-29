@@ -29,6 +29,7 @@ export type ElectronAPI = GetApiType<
      * @param filters ファイルフィルタ（ファイル選択モード時のみ有効）
      */
     openFileBrowser: (
+      isMainWindow: boolean,
       mode: 'File' | 'Folder',
       filters?: FileFilter[]
     ) => Promise<OpenDialogReturnValue>;
@@ -39,19 +40,24 @@ export type ElectronAPI = GetApiType<
     openPath: (path: string) => Promise<void>;
 
     /**
+     * ビジュアライザー設定ウィンドウを開く
+     */
+    openVisualizerConfigWindow: () => Promise<void>;
+
+    /**
      * ウィンドウを最小化する
      */
-    minimizeWindow: () => Promise<void>;
+    minimizeWindow: (isMainWindow: boolean) => Promise<void>;
 
     /**
      * ウィンドウの最大化⇔最大化解除を切り替える
      */
-    maximizeWindow: () => Promise<void>;
+    maximizeWindow: (isMainWindow: boolean) => Promise<void>;
 
     /**
      * ウィンドウを閉じる
      */
-    closeWindow: () => Promise<void>;
+    closeWindow: (isMainWindow: boolean) => Promise<void>;
 
     /**
      * 設定を取得する
@@ -123,13 +129,21 @@ export const electronAPI: ElectronAPI = {
     getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
     getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
 
-    openFileBrowser: async (mode: 'File' | 'Folder', filters?: Electron.FileFilter[]) =>
-      await ipcRenderer.invoke('openFileBrowser', mode, filters),
+    openFileBrowser: async (
+      isMainWindow: boolean,
+      mode: 'File' | 'Folder',
+      filters?: Electron.FileFilter[]
+    ) => await ipcRenderer.invoke('openFileBrowser', isMainWindow, mode, filters),
     openPath: async (path: string) => await ipcRenderer.invoke('openPath', path),
 
-    minimizeWindow: async () => await ipcRenderer.invoke('minimizeWindow'),
-    maximizeWindow: async () => await ipcRenderer.invoke('maximizeWindow'),
-    closeWindow: async () => await ipcRenderer.invoke('closeWindow'),
+    openVisualizerConfigWindow: async () => await ipcRenderer.invoke('openVisualizerConfigWindow'),
+
+    minimizeWindow: async (isMainWindow: boolean) =>
+      await ipcRenderer.invoke('minimizeWindow', isMainWindow),
+    maximizeWindow: async (isMainWindow: boolean) =>
+      await ipcRenderer.invoke('maximizeWindow', isMainWindow),
+    closeWindow: async (isMainWindow: boolean) =>
+      await ipcRenderer.invoke('closeWindow', isMainWindow),
 
     getSettings: async () => await ipcRenderer.invoke('getSettings'),
     updateSettings: async (items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) =>

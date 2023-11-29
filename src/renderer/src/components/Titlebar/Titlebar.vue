@@ -4,9 +4,9 @@ import { useWindowStore } from '@renderer/stores/window';
 
 import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
-const onMinimizeButtonClick = async () => await window.electronAPI.invoke.minimizeWindow();
-const onMaximizeButtonClicked = async () => await window.electronAPI.invoke.maximizeWindow();
-const onCloseButtonClicked = async () => await window.electronAPI.invoke.closeWindow();
+const onMinimizeButtonClick = async () => await window.electronAPI.invoke.minimizeWindow(true);
+const onMaximizeButtonClicked = async () => await window.electronAPI.invoke.maximizeWindow(true);
+const onCloseButtonClicked = async () => await window.electronAPI.invoke.closeWindow(true);
 
 const { isWindowMaximized } = storeToRefs(useWindowStore());
 </script>

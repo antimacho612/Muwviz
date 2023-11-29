@@ -11,9 +11,8 @@ import ScannedFoldersStore from './stores/scannedFolders';
 import SettingsStore from './stores/settings';
 import SongsStore from './stores/songs';
 import { deleteOldLog } from './utils';
-import { createWindow } from './window';
+import { createMainWindow } from './window';
 
-export let mainWindow: BrowserWindow;
 export let songsStore: SongsStore;
 export let albumsStore: AlbumsStore;
 export let artistsStore: ArtistsStore;
@@ -58,11 +57,11 @@ app.whenReady().then(async () => {
 
   registerIpcChannels();
 
-  mainWindow = await createWindow();
+  await createMainWindow();
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      mainWindow = await createWindow();
+      await createMainWindow();
     }
   });
 });

@@ -1,9 +1,9 @@
-import { readonly, InjectionKey, computed, ref } from 'vue';
-import { useToast } from 'vue-toastification';
-import { useSongQueue } from './songQueue';
-import { Song } from '@shared/types';
+import { InjectionKey, readonly, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useEntitiesStore } from '@renderer/stores/entities';
+import { useSongQueue } from './songQueue';
+import { useToast } from 'vue-toastification';
+import { Song } from '@shared/types';
 
 export type RepeatState = 'OFF' | 'ALL' | 'ONCE';
 
