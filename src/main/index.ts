@@ -1,5 +1,5 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { BrowserWindow, app, protocol } from 'electron';
+import { BrowserWindow, MessageChannelMain, app, protocol } from 'electron';
 import log from 'electron-log/main';
 import path from 'path';
 import { STORES_DIR } from './core/paths';

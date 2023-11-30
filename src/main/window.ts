@@ -1,4 +1,11 @@
-import { BrowserWindow, Event, OpenDialogOptions, dialog, shell } from 'electron';
+import {
+  BrowserWindow,
+  Event,
+  MessageChannelMain,
+  OpenDialogOptions,
+  dialog,
+  shell,
+} from 'electron';
 import { is } from '@electron-toolkit/utils';
 import path from 'path';
 import { settingsStore } from '.';
@@ -80,6 +87,7 @@ export const createMainWindow = async () => {
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      contextIsolation: true,
       devTools: true,
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -90,12 +98,21 @@ export const createMainWindow = async () => {
   registerWindowEvents(window);
 
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
-    await window.loadURL(process.env.ELECTRON_RENDERER_URL);
+    await window.loadURL(`${process.env.ELECTRON_RENDERER_URL}`);
   } else {
     await window.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
 
   await createTray();
+};
+
+const setupMessagePort = (subWindow: BrowserWindow) => {
+  const mainWindow = getWindow();
+  if (!mainWindow) return;
+
+  const { port1, port2 } = new MessageChannelMain();
+  mainWindow.webContents.postMessage('messagePort', null, [port1]);
+  subWindow.webContents.postMessage('messagePort', null, [port2]);
 };
 
 export const createSubWindow = async () => {
@@ -106,14 +123,15 @@ export const createSubWindow = async () => {
       title: 'Muwviz Visualizer Config',
       titleBarStyle: hasFrame ? 'default' : 'hidden',
       frame: hasFrame,
-      width: 600,
-      minWidth: 400,
-      height: 400,
-      minHeight: 300,
+      width: 800,
+      minWidth: 320,
+      height: 480,
+      minHeight: 320,
       show: false,
       autoHideMenuBar: true,
       ...(process.platform === 'linux' ? { icon } : {}),
       webPreferences: {
+        contextIsolation: true,
         devTools: true,
         preload: path.join(__dirname, '../preload/index.js'),
         sandbox: false,
@@ -123,10 +141,12 @@ export const createSubWindow = async () => {
 
     registerWindowEvents(window, false);
 
+    setupMessagePort(window);
+
     if (is.dev && process.env.ELECTRON_RENDERER_URL) {
-      await window.loadURL(process.env.ELECTRON_RENDERER_URL);
+      await window.loadURL(`${process.env.ELECTRON_RENDERER_URL}/visualizer-config.html`);
     } else {
-      await window.loadFile(path.join(__dirname, '../renderer/index.html'));
+      await window.loadFile(path.join(__dirname, '../renderer/visualizer-config.html'));
     }
   } else {
     window.focus();

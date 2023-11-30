@@ -28,6 +28,14 @@ export default defineConfig({
   },
   renderer: {
     plugins: [vue()],
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'src/renderer/index.html'),
+          visualizerConfig: resolve(__dirname, 'src/renderer/visualizer-config.html'),
+        },
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -38,6 +46,8 @@ export default defineConfig({
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
+        '@mainWindow': resolve('src/renderer/src/mainWindow'),
+        '@visualizerConfigWindow': resolve('src/renderer/src/visualizerConfigWindow'),
         '@shared': resolve('src/shared'),
       },
     },

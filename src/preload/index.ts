@@ -1,5 +1,15 @@
+import { ipcRenderer } from 'electron';
 import { contextBridge } from 'electron-typescript-ipc';
 import { electronAPI } from './ipc';
+
+const windowLoaded = new Promise((resolve) => {
+  window.onload = resolve;
+});
+
+ipcRenderer.on('messagePort', async (e) => {
+  await windowLoaded;
+  window.postMessage('messagePort', '*', e.ports);
+});
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -12,7 +22,5 @@ if (process.contextIsolated) {
   }
 } else {
   // @ts-ignore (define in dts)
-  window.electron = electronAPI;
-  // @ts-ignore (define in dts)
-  window.api = api;
+  window.electronAPI = electronAPI;
 }

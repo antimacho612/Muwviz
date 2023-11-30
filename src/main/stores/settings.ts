@@ -22,5 +22,6 @@ export default class SettingsStore extends BaseJSONStore<Settings> {
   public update<K extends keyof Omit<Settings, 'scannedFolders'>>(key: K, value: Settings[K]) {
     if (!this.cachedData) throw new Error();
     this.cachedData[key] = value;
+    console.log(this.cachedData);
   }
 }
