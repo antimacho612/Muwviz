@@ -74,6 +74,8 @@ export type Settings = {
   windowSize: { width: number; height: number };
 };
 
+export type AppearanceSettings = Pick<Settings, 'fontFamily' | 'theme' | 'primaryColor'>;
+
 export const DEFAULT_SETTINGS: Settings = {
   isFirstLaunch: true,
   fontFamily: 'system-ui',

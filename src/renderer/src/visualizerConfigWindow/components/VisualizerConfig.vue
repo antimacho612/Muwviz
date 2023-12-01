@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
+import { sendMessageToMainWindowKey } from '../injectionKeys';
 import {
-  VisualizerConfig,
+  getDefaultConfig,
   VISUALIZATION_MODE_MAP,
   CHANNEL_LAYOUT_MAP,
   FFT_SIZES,
@@ -13,132 +14,109 @@ import {
   BUILT_IN_GRADIENT_MAP,
   MIRROR_MAP,
   SCALE_X_LABELS,
+  VisualizerConfig,
 } from '@shared/visualizerTypes';
 
+import ConfigGroup from './ConfigGroup.vue';
 import Select from '@renderer/commonComponents/Select/Select.vue';
 import Slider from '@renderer/commonComponents/Slider/Slider.vue';
 import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
+import { KeyValue } from '@shared/types';
 
-const config = ref<VisualizerConfig>({
-  mode: 0,
-  channelLayout: 'single',
-  fftSize: 512,
-  smoothing: 0,
-  minFreq: 10,
-  maxFreq: 8000,
-  frequencyScale: 'bark',
-  weightingFilter: '',
-  minDecibels: 0,
-  maxDecibels: 0,
-  linearAmplitude: false,
-  linearBoost: 0,
-  colorMode: 'gradient',
-  gradientLeft: '',
-  gradientRight: '',
-  splitGradient: false,
-  fixedBarSpace: false,
-  barSpace: 0,
-  alphaBars: false,
-  ansiBands: false,
-  ledBars: false,
-  trueLeds: false,
-  roundBars: false,
-  lumiBars: false,
-  outlineBars: false,
-  lineWidth: 0,
-  fillAlpha: 0,
-  radial: false,
-  spinSpeed: 0,
-  reflexRatio: 0,
-  reflexAlpha: 0,
-  reflexBright: 0,
-  reflexFit: false,
-  mirror: 0,
-  scaleXLabel: 'None',
-  showScaleY: false,
-  showPeaks: false,
-  showPeakLine: false,
-});
+const config = ref(getDefaultConfig());
+
+const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
+
+const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
+  sendMessageToMainWindow &&
+  sendMessageToMainWindow({
+    channel: 'changeVisualizerConfig',
+    payload: { index: 0, ...keyValuePair },
+  });
 </script>
 
 <template>
   <div class="visualizer-configs">
-    Settings
-
-    <div>
-      <div>
+    <ConfigGroup title="Core">
+      <div class="config-row">
         Mode
-        <Select size="sm">
+        <Select
+          v-model="config.mode"
+          size="sm"
+          @change="onChangeValue({ key: 'mode', value: config.mode })"
+        >
           <option v-for="[mode, label] of VISUALIZATION_MODE_MAP" :key="mode" :value="mode">
             {{ label }}
           </option>
         </Select>
+        <div class="config-row">
+          Channel Layout
+          <div class="flex flex-wrap gap-2">
+            <Radio
+              v-for="[channelLayout, label] of CHANNEL_LAYOUT_MAP"
+              :key="channelLayout"
+              v-model="config.channelLayout"
+              name="channel-layout"
+              size="sm"
+              :label="label"
+              :value="channelLayout"
+            />
+          </div>
+        </div>
       </div>
+    </ConfigGroup>
 
-      <div>
-        Channel Layout
-        <Radio
-          v-for="[channelLayout, label] of CHANNEL_LAYOUT_MAP"
-          :key="channelLayout"
-          v-model="config.channelLayout"
-          name="channel-layout"
-          :label="label"
-          :value="channelLayout"
-        />
-      </div>
+    <div>
+      FFT Size
+      <Select size="sm">
+        <option v-for="fftSize in FFT_SIZES" :key="fftSize" :value="fftSize">
+          {{ fftSize }}
+        </option>
+      </Select>
+      Smoothing Time Constant
+      <Slider v-model="config.smoothing" :min="0" :max="1" :step="0.1" />
+    </div>
 
-      <div>
-        FFT Size
-        <Select size="sm">
-          <option v-for="fftSize in FFT_SIZES" :key="fftSize" :value="fftSize">
-            {{ fftSize }}
-          </option>
-        </Select>
-        Smoothing Time Constant
-        <Slider v-model="config.smoothing" :min="0" :max="1" :step="0.1" />
-      </div>
+    <div>
+      Min Frequency
+      <Select size="sm">
+        <option v-for="minFreq in MIN_FREQUENCIES" :key="minFreq" :value="minFreq">
+          {{ minFreq }} Hz
+        </option>
+      </Select>
+      Max Frequency
+      <Select size="sm">
+        <option v-for="maxFreq in MAX_FREQUENCIES" :key="maxFreq" :value="maxFreq">
+          {{ maxFreq / 1000 }}k Hz
+        </option>
+      </Select>
+      Frequency Scale
+      <Radio
+        v-for="freqScale in FREQUENCY_SCALES"
+        :key="freqScale"
+        v-model="config.frequencyScale"
+        name="frequency-scales"
+        :value="freqScale"
+        :label="freqScale"
+      />
+    </div>
 
-      <div>
-        Min Frequency
-        <Select size="sm">
-          <option v-for="minFreq in MIN_FREQUENCIES" :key="minFreq" :value="minFreq">
-            {{ minFreq }} Hz
-          </option>
-        </Select>
-        Max Frequency
-        <Select size="sm">
-          <option v-for="maxFreq in MAX_FREQUENCIES" :key="maxFreq" :value="maxFreq">
-            {{ maxFreq / 1000 }}k Hz
-          </option>
-        </Select>
-        Frequency Scale
-        <Radio
-          v-for="freqScale in FREQUENCY_SCALES"
-          :key="freqScale"
-          v-model="config.frequencyScale"
-          name="frequency-scales"
-          :value="freqScale"
-          :label="freqScale"
-        />
-      </div>
-
-      <div>
-        Weighting Filter
-        <Radio
-          v-for="[weightingFilter, label] of WEIGHTING_FILTER_MAP"
-          :key="weightingFilter"
-          v-model="config.weightingFilter"
-          name="weighting-filter"
-          :value="weightingFilter"
-          :label="label"
-        />
-        Min Decibels
-        <Slider v-model="config.minDecibels" :min="-120" :max="-60" :step="5" />
-        Max Decibels
-        <Slider v-model="config.maxDecibels" :min="-40" :max="0" :step="5" />
-      </div>
+    <div>
+      Weighting Filter
+      <Radio
+        v-for="[weightingFilter, label] of WEIGHTING_FILTER_MAP"
+        :key="weightingFilter"
+        v-model="config.weightingFilter"
+        name="weighting-filter"
+        :value="weightingFilter"
+        :label="label"
+      />
+      Min Decibels
+      <Slider v-model="config.minDecibels" :min="-120" :max="-60" :step="5" />
+      Max Decibels
+      <Slider v-model="config.maxDecibels" :min="-40" :max="0" :step="5" />
     </div>
 
     <div>
@@ -289,5 +267,18 @@ const config = ref<VisualizerConfig>({
 <style lang="scss" scoped>
 .visualizer-configs {
   width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+}
+
+.config-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
 }
 </style>

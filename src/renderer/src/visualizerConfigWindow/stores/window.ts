@@ -1,12 +1,9 @@
 import { defineStore } from 'pinia';
-import { DEFAULT_SETTINGS } from '@shared/types';
+import { AppearanceSettings, DEFAULT_SETTINGS } from '@shared/types';
 
 type WindowStoreState = {
   isWindowMaximized: boolean;
-  fontFamily: string;
-  theme: 'Light' | 'Dark';
-  primaryColor: string;
-};
+} & AppearanceSettings;
 
 export const useWindowStore = defineStore('window', {
   state: (): WindowStoreState => {

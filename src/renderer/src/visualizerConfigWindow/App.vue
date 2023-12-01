@@ -5,7 +5,7 @@ import { useAppearance } from '@renderer/commonComposables/useAppearance';
 
 import Titlebar from '@renderer/commonComponents/Titlebar/Titlebar.vue';
 import { useIpcEventHandler } from '@renderer/mainWindow/composables/useIpcEventHandler';
-import VisualizerConfigs from '@visualizerConfigWindow/components/VisualizerConfigs.vue';
+import VisualizerConfig from '@visualizerConfigWindow/components/VisualizerConfig.vue';
 
 const { isWindowMaximized, fontFamily, theme, primaryColor } = storeToRefs(useWindowStore());
 
@@ -26,7 +26,7 @@ useIpcEventHandler();
     @click-close-button="onClickCloseButton"
   ></Titlebar>
   <div class="layout">
-    <VisualizerConfigs></VisualizerConfigs>
+    <VisualizerConfig></VisualizerConfig>
   </div>
 </template>
 

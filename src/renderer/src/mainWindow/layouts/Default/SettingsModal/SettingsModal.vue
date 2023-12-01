@@ -8,6 +8,7 @@ import {
   BuildingLibraryIcon,
   ChevronRightIcon,
   ComputerDesktopIcon,
+  InformationCircleIcon,
 } from '@heroicons/vue/24/solid';
 import TabMenu from '@mainWindow/components/TabMenu/TabMenu.vue';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
@@ -15,6 +16,7 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 import LibraryTab from './LibraryTab.vue';
 import AppearanceTab from './AppearanceTab.vue';
 import SystemTab from './SystemTab.vue';
+import AboutTab from './AboutTab.vue';
 
 const props = defineProps<{ isOpen: boolean }>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
@@ -40,6 +42,11 @@ const TABS = [
     title: 'System',
     icon: ComputerDesktopIcon,
     component: SystemTab,
+  },
+  {
+    title: 'About',
+    icon: InformationCircleIcon,
+    component: AboutTab,
   },
 ] as const;
 </script>

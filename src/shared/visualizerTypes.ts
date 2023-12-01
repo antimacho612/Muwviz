@@ -1,4 +1,4 @@
-import { WeightingFilter, ChannelLayout, FrequencyScale, ColorMode } from 'audiomotion-analyzer';
+import { ChannelLayout, ColorMode, FrequencyScale, WeightingFilter } from 'audiomotion-analyzer';
 
 export type VisualizationModes = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 10;
 export const VISUALIZATION_MODE_MAP: ReadonlyMap<VisualizationModes, string> = new Map([
@@ -126,3 +126,44 @@ export type VisualizerConfig = {
   // When true and mode is 10 (Graph) and showPeaks is true, peaks are connected into a continuous line. It has no effect in other modes.
   showPeakLine: boolean;
 };
+
+export const getDefaultConfig = (): VisualizerConfig => ({
+  mode: 0,
+  channelLayout: 'single',
+  fftSize: 8192,
+  smoothing: 0,
+  minFreq: 20,
+  maxFreq: 22000,
+  frequencyScale: 'log',
+  weightingFilter: '',
+  minDecibels: -85,
+  maxDecibels: -25,
+  linearAmplitude: false,
+  linearBoost: 1,
+  colorMode: 'gradient',
+  gradientLeft: 'classic',
+  gradientRight: 'classic',
+  splitGradient: false,
+  fixedBarSpace: false,
+  barSpace: 0.1,
+  alphaBars: false,
+  ansiBands: false,
+  ledBars: false,
+  trueLeds: false,
+  roundBars: false,
+  lumiBars: false,
+  outlineBars: false,
+  lineWidth: 0,
+  fillAlpha: 1,
+  radial: false,
+  spinSpeed: 0,
+  reflexRatio: 0,
+  reflexAlpha: 0.15,
+  reflexBright: 1,
+  reflexFit: true,
+  mirror: 0,
+  scaleXLabel: 'Frequencies',
+  showScaleY: false,
+  showPeaks: true,
+  showPeakLine: false,
+});

@@ -2,21 +2,27 @@
 import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@mainWindow/stores/settings';
-import { Settings } from '@shared/types';
+import { sendMessageToSubWindowKey } from '@renderer/mainWindow/injectionKeys';
+import { AppearanceSettings, KeyValue } from '@shared/types';
 
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 import InputText from '@renderer/commonComponents/InputText/InputText.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
-import { sendMessageToSubWindowKey } from '@renderer/mainWindow/injectionKeys';
 
 const settings = useSettingsStore();
 const { fontFamily, theme, primaryColor } = storeToRefs(settings);
 
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
-const onChangeInputValue = async (key: keyof Settings, value: string) => {
-  // TODO: resolve type error
-  sendMessageToSubWindow && sendMessageToSubWindow({ channel: key, value });
+const onChangeInputValue = async <K extends keyof AppearanceSettings>(
+  key: K,
+  value: AppearanceSettings[K]
+) => {
+  sendMessageToSubWindow &&
+    sendMessageToSubWindow({
+      channel: 'changeAppearance',
+      payload: { key, value } as KeyValue<AppearanceSettings>,
+    });
   await settings.saveChanges(new Set([key]));
 };
 </script>

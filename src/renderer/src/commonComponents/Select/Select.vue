@@ -1,11 +1,16 @@
 <script setup lang="ts">
 interface Props {
+  modelValue?: string | boolean | number | object;
   size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 withDefaults(defineProps<Props>(), {
   size: 'md',
 });
+
+const emits = defineEmits<{
+  'update:modelValue': [modelValue: string | boolean | number | object];
+}>();
 </script>
 
 <template>
@@ -17,6 +22,7 @@ withDefaults(defineProps<Props>(), {
       'c-select-md': size === 'md',
       'c-select-lg': size === 'lg',
     }"
+    @change="emits('update:modelValue', ($event.target as HTMLSelectElement).value)"
   >
     <slot></slot>
   </select>

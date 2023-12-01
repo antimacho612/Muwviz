@@ -1,13 +1,18 @@
 import { defineStore } from 'pinia';
-import { DEFAULT_SETTINGS, KeyValue, ScannedFolder, Settings } from '@shared/types';
+import {
+  AppearanceSettings,
+  DEFAULT_SETTINGS,
+  KeyValue,
+  ScannedFolder,
+  Settings,
+} from '@shared/types';
+import AudioMotionAnalyzer from 'audiomotion-analyzer';
 
 export type SettingsStoreState = {
   scannedFolders: ScannedFolder[];
   artworkPath: string;
-  fontFamily: string;
-  theme: 'Light' | 'Dark';
-  primaryColor: string;
-};
+  audioMotionAnalizerVersion: string;
+} & AppearanceSettings;
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsStoreState => {
@@ -17,6 +22,7 @@ export const useSettingsStore = defineStore('settings', {
       fontFamily: DEFAULT_SETTINGS.fontFamily,
       theme: DEFAULT_SETTINGS.theme,
       primaryColor: DEFAULT_SETTINGS.primaryColor,
+      audioMotionAnalizerVersion: AudioMotionAnalyzer.version,
     };
   },
 

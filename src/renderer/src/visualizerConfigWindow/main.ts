@@ -12,7 +12,11 @@ import VWave from 'v-wave';
 
 import { useWindowStore } from './stores/window';
 
-import { MainToSubMessage, connectMessagePort } from '@renderer/commonUtils/messagePort';
+import {
+  ChangeAppearancePayload,
+  MainToSubMessage,
+  connectMessagePort,
+} from '@renderer/commonUtils/messagePort';
 import { sendMessageToMainWindowKey } from './injectionKeys';
 
 registErrorHandler();
@@ -33,20 +37,35 @@ app.provide(sendMessageToMainWindowKey, messagePort.sendMessage);
 
 app.mount('#app');
 
-function handleOnRecieveMessageFromMain(message: MainToSubMessage) {
-  const windowStore = useWindowStore();
-
+async function handleOnRecieveMessageFromMain(message: MainToSubMessage) {
   switch (message.channel) {
-    case 'fontFamily':
-      windowStore.fontFamily = message.value;
+    case 'changeAppearance':
+      handleOnChangeAppearance(message.payload);
       break;
-    case 'theme':
-      windowStore.theme = message.value;
-      break;
-    case 'primaryColor':
-      windowStore.primaryColor = message.value;
+    case 'closeWindow':
+      handleOnCloseMainWindow();
       break;
   }
+}
+
+function handleOnChangeAppearance(payload: ChangeAppearancePayload) {
+  const windowStore = useWindowStore();
+
+  switch (payload.key) {
+    case 'fontFamily':
+      windowStore.fontFamily = payload.value;
+      break;
+    case 'theme':
+      windowStore.theme = payload.value;
+      break;
+    case 'primaryColor':
+      windowStore.primaryColor = payload.value;
+      break;
+  }
+}
+
+async function handleOnCloseMainWindow() {
+  await window.electronAPI.invoke.closeWindow(false);
 }
 
 async function fetchDatas() {

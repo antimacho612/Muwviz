@@ -1,31 +1,29 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import AudioMotionAnalyzer from 'audiomotion-analyzer';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { useVisualizer } from '@mainWindow/core/visualizer';
+import { useWindowStore } from '@mainWindow/stores/window';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
 
-let audioMotionAnalyzer: AudioMotionAnalyzer;
-
-const visualizerElement = ref<HTMLDivElement>();
-const audioPlayer = useAudioPlayer();
+const { audio } = useAudioPlayer();
+const { visualizers } = useWindowStore();
+const containerEl = ref<HTMLDivElement>();
 
 onMounted(() => {
-  if (visualizerElement.value) {
-    audioMotionAnalyzer = new AudioMotionAnalyzer(visualizerElement.value, {
-      source: audioPlayer.audio,
-      overlay: true,
-      bgAlpha: 0,
-      showBgColor: false,
-    });
+  if (!containerEl.value) return;
+  if (visualizers.has(0)) {
+    const visualizer = visualizers.get(0);
+    if (visualizer && !visualizer.isDestroyed()) return;
   }
+  visualizers.set(0, useVisualizer(containerEl.value, audio));
 });
 
 onBeforeUnmount(() => {
-  audioMotionAnalyzer.destroy();
+  visualizers.forEach((visualizer) => visualizer.destroy());
 });
 </script>
 
 <template>
-  <div ref="visualizerElement" class="visualizer"></div>
+  <div ref="containerEl" class="visualizer"></div>
 </template>
 
 <style lang="scss" scoped>
@@ -37,4 +35,3 @@ onBeforeUnmount(() => {
   border-radius: $borderRadiusLg;
 }
 </style>
-@renderer/mainWindow/composables/useAudioPlayer

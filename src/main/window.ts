@@ -33,7 +33,10 @@ const registerWindowEvents = (window: BrowserWindow, isMainWindow = true) => {
   });
 
   window.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
+    const ALLOWED_URLS = ['https://audiomotion.dev'] as const;
+    if (ALLOWED_URLS.some((url) => details.url.startsWith(url))) {
+      shell.openExternal(details.url, { activate: true });
+    }
     return { action: 'deny' };
   });
 

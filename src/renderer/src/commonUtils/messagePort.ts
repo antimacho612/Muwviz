@@ -1,20 +1,22 @@
 import { useEventListener } from '@vueuse/core';
+import { VisualizerConfig } from '@shared/visualizerTypes';
+import { AppearanceSettings, KeyValue } from '@shared/types';
 
+export type ChangeAppearancePayload = KeyValue<AppearanceSettings>;
 export type MainToSubMessage =
   | {
-      channel: 'fontFamily';
-      value: string;
+      channel: 'changeAppearance';
+      payload: ChangeAppearancePayload;
     }
   | {
-      channel: 'theme';
-      value: 'Light' | 'Dark';
-    }
-  | {
-      channel: 'primaryColor';
-      value: string;
+      channel: 'closeWindow';
     };
 
-export type SubToMainMessage = { channel: 'TODO:'; value: string };
+export type ChangeVisualizerConfigPayload = { index: number } & KeyValue<VisualizerConfig>;
+export type SubToMainMessage = {
+  channel: 'changeVisualizerConfig';
+  payload: ChangeVisualizerConfigPayload;
+};
 
 export const connectMessagePort = <T extends 'Main' | 'Sub'>(
   listener: (message: T extends 'Main' ? SubToMainMessage : MainToSubMessage) => void
@@ -39,9 +41,6 @@ export const connectMessagePort = <T extends 'Main' | 'Sub'>(
 
   const sendMessage = (message: T extends 'Main' ? MainToSubMessage : SubToMainMessage) => {
     if (!port || anotherPortClosed) return;
-
-    console.log('sending a message...', message);
-
     port.postMessage(message);
   };
 

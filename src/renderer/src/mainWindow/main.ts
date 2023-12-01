@@ -29,6 +29,7 @@ import { audioPlayerKey, sendMessageToSubWindowKey } from './injectionKeys';
 import { audioPlayer } from './core/audioPlayer';
 
 import { connectMessagePort } from '@renderer/commonUtils/messagePort';
+import { handleOnRecieveMessageFromSub } from './messageHandler';
 
 import { useSettingsStore } from './stores/settings';
 import { useEntitiesStore } from './stores/entities';
@@ -38,7 +39,7 @@ import '@renderer/assets/styles/style.scss';
 registErrorHandler();
 
 const app = createApp(App);
-app.config.errorHandler = (err) => console.log(err);
+app.config.errorHandler = (err) => console.error(err);
 
 // Toast
 app.use(Toast, getToastPluginOptions());
@@ -66,7 +67,7 @@ app.use(clickOutsideDirective);
 app.provide(audioPlayerKey, audioPlayer());
 
 // Message Port
-const messagePort = connectMessagePort<'Main'>((message) => console.log(message));
+const messagePort = connectMessagePort<'Main'>(handleOnRecieveMessageFromSub);
 app.provide(sendMessageToSubWindowKey, messagePort.sendMessage);
 
 app.mount('#app');
