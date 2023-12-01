@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import deepEqual from 'fast-deep-equal';
 
 interface Props {
   modelValue?: boolean | number | string | object;
   trueValue?: boolean | number | string | object;
   falseValue?: boolean | number | string | object;
+  size?: 'sm' | 'md';
 }
 const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   trueValue: true,
   falseValue: false,
+  size: 'md',
 });
 
 type Emits = {
@@ -23,7 +26,7 @@ type Emits = {
 const emits = defineEmits<Emits>();
 
 const inputEl = ref<HTMLInputElement>();
-const checked = computed(() => props.modelValue === props.trueValue);
+const checked = computed(() => deepEqual(props.modelValue, props.trueValue));
 const focused = ref(false);
 
 const onClick = (e: MouseEvent) => {
@@ -52,6 +55,7 @@ const onBlur = (e: FocusEvent) => {
   <div
     class="c-toggle-button"
     :class="{
+      'c-toggle-button-sm': size === 'sm',
       'c-toggle-button-checked': checked,
       'c-toggle-button-focused': focused,
     }"
@@ -124,6 +128,16 @@ const onBlur = (e: FocusEvent) => {
 .c-toggle-button.c-toggle-button-focused {
   .c-toggle-button-switch {
     @include focused;
+  }
+}
+
+.c-toggle-button.c-toggle-button-sm {
+  width: 3.75rem;
+  height: 1.75rem;
+
+  .c-toggle-button-switch::before {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }
 </style>

@@ -24,12 +24,12 @@ const close = () => emits('update:isOpen', false);
 </script>
 
 <template>
-  <Transition enter-active-class="fadeIn" leave-active-class="fadeOut">
+  <Transition enter-active-class="c-modal-fade-in" leave-active-class="c-modal-fade-out">
     <div v-show="isOpen" class="c-modal-backdrop" :style="{ zIndex: zIndex }"></div>
   </Transition>
   <Transition
-    enter-active-class="c-modal-fadeInDown"
-    leave-active-class="c-modal-fadeOutUp"
+    enter-active-class="c-modal-fade-in-down"
+    leave-active-class="c-modal-fade-out-up"
     @after-enter="onOpened"
   >
     <div
@@ -63,19 +63,19 @@ const close = () => emits('update:isOpen', false);
   outline: none;
 }
 
-.c-modal-fadeIn {
+.c-modal-fade-in {
   @include animation($name: fadeIn);
 }
 
-.c-modal-fadeOut {
+.c-modal-fade-out {
   @include animation($name: fadeOut, $delay: 0.1s);
 }
 
-.c-modal-fadeInDown {
+.c-modal-fade-in-down {
   @include animation($name: fadeInDown, $delay: 0.1s, $fillMode: both);
 }
 
-.c-modal-fadeOutUp {
+.c-modal-fade-out-up {
   @include animation($name: fadeOutUp);
 }
 </style>

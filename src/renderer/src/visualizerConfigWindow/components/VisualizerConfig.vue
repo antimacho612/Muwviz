@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 import { sendMessageToMainWindowKey } from '../injectionKeys';
+import { KeyValue } from '@shared/types';
 import {
   getDefaultConfig,
   VISUALIZATION_MODE_MAP,
@@ -18,12 +19,12 @@ import {
 } from '@shared/visualizerTypes';
 
 import ConfigGroup from './ConfigGroup.vue';
+import ConfigItem from './ConfigItem.vue';
 import Select from '@renderer/commonComponents/Select/Select.vue';
 import Slider from '@renderer/commonComponents/Slider/Slider.vue';
 import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
-import { KeyValue } from '@shared/types';
 
 const config = ref(getDefaultConfig());
 
@@ -41,19 +42,27 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
   <div class="visualizer-configs">
     <ConfigGroup title="Core">
       <div class="config-row">
-        Mode
-        <Select
-          v-model="config.mode"
-          size="sm"
-          @change="onChangeValue({ key: 'mode', value: config.mode })"
-        >
-          <option v-for="[mode, label] of VISUALIZATION_MODE_MAP" :key="mode" :value="mode">
-            {{ label }}
-          </option>
-        </Select>
-        <div class="config-row">
-          Channel Layout
-          <div class="flex flex-wrap gap-2">
+        <ConfigItem item-name="Mode">
+          <Select
+            v-model="config.mode"
+            size="sm"
+            @change="onChangeValue({ key: 'mode', value: config.mode })"
+          >
+            <option
+              v-for="[mode, label] of VISUALIZATION_MODE_MAP"
+              :key="mode"
+              :value="mode"
+              :selected="mode === config.mode"
+            >
+              {{ label }}
+            </option>
+          </Select>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Channel Layout" class="w-full row-gap-2">
+          <div class="flex flex-wrap column-gap-4 row-gap-2">
             <Radio
               v-for="[channelLayout, label] of CHANNEL_LAYOUT_MAP"
               :key="channelLayout"
@@ -62,75 +71,164 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
               size="sm"
               :label="label"
               :value="channelLayout"
+              class="channel-layout-radio"
+              @change="onChangeValue({ key: 'channelLayout', value: config.channelLayout })"
             />
           </div>
-        </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row column-gap-4">
+        <ConfigItem item-name="FFT Size" class="w-7rem">
+          <Select
+            v-model="config.fftSize"
+            size="sm"
+            class="text-right"
+            @change="onChangeValue({ key: 'fftSize', value: config.fftSize })"
+          >
+            <option
+              v-for="fftSize in FFT_SIZES"
+              :key="fftSize"
+              :value="fftSize"
+              :selected="fftSize === config.fftSize"
+            >
+              {{ fftSize }}
+            </option>
+          </Select>
+        </ConfigItem>
+        <ConfigItem item-name="FFT Size Smoothing Time Constant" style="width: 18rem">
+          <div style="height: 2.5rem; display: flex; align-items: center">
+            <Slider
+              v-model="config.smoothing"
+              :min="0"
+              :max="0.95"
+              :step="0.05"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'smoothing', value: config.smoothing })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Min Frequency" class="w-7rem">
+          <Select
+            v-model="config.minFreq"
+            size="sm"
+            class="text-right"
+            @change="onChangeValue({ key: 'minFreq', value: config.minFreq })"
+          >
+            <option
+              v-for="minFreq in MIN_FREQUENCIES"
+              :key="minFreq"
+              :value="minFreq"
+              :selected="minFreq === config.minFreq"
+            >
+              {{ minFreq }} Hz
+            </option>
+          </Select>
+        </ConfigItem>
+        <ConfigItem item-name="Max Frequency" class="w-7rem">
+          <Select
+            v-model="config.maxFreq"
+            size="sm"
+            class="text-right"
+            @change="onChangeValue({ key: 'maxFreq', value: config.maxFreq })"
+          >
+            <option
+              v-for="maxFreq in MAX_FREQUENCIES"
+              :key="maxFreq"
+              :value="maxFreq"
+              :selected="maxFreq === config.maxFreq"
+            >
+              {{ maxFreq / 1000 }}k Hz
+            </option>
+          </Select>
+        </ConfigItem>
+        <ConfigItem item-name="Frequency Scale">
+          <div class="frequency-scales-radio-group">
+            <Radio
+              v-for="freqScale in FREQUENCY_SCALES"
+              :key="freqScale"
+              v-model="config.frequencyScale"
+              name="frequency-scales"
+              :value="freqScale"
+              :label="freqScale"
+              class="frequency-scales-radio"
+              @change="onChangeValue({ key: 'frequencyScale', value: config.frequencyScale })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Weighting Filter">
+          <div class="flex flex-wrap column-gap-4 row-gap-2">
+            <Radio
+              v-for="[weightingFilter, label] of WEIGHTING_FILTER_MAP"
+              :key="weightingFilter"
+              v-model="config.weightingFilter"
+              name="weighting-filter"
+              :value="weightingFilter"
+              :label="label"
+              @change="onChangeValue({ key: 'weightingFilter', value: config.weightingFilter })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+      <div class="config-row w-full">
+        <ConfigItem item-name="Min Decibels" style="width: calc(50% - 0.5rem); max-width: 18rem">
+          <Slider
+            v-model="config.minDecibels"
+            :min="-120"
+            :max="-60"
+            :step="5"
+            :bar-width="0.75"
+            @update:model-value="onChangeValue({ key: 'minDecibels', value: config.minDecibels })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="Max Decibels" style="width: calc(50% - 0.5rem); max-width: 18rem">
+          <Slider
+            v-model="config.maxDecibels"
+            :min="-40"
+            :max="0"
+            :step="5"
+            :bar-width="0.75"
+            @update:model-value="onChangeValue({ key: 'maxDecibels', value: config.maxDecibels })"
+          />
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Linear Amplitude">
+          <Switch
+            v-model="config.linearAmplitude"
+            size="sm"
+            @change="onChangeValue({ key: 'linearAmplitude', value: config.linearAmplitude })"
+          />
+        </ConfigItem>
+        <ConfigItem
+          v-if="config.linearAmplitude"
+          item-name="Linear Boost"
+          style="flex-grow: 1; max-width: 18rem"
+        >
+          <div style="height: 1.75rem; display: flex; align-items: center">
+            <Slider
+              v-model="config.linearBoost"
+              :min="1"
+              :max="4"
+              :step="0.1"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'linearBoost', value: config.linearBoost })"
+            />
+          </div>
+        </ConfigItem>
       </div>
     </ConfigGroup>
 
-    <div>
-      FFT Size
-      <Select size="sm">
-        <option v-for="fftSize in FFT_SIZES" :key="fftSize" :value="fftSize">
-          {{ fftSize }}
-        </option>
-      </Select>
-      Smoothing Time Constant
-      <Slider v-model="config.smoothing" :min="0" :max="1" :step="0.1" />
-    </div>
-
-    <div>
-      Min Frequency
-      <Select size="sm">
-        <option v-for="minFreq in MIN_FREQUENCIES" :key="minFreq" :value="minFreq">
-          {{ minFreq }} Hz
-        </option>
-      </Select>
-      Max Frequency
-      <Select size="sm">
-        <option v-for="maxFreq in MAX_FREQUENCIES" :key="maxFreq" :value="maxFreq">
-          {{ maxFreq / 1000 }}k Hz
-        </option>
-      </Select>
-      Frequency Scale
-      <Radio
-        v-for="freqScale in FREQUENCY_SCALES"
-        :key="freqScale"
-        v-model="config.frequencyScale"
-        name="frequency-scales"
-        :value="freqScale"
-        :label="freqScale"
-      />
-    </div>
-
-    <div>
-      Weighting Filter
-      <Radio
-        v-for="[weightingFilter, label] of WEIGHTING_FILTER_MAP"
-        :key="weightingFilter"
-        v-model="config.weightingFilter"
-        name="weighting-filter"
-        :value="weightingFilter"
-        :label="label"
-      />
-      Min Decibels
-      <Slider v-model="config.minDecibels" :min="-120" :max="-60" :step="5" />
-      Max Decibels
-      <Slider v-model="config.maxDecibels" :min="-40" :max="0" :step="5" />
-    </div>
-
-    <div>
-      Linear Amplitude
-      <Switch v-model="config.linearAmplitude" />
-      Linear Boost
-      <Slider
-        v-if="config.linearAmplitude"
-        v-model="config.linearBoost"
-        :min="1"
-        :max="4"
-        :step="0.1"
-      />
-    </div>
+    <ConfigGroup title="Appearance">
+      <div class="config-row"></div>
+    </ConfigGroup>
 
     <div>
       Color Mode
@@ -246,39 +344,71 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
         :label="label"
       />
     </div>
-  </div>
+    <div>
+      Scale X Label
+      <Radio
+        v-for="scaleXLabel in SCALE_X_LABELS"
+        :key="scaleXLabel"
+        v-model="config.scaleXLabel"
+        name="scale-x-label"
+        :value="scaleXLabel"
+        :label="scaleXLabel"
+      />
 
-  <div>
-    Scale X Label
-    <Radio
-      v-for="scaleXLabel in SCALE_X_LABELS"
-      :key="scaleXLabel"
-      v-model="config.scaleXLabel"
-      name="scale-x-label"
-      :value="scaleXLabel"
-      :label="scaleXLabel"
-    />
-
-    Show Scale Y Label
-    <Switch v-model="config.showScaleY" />
+      Show Scale Y Label
+      <Switch v-model="config.showScaleY" />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .visualizer-configs {
+  position: relative;
   width: 100%;
-  padding: 0.5rem;
+  height: 100%;
+  padding-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
-  row-gap: 1rem;
+  row-gap: 0.75rem;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .config-row {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 1rem;
+}
+
+.channel-layout-radio {
+  flex-basis: 100%;
+  @media (min-width: 480px) {
+    flex-basis: 40%;
+  }
+  @media (min-width: 700px) {
+    flex-basis: auto;
+    min-width: 6rem;
+  }
+}
+
+.frequency-scales-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.5rem;
+  min-height: 2.5rem;
+  @media (min-width: 400px) {
+    flex-wrap: nowrap;
+  }
+}
+
+.frequency-scales-radio {
+  flex-basis: 40%;
+  @media (min-width: 400px) {
+    flex-basis: auto;
+    min-width: 4rem;
+  }
 }
 </style>

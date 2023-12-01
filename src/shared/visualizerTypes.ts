@@ -131,7 +131,7 @@ export const getDefaultConfig = (): VisualizerConfig => ({
   mode: 0,
   channelLayout: 'single',
   fftSize: 8192,
-  smoothing: 0,
+  smoothing: 0.5,
   minFreq: 20,
   maxFreq: 22000,
   frequencyScale: 'log',

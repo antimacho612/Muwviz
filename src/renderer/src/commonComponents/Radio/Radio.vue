@@ -4,6 +4,7 @@ import deepEqual from 'fast-deep-equal';
 
 interface Props {
   name: string;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   label?: string;
   value?: boolean | string | number | object;
   modelValue?: boolean | string | number | object;
@@ -19,6 +20,7 @@ type Emits = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
+  size: 'md',
   disabled: false,
 });
 
@@ -57,6 +59,9 @@ const checked = computed(
   <div
     class="c-radio"
     :class="{
+      'c-radio-xs': size === 'xs',
+      'c-radio-sm': size === 'sm',
+      'c-radio-lg': size === 'lg',
       'c-radio-checked': checked,
       'c-radio-focused': focused,
       'c-radio-disabled': disabled,
@@ -91,8 +96,9 @@ const checked = computed(
 }
 
 .c-radio-label {
+  flex-grow: 1;
   font-size: 1rem;
-  margin-left: 0.25rem;
+  margin-left: 0.5rem;
   color: var(--secondary-text-color);
   display: inline-flex;
   align-items: center;
@@ -101,6 +107,7 @@ const checked = computed(
 }
 
 .c-radio-hidden-input {
+  margin: 0;
   width: 0;
   height: 0;
   transform: scale(0);
@@ -128,6 +135,21 @@ const checked = computed(
     border-radius: $borderRadiusFull;
     transition: background-color $transitionDuration;
   }
+}
+
+.c-radio.c-radio-xs .c-radio-check {
+  width: 1.55rem;
+  height: 1.5rem;
+}
+
+.c-radio.c-radio-sm .c-radio-check {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.c-radio.c-radio-lg .c-radio-check {
+  width: 2.25rem;
+  height: 2.25rem;
 }
 
 .c-radio:not(.c-radio-disabled):hover {

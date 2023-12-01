@@ -19,7 +19,6 @@ const emits = defineEmits<{
     :class="{
       'c-select-xs': size === 'xs',
       'c-select-sm': size === 'sm',
-      'c-select-md': size === 'md',
       'c-select-lg': size === 'lg',
     }"
     @change="emits('update:modelValue', ($event.target as HTMLSelectElement).value)"
@@ -28,7 +27,7 @@ const emits = defineEmits<{
   </select>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .c-select {
   font-size: 1rem;
   line-height: normal;

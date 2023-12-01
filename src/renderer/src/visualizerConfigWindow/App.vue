@@ -36,7 +36,6 @@ useIpcEventHandler();
   height: 100%;
   width: 100%;
   padding: 0.5rem;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 </style>
