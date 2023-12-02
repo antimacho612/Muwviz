@@ -27,15 +27,19 @@ import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
 
 const config = ref(getDefaultConfig());
-
 const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
-
 const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
   sendMessageToMainWindow &&
   sendMessageToMainWindow({
     channel: 'changeVisualizerConfig',
     payload: { index: 0, ...keyValuePair },
   });
+
+const fixedBarSpace = ref(config.value.barSpace >= 1);
+const onChangeFixedBarSwitch = () => {
+  config.value.barSpace = fixedBarSpace.value ? 1 : 0.1;
+  onChangeValue({ key: 'barSpace', value: config.value.barSpace });
+};
 </script>
 
 <template>
@@ -60,24 +64,6 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
         </ConfigItem>
       </div>
 
-      <div class="config-row">
-        <ConfigItem item-name="Channel Layout" class="w-full row-gap-2">
-          <div class="flex flex-wrap column-gap-4 row-gap-2">
-            <Radio
-              v-for="[channelLayout, label] of CHANNEL_LAYOUT_MAP"
-              :key="channelLayout"
-              v-model="config.channelLayout"
-              name="channel-layout"
-              size="sm"
-              :label="label"
-              :value="channelLayout"
-              class="channel-layout-radio"
-              @change="onChangeValue({ key: 'channelLayout', value: config.channelLayout })"
-            />
-          </div>
-        </ConfigItem>
-      </div>
-
       <div class="config-row column-gap-4">
         <ConfigItem item-name="FFT Size" class="w-7rem">
           <Select
@@ -97,7 +83,7 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
           </Select>
         </ConfigItem>
         <ConfigItem item-name="FFT Size Smoothing Time Constant" style="width: 18rem">
-          <div style="height: 2.5rem; display: flex; align-items: center">
+          <div class="flex align-items-center" style="height: 2.5rem">
             <Slider
               v-model="config.smoothing"
               :min="0"
@@ -152,6 +138,7 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
               :key="freqScale"
               v-model="config.frequencyScale"
               name="frequency-scales"
+              size="sm"
               :value="freqScale"
               :label="freqScale"
               class="frequency-scales-radio"
@@ -169,6 +156,7 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
               :key="weightingFilter"
               v-model="config.weightingFilter"
               name="weighting-filter"
+              size="sm"
               :value="weightingFilter"
               :label="label"
               @change="onChangeValue({ key: 'weightingFilter', value: config.weightingFilter })"
@@ -177,25 +165,29 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
         </ConfigItem>
       </div>
       <div class="config-row w-full">
-        <ConfigItem item-name="Min Decibels" style="width: calc(50% - 0.5rem); max-width: 18rem">
-          <Slider
-            v-model="config.minDecibels"
-            :min="-120"
-            :max="-60"
-            :step="5"
-            :bar-width="0.75"
-            @update:model-value="onChangeValue({ key: 'minDecibels', value: config.minDecibels })"
-          />
+        <ConfigItem item-name="Min Decibels" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.minDecibels"
+              :min="-120"
+              :max="-60"
+              :step="5"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'minDecibels', value: config.minDecibels })"
+            />
+          </div>
         </ConfigItem>
-        <ConfigItem item-name="Max Decibels" style="width: calc(50% - 0.5rem); max-width: 18rem">
-          <Slider
-            v-model="config.maxDecibels"
-            :min="-40"
-            :max="0"
-            :step="5"
-            :bar-width="0.75"
-            @update:model-value="onChangeValue({ key: 'maxDecibels', value: config.maxDecibels })"
-          />
+        <ConfigItem item-name="Max Decibels" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.maxDecibels"
+              :min="-40"
+              :max="0"
+              :step="5"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'maxDecibels', value: config.maxDecibels })"
+            />
+          </div>
         </ConfigItem>
       </div>
 
@@ -212,7 +204,7 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
           item-name="Linear Boost"
           style="flex-grow: 1; max-width: 18rem"
         >
-          <div style="height: 1.75rem; display: flex; align-items: center">
+          <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
               v-model="config.linearBoost"
               :min="1"
@@ -227,137 +219,344 @@ const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
     </ConfigGroup>
 
     <ConfigGroup title="Appearance">
-      <div class="config-row"></div>
-    </ConfigGroup>
-
-    <div>
-      Color Mode
-      <Radio
-        v-for="[colorMode, label] of COLOR_MODE_MAP"
-        :key="colorMode"
-        v-model="config.colorMode"
-        name="color-mode"
-        :value="colorMode"
-        :label="label"
-      />
-
-      Gradient (Channel 1)
-      <Select size="sm">
-        <option
-          v-for="[buildInGradient, label] of BUILT_IN_GRADIENT_MAP"
-          :key="buildInGradient"
-          :value="buildInGradient"
-        >
-          {{ label }}
-        </option>
-      </Select>
-      Gradient (Channel 2)
-      <Select size="sm">
-        <option
-          v-for="[buildInGradient, label] of BUILT_IN_GRADIENT_MAP"
-          :key="buildInGradient"
-          :value="buildInGradient"
-        >
-          {{ label }}
-        </option>
-      </Select>
-      Split Gradient
-      <Switch v-model="config.splitGradient" />
-    </div>
-
-    <div>
-      Alpha Bars
-      <Switch v-model="config.alphaBars" />
-      Ansi Bands
-      <Switch v-model="config.ansiBands" />
-      LED Bars
-      <Switch v-model="config.ledBars" />
-      True LED
-      <Switch v-model="config.trueLeds" />
-      Round Bars
-      <Switch v-model="config.roundBars" />
-      Lumi Bars
-      <Switch v-model="config.lumiBars" />
-      Outline Bars
-      <Switch v-model="config.outlineBars" />
-    </div>
-
-    <div>
-      Bar Space(modes 1-8 only)
-      <div>
-        <InputNumber
-          v-model="config.barSpace"
-          size="sm"
-          :min="1"
-          select-all-on-focus
-          class="text-right"
-        />
-        px
+      <div class="config-row">
+        <ConfigItem item-name="Channel Layout" class="row-gap-2">
+          <div class="flex flex-wrap column-gap-4 row-gap-2">
+            <Radio
+              v-for="[channelLayout, label] of CHANNEL_LAYOUT_MAP"
+              :key="channelLayout"
+              v-model="config.channelLayout"
+              name="channel-layout"
+              size="sm"
+              :label="label"
+              :value="channelLayout"
+              class="channel-layout-radio"
+              @change="onChangeValue({ key: 'channelLayout', value: config.channelLayout })"
+            />
+          </div>
+        </ConfigItem>
       </div>
-    </div>
 
-    <div>
-      Line Width (mode 10 only)
-      <Slider
-        v-model="config.lineWidth"
-        :min="0"
-        :max="50"
-        :format="(val) => (val / 10).toFixed(1)"
-      />
-      Fill Alpha
-      <Slider
-        v-model="config.fillAlpha"
-        :min="0"
-        :max="10"
-        :format="(val) => (val / 10).toFixed(1)"
-      />
-    </div>
+      <div v-if="config.channelLayout !== 'single'" class="config-row">
+        <ConfigItem item-name="Mirror">
+          <div class="flex flex-wrap column-gap-4 row-gap-2">
+            <Radio
+              v-for="[mirror, label] of MIRROR_MAP"
+              :key="mirror"
+              v-model="config.mirror"
+              name="mirror"
+              size="sm"
+              :value="mirror"
+              :label="label"
+              @change="onChangeValue({ key: 'mirror', value: config.mirror })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
 
-    <div>
-      Radial
-      <Switch v-model="config.radial" />
-      Spin Speed
-      <Slider v-if="config.radial" v-model="config.spinSpeed" :min="-20" :max="20" />
-    </div>
+      <div class="config-row">
+        <ConfigItem item-name="Color Mode">
+          <div class="flex flex-wrap column-gap-4 row-gap-2">
+            <Radio
+              v-for="[colorMode, label] of COLOR_MODE_MAP"
+              :key="colorMode"
+              v-model="config.colorMode"
+              name="color-mode"
+              size="sm"
+              :value="colorMode"
+              :label="label"
+              @change="onChangeValue({ key: 'colorMode', value: config.colorMode })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
 
-    <div>
-      Reflex Ratio
-      <Slider
-        v-model="config.reflexRatio"
-        :min="0"
-        :max="70"
-        :format="(val) => (val / 10).toFixed(1)"
-      />
-      Reflex Alpha
-      <Slider v-model="config.reflexAlpha" :min="0" :max="1" :step="0.5" />
-      Reflex Bright
-      <Slider v-model="config.reflexBright" :min="0" :max="2.5" :step="0.1" />
-      Relex Fit
-      <Switch v-model="config.reflexFit" />
-      Mirror
-      <Radio
-        v-for="[mirror, label] of MIRROR_MAP"
-        :key="mirror"
-        v-model="config.mirror"
-        name="mirror"
-        :value="mirror"
-        :label="label"
-      />
-    </div>
-    <div>
-      Scale X Label
-      <Radio
-        v-for="scaleXLabel in SCALE_X_LABELS"
-        :key="scaleXLabel"
-        v-model="config.scaleXLabel"
-        name="scale-x-label"
-        :value="scaleXLabel"
-        :label="scaleXLabel"
-      />
+      <div class="config-row">
+        <ConfigItem item-name="Gradient (Channel 1)" style="min-width: 10rem">
+          <Select
+            v-model="config.gradientLeft"
+            size="sm"
+            @change="onChangeValue({ key: 'gradientLeft', value: config.gradientLeft })"
+          >
+            <option
+              v-for="[buildInGradient, label] of BUILT_IN_GRADIENT_MAP"
+              :key="buildInGradient"
+              :value="buildInGradient"
+              :selected="buildInGradient === config.gradientLeft"
+            >
+              {{ label }}
+            </option>
+          </Select>
+        </ConfigItem>
+        <ConfigItem
+          v-if="config.channelLayout !== 'single'"
+          item-name="Gradient (Channel 2)"
+          style="min-width: 10rem"
+        >
+          <Select
+            v-model="config.gradientRight"
+            size="sm"
+            @change="onChangeValue({ key: 'gradientRight', value: config.gradientRight })"
+          >
+            <option
+              v-for="[buildInGradient, label] of BUILT_IN_GRADIENT_MAP"
+              :key="buildInGradient"
+              :value="buildInGradient"
+              :selected="buildInGradient === config.gradientRight"
+            >
+              {{ label }}
+            </option>
+          </Select>
+        </ConfigItem>
+        <ConfigItem v-if="config.channelLayout !== 'single'" item-name="Split Gradient">
+          <div class="flex align-items-center" style="height: 2.5rem">
+            <Switch
+              v-model="config.splitGradient"
+              size="sm"
+              @change="onChangeValue({ key: 'splitGradient', value: config.splitGradient })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
 
-      Show Scale Y Label
-      <Switch v-model="config.showScaleY" />
-    </div>
+      <div class="config-row">
+        <ConfigItem item-name="Radial">
+          <Switch
+            v-model="config.radial"
+            size="sm"
+            @change="onChangeValue({ key: 'radial', value: config.radial })"
+          />
+        </ConfigItem>
+        <ConfigItem
+          v-if="config.radial"
+          item-name="Spin Speed"
+          class="flex-grow-1"
+          style="max-width: 18rem"
+        >
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.spinSpeed"
+              :min="-20"
+              :max="20"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'spinSpeed', value: config.spinSpeed })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Alpha Bars" style="min-width: 5rem">
+          <Switch
+            v-model="config.alphaBars"
+            size="sm"
+            @change="onChangeValue({ key: 'alphaBars', value: config.alphaBars })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="Ansi Bands" style="min-width: 5rem">
+          <Switch
+            v-model="config.ansiBands"
+            size="sm"
+            @change="onChangeValue({ key: 'ansiBands', value: config.ansiBands })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="LED Bars" style="min-width: 5rem">
+          <Switch
+            v-model="config.ledBars"
+            size="sm"
+            @change="onChangeValue({ key: 'ledBars', value: config.ledBars })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="True LED" style="min-width: 5rem">
+          <Switch
+            v-model="config.trueLeds"
+            size="sm"
+            @change="onChangeValue({ key: 'trueLeds', value: config.trueLeds })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="Round Bars" style="min-width: 5rem">
+          <Switch
+            v-model="config.roundBars"
+            size="sm"
+            @change="onChangeValue({ key: 'roundBars', value: config.roundBars })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="Lumi Bars" style="min-width: 5rem">
+          <Switch
+            v-model="config.lumiBars"
+            size="sm"
+            @change="onChangeValue({ key: 'lumiBars', value: config.lumiBars })"
+          />
+        </ConfigItem>
+        <ConfigItem item-name="Outline Bars" style="min-width: 5rem">
+          <Switch
+            v-model="config.outlineBars"
+            size="sm"
+            @change="onChangeValue({ key: 'outlineBars', value: config.outlineBars })"
+          />
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Fixed Bar Space">
+          <div class="flex align-items-center" style="height: 2.5rem">
+            <Switch v-model="fixedBarSpace" size="sm" @change="onChangeFixedBarSwitch" />
+          </div>
+        </ConfigItem>
+
+        <ConfigItem item-name="Bar Space" class="flex-grow-1" style="max-width: 18rem">
+          <div v-if="fixedBarSpace">
+            <InputNumber
+              v-model="config.barSpace"
+              size="sm"
+              :min="1"
+              select-all-on-focus
+              class="text-right"
+              style="max-width: 8rem"
+              @update:model-value="onChangeValue({ key: 'barSpace', value: config.barSpace })"
+            />
+            px
+          </div>
+          <div v-else class="flex align-items-center" style="height: 2.5rem">
+            <Slider
+              v-model="config.barSpace"
+              :min="0"
+              :max="0.95"
+              :step="0.05"
+              :format="(val) => `${Number.parseFloat((val * 100).toFixed(10))}%`"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'barSpace', value: config.barSpace })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <!-- // TODO:  (mode 10 only) -->
+        <ConfigItem item-name="Line Width" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.lineWidth"
+              :min="0"
+              :max="5"
+              :step="0.1"
+              :bar-width="0.75"
+              :format="(val) => `${val}px`"
+              @update:model-value="onChangeValue({ key: 'lineWidth', value: config.lineWidth })"
+            />
+          </div>
+        </ConfigItem>
+        <ConfigItem item-name="Fill Alpha" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.fillAlpha"
+              :min="0"
+              :max="1"
+              :step="0.01"
+              :bar-width="0.75"
+              :format="(val) => `${Number.parseFloat((val * 100).toFixed(10))}%`"
+              @update:model-value="onChangeValue({ key: 'fillAlpha', value: config.fillAlpha })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Reflex Ratio" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.reflexRatio"
+              :min="0"
+              :max="7"
+              :step="0.1"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'reflexRatio', value: config.reflexRatio })"
+            />
+          </div>
+        </ConfigItem>
+        <ConfigItem v-if="config.reflexRatio > 0" item-name="Relex Fit">
+          <Switch
+            v-model="config.reflexFit"
+            size="sm"
+            @change="onChangeValue({ key: 'reflexFit', value: config.reflexFit })"
+          />
+        </ConfigItem>
+      </div>
+
+      <div v-if="config.reflexRatio > 0" class="config-row">
+        <ConfigItem item-name="Reflex Alpha" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.reflexAlpha"
+              :min="0"
+              :max="1"
+              :step="0.5"
+              :bar-width="0.75"
+              @update:model-value="onChangeValue({ key: 'reflexAlpha', value: config.reflexAlpha })"
+            />
+          </div>
+        </ConfigItem>
+        <ConfigItem item-name="Reflex Bright" class="flex-grow-1" style="max-width: 18rem">
+          <div class="flex align-items-center" style="height: 1.75rem">
+            <Slider
+              v-model="config.reflexBright"
+              :min="0"
+              :max="2.5"
+              :step="0.1"
+              :bar-width="0.75"
+              @update:model-value="
+                onChangeValue({ key: 'reflexBright', value: config.reflexBright })
+              "
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Show Peaks">
+          <Switch
+            v-model="config.showPeaks"
+            size="sm"
+            @change="onChangeValue({ key: 'showPeaks', value: config.showPeaks })"
+          />
+        </ConfigItem>
+
+        <ConfigItem v-if="config.showPeaks" item-name="Show Peak Line">
+          <Switch
+            v-model="config.showPeakLine"
+            size="sm"
+            @change="onChangeValue({ key: 'showPeakLine', value: config.showPeakLine })"
+          />
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Scale X Label">
+          <div class="flex flex-wrap column-gap-4 row-gap-2">
+            <Radio
+              v-for="scaleXLabel in SCALE_X_LABELS"
+              :key="scaleXLabel"
+              v-model="config.scaleXLabel"
+              name="scale-x-label"
+              size="sm"
+              :value="scaleXLabel"
+              :label="scaleXLabel"
+              @change="onChangeValue({ key: 'scaleXLabel', value: config.scaleXLabel })"
+            />
+          </div>
+        </ConfigItem>
+      </div>
+
+      <div class="config-row">
+        <ConfigItem item-name="Show Scale Y Label">
+          <Switch
+            v-model="config.showScaleY"
+            size="sm"
+            @change="onChangeValue({ key: 'showScaleY', value: config.showScaleY })"
+          />
+        </ConfigItem>
+      </div>
+    </ConfigGroup>
   </div>
 </template>
 

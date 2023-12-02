@@ -17,14 +17,9 @@ export const useVisualizer = (containerEl: HTMLDivElement, audio: HTMLAudioEleme
   const changeProperty = (keyValuePair: KeyValue<VisualizerConfig>) => {
     if (analyzer.isDestroyed) return;
 
-    console.log('property changed', keyValuePair);
-
     switch (keyValuePair.key) {
       case 'mode':
         analyzer.mode = keyValuePair.value;
-        break;
-      case 'channelLayout':
-        analyzer.channelLayout = keyValuePair.value;
         break;
       case 'fftSize':
         analyzer.fftSize = keyValuePair.value;
@@ -56,6 +51,27 @@ export const useVisualizer = (containerEl: HTMLDivElement, audio: HTMLAudioEleme
       case 'linearAmplitude':
         analyzer.linearAmplitude = keyValuePair.value;
         break;
+      case 'channelLayout':
+        analyzer.channelLayout = keyValuePair.value;
+        break;
+      case 'colorMode':
+        analyzer.colorMode = keyValuePair.value;
+        break;
+      case 'gradientLeft':
+        analyzer.gradientLeft = keyValuePair.value;
+        break;
+      case 'gradientRight':
+        analyzer.gradientRight = keyValuePair.value;
+        break;
+      case 'splitGradient':
+        analyzer.splitGradient = keyValuePair.value;
+        break;
+      case 'barSpace':
+        analyzer.barSpace = keyValuePair.value;
+        break;
+
+      default:
+        console.debug('Not handled...', keyValuePair);
     }
 
     console.log(keyValuePair.key, analyzer[keyValuePair.key]);

@@ -87,7 +87,6 @@ export type VisualizerConfig = {
   // This option has no effect on vertical gradients, except on radial spectrum
   splitGradient: boolean;
 
-  fixedBarSpace: boolean;
   barSpace: number;
   alphaBars: boolean;
   ansiBands: boolean;
@@ -144,7 +143,6 @@ export const getDefaultConfig = (): VisualizerConfig => ({
   gradientLeft: 'classic',
   gradientRight: 'classic',
   splitGradient: false,
-  fixedBarSpace: false,
   barSpace: 0.1,
   alphaBars: false,
   ansiBands: false,
