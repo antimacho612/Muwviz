@@ -9,6 +9,7 @@ import {
   scannedFoldersStore,
   settingsStore,
   songsStore,
+  visualizerConfigStore,
 } from '.';
 import { ARTWORK_DIR } from './core/paths';
 import { scanFolder } from './core/scanner';
@@ -16,6 +17,7 @@ import {
   closeWindow,
   createSubWindow,
   getWindow,
+  isWindowMaximized,
   maximizeWindow,
   minimizeWindow,
   openFileBrowser,
@@ -44,6 +46,8 @@ export const registerIpcChannels = () => {
 
   // 指定されたパスをデフォルトのアプリケーションで開く
   ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
+
+  ipcMain.handle('isWindowMaximized', async (_, isMainWindow) => isWindowMaximized(isMainWindow));
 
   // ウィンドウを最小化する
   ipcMain.handle('minimizeWindow', async (_, isMainWindow) => minimizeWindow(isMainWindow));
@@ -89,6 +93,14 @@ export const registerIpcChannels = () => {
     lyricsStore.clearCache();
     return lyrics;
   });
+
+  // 全ビジュアライザーの設定情報を取得する
+  ipcMain.handle('getAllVisualizerConfig', async () => visualizerConfigStore.getVisualizerConfig());
+
+  // ビジュアライザーの設定を更新する
+  ipcMain.handle('updateVisualizerConfig', async (_, index, options) =>
+    visualizerConfigStore.setVisualizerConfig(index, options)
+  );
 };
 
 /**

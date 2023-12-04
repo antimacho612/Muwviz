@@ -10,13 +10,22 @@ export default class SettingsStore extends BaseJSONStore<Settings> {
     }
   }
 
-  public getWindowSize() {
-    return this.cachedData?.windowSize ?? DEFAULT_SETTINGS.windowSize;
+  public getMainWindowState() {
+    return this.cachedData?.mainWindowState ?? DEFAULT_SETTINGS.mainWindowState;
   }
 
-  public setWindowSize(windowSize: { width: number; height: number }) {
+  public setMainWindowState(windowState: { width: number; height: number; isMaximized: boolean }) {
     if (!this.cachedData) return;
-    this.cachedData.windowSize = windowSize;
+    this.cachedData.mainWindowState = windowState;
+  }
+
+  public getSubWindowState() {
+    return this.cachedData?.subWindowState ?? DEFAULT_SETTINGS.subWindowState;
+  }
+
+  public setSubWindowState(windowState: { width: number; height: number; x?: number; y?: number }) {
+    if (!this.cachedData) return;
+    this.cachedData.subWindowState = windowState;
   }
 
   public update<K extends keyof Omit<Settings, 'scannedFolders'>>(key: K, value: Settings[K]) {

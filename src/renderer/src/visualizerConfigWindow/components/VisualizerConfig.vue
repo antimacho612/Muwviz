@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 import { sendMessageToMainWindowKey } from '../injectionKeys';
-import { KeyValue } from '@shared/types';
+import { useVisualizerConfigStore } from '../stores/visualizerConfig';
 import {
-  getDefaultConfig,
   VISUALIZATION_MODE_MAP,
   CHANNEL_LAYOUT_MAP,
   FFT_SIZES,
@@ -17,8 +16,10 @@ import {
   SCALE_X_LABELS,
   VisualizerConfig,
 } from '@shared/visualizerTypes';
+import { KeyValue } from '@shared/types';
 
 import ConfigGroup from './ConfigGroup.vue';
+import ConfigRow from './ConfigRow.vue';
 import ConfigItem from './ConfigItem.vue';
 import Select from '@renderer/commonComponents/Select/Select.vue';
 import Slider from '@renderer/commonComponents/Slider/Slider.vue';
@@ -26,14 +27,19 @@ import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue'
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
 
-const config = ref(getDefaultConfig());
+const { visualizerConfig } = useVisualizerConfigStore();
+
+const config = ref(visualizerConfig[0]);
 const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
-const onChangeValue = (keyValuePair: KeyValue<VisualizerConfig>) =>
+const onChangeValue = async (keyValue: KeyValue<VisualizerConfig>) => {
+  await window.electronAPI.invoke.updateVisualizerConfig(0, { [keyValue.key]: keyValue.value });
+
   sendMessageToMainWindow &&
-  sendMessageToMainWindow({
-    channel: 'changeVisualizerConfig',
-    payload: { index: 0, ...keyValuePair },
-  });
+    sendMessageToMainWindow({
+      channel: 'changeVisualizerConfig',
+      payload: { index: 0, ...keyValue },
+    });
+};
 
 const fixedBarSpace = ref(config.value.barSpace >= 1);
 const onChangeFixedBarSwitch = () => {
@@ -45,7 +51,7 @@ const onChangeFixedBarSwitch = () => {
 <template>
   <div class="visualizer-configs">
     <ConfigGroup title="Core">
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Mode">
           <Select
             v-model="config.mode"
@@ -62,7 +68,7 @@ const onChangeFixedBarSwitch = () => {
             </option>
           </Select>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <div class="config-row column-gap-4">
         <ConfigItem item-name="FFT Size" class="w-7rem">
@@ -96,7 +102,7 @@ const onChangeFixedBarSwitch = () => {
         </ConfigItem>
       </div>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Min Frequency" class="w-7rem">
           <Select
             v-model="config.minFreq"
@@ -146,9 +152,9 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Weighting Filter">
           <div class="flex flex-wrap column-gap-4 row-gap-2">
             <Radio
@@ -163,7 +169,7 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
       <div class="config-row w-full">
         <ConfigItem item-name="Min Decibels" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
@@ -191,7 +197,7 @@ const onChangeFixedBarSwitch = () => {
         </ConfigItem>
       </div>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Linear Amplitude">
           <Switch
             v-model="config.linearAmplitude"
@@ -215,11 +221,11 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
     </ConfigGroup>
 
     <ConfigGroup title="Appearance">
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Channel Layout" class="row-gap-2">
           <div class="flex flex-wrap column-gap-4 row-gap-2">
             <Radio
@@ -235,7 +241,7 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <div v-if="config.channelLayout !== 'single'" class="config-row">
         <ConfigItem item-name="Mirror">
@@ -254,7 +260,7 @@ const onChangeFixedBarSwitch = () => {
         </ConfigItem>
       </div>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Color Mode">
           <div class="flex flex-wrap column-gap-4 row-gap-2">
             <Radio
@@ -269,9 +275,9 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Gradient (Channel 1)" style="min-width: 10rem">
           <Select
             v-model="config.gradientLeft"
@@ -317,9 +323,9 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Radial">
           <Switch
             v-model="config.radial"
@@ -343,9 +349,9 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Alpha Bars" style="min-width: 5rem">
           <Switch
             v-model="config.alphaBars"
@@ -395,9 +401,9 @@ const onChangeFixedBarSwitch = () => {
             @change="onChangeValue({ key: 'outlineBars', value: config.outlineBars })"
           />
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Fixed Bar Space">
           <div class="flex align-items-center" style="height: 2.5rem">
             <Switch v-model="fixedBarSpace" size="sm" @change="onChangeFixedBarSwitch" />
@@ -429,9 +435,9 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <!-- // TODO:  (mode 10 only) -->
         <ConfigItem item-name="Line Width" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
@@ -459,16 +465,16 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Reflex Ratio" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
               v-model="config.reflexRatio"
               :min="0"
-              :max="7"
-              :step="0.1"
+              :max="0.7"
+              :step="0.01"
               :bar-width="0.75"
               @update:model-value="onChangeValue({ key: 'reflexRatio', value: config.reflexRatio })"
             />
@@ -481,7 +487,7 @@ const onChangeFixedBarSwitch = () => {
             @change="onChangeValue({ key: 'reflexFit', value: config.reflexFit })"
           />
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <div v-if="config.reflexRatio > 0" class="config-row">
         <ConfigItem item-name="Reflex Alpha" class="flex-grow-1" style="max-width: 18rem">
@@ -490,7 +496,7 @@ const onChangeFixedBarSwitch = () => {
               v-model="config.reflexAlpha"
               :min="0"
               :max="1"
-              :step="0.5"
+              :step="0.05"
               :bar-width="0.75"
               @update:model-value="onChangeValue({ key: 'reflexAlpha', value: config.reflexAlpha })"
             />
@@ -512,7 +518,7 @@ const onChangeFixedBarSwitch = () => {
         </ConfigItem>
       </div>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Show Peaks">
           <Switch
             v-model="config.showPeaks"
@@ -523,14 +529,14 @@ const onChangeFixedBarSwitch = () => {
 
         <ConfigItem v-if="config.showPeaks" item-name="Show Peak Line">
           <Switch
-            v-model="config.showPeakLine"
+            v-model="config.peakLine"
             size="sm"
-            @change="onChangeValue({ key: 'showPeakLine', value: config.showPeakLine })"
+            @change="onChangeValue({ key: 'peakLine', value: config.peakLine })"
           />
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Scale X Label">
           <div class="flex flex-wrap column-gap-4 row-gap-2">
             <Radio
@@ -545,9 +551,9 @@ const onChangeFixedBarSwitch = () => {
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
-      <div class="config-row">
+      <ConfigRow>
         <ConfigItem item-name="Show Scale Y Label">
           <Switch
             v-model="config.showScaleY"
@@ -555,7 +561,7 @@ const onChangeFixedBarSwitch = () => {
             @change="onChangeValue({ key: 'showScaleY', value: config.showScaleY })"
           />
         </ConfigItem>
-      </div>
+      </ConfigRow>
     </ConfigGroup>
   </div>
 </template>

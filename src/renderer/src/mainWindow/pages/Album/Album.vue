@@ -17,6 +17,7 @@ import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
+import { UNKNOWN_ALBUM_TITLE } from '@renderer/mainWindow/constants';
 
 const props = defineProps<{ albumId: string }>();
 
@@ -65,12 +66,14 @@ useResizeObserver(headerEl, (entries) => {
       <Artwork :src="album?.artworkPath" :width="artworkWidth" class="artwork" />
 
       <div class="header-main">
-        <div class="title">{{ album?.name }}</div>
+        <div class="title">{{ album?.name || UNKNOWN_ALBUM_TITLE }}</div>
         <div class="bottom">
           <div class="artists">
-            <span v-for="artist in album?.artists" :key="artist.id">
-              {{ artist.name }}
-            </span>
+            <template v-if="album?.name">
+              <span v-for="artist in album?.artists" :key="artist.id">
+                {{ artist.name }}
+              </span>
+            </template>
           </div>
           <div class="actions">
             <Button size="xs">
@@ -193,5 +196,3 @@ useResizeObserver(headerEl, (entries) => {
   padding: 0 0.5rem;
 }
 </style>
-@renderer/mainWindow/stores/entities @renderer/mainWindow/composables/useAudioPlayer
-@renderer/mainWindow/composables/useSort@renderer/mainWindow/composables/useQuickSearch@renderer/mainWindow/composables/useMultiSelectableSongList@renderer/mainWindow/composables/useContextMenu

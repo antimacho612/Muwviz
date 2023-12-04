@@ -8,23 +8,34 @@ import {
 } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import path from 'path';
-import { settingsStore } from '.';
+import { settingsStore, visualizerConfigStore } from '.';
 import { sendWindowMaximized } from './ipc';
-import { DEFAULT_SETTINGS } from '@shared/types';
 import icon from '../../resources/icon.png?asset';
+import { DEFAULT_SETTINGS } from '@shared/types';
 
 let mainWindowId: number | undefined;
 let subWindowId: number | undefined;
 
-const onCloseWindow = async (_event: Event, window: BrowserWindow) => {
+const onCloseWindow = async (_event: Event, window: BrowserWindow, isMainWindow = true) => {
   const [width, height] = window.getSize();
-  settingsStore.setWindowSize({ width, height });
-  await settingsStore.save();
+  if (isMainWindow) {
+    settingsStore.setMainWindowState({ width, height, isMaximized: window.isMaximized() });
+    await settingsStore.save();
+  } else {
+    const [x, y] = window.getPosition();
+    settingsStore.setSubWindowState({ width, height, x, y });
+    await visualizerConfigStore.save();
+  }
 };
 
-const registerWindowEvents = (window: BrowserWindow, isMainWindow = true) => {
+const registerWindowEvents = (
+  window: BrowserWindow,
+  isMainWindow = true,
+  maximizeWindow = false
+) => {
   window.on('ready-to-show', () => {
     window.show();
+    maximizeWindow && window.maximize();
   });
 
   window.on('resize', () => {
@@ -40,15 +51,15 @@ const registerWindowEvents = (window: BrowserWindow, isMainWindow = true) => {
     return { action: 'deny' };
   });
 
+  window.on('close', async (e: Event) => {
+    await onCloseWindow(e, window, isMainWindow);
+  });
+
+  window.on('session-end', async (e: Event) => {
+    await onCloseWindow(e, window, isMainWindow);
+  });
+
   if (isMainWindow) {
-    window.on('close', async (e: Event) => {
-      await onCloseWindow(e, window);
-    });
-
-    window.on('session-end', async (e: Event) => {
-      await onCloseWindow(e, window);
-    });
-
     window.webContents.session.webRequest.onHeadersReceived(
       { urls: ['*://*.genius.com/*'] },
       (details, callback) => {
@@ -78,14 +89,16 @@ export const getWindow = (isMainWindow = true) => {
 const hasFrame = process.platform === 'linux' || process.platform === 'darwin';
 
 export const createMainWindow = async () => {
-  const windowSize = settingsStore.getData()?.windowSize ?? DEFAULT_SETTINGS.windowSize;
+  const windowState = settingsStore.getMainWindowState();
+
   const window = new BrowserWindow({
     title: 'Muwviz',
     titleBarStyle: hasFrame ? 'default' : 'hidden',
     frame: hasFrame,
-    ...windowSize,
     minWidth: 900,
+    width: windowState.isMaximized ? DEFAULT_SETTINGS.mainWindowState.width : windowState.width,
     minHeight: 612,
+    height: windowState.isMaximized ? DEFAULT_SETTINGS.mainWindowState.height : windowState.height,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -98,7 +111,7 @@ export const createMainWindow = async () => {
   });
   mainWindowId = window.id;
 
-  registerWindowEvents(window);
+  registerWindowEvents(window, true, windowState.isMaximized);
 
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     await window.loadURL(`${process.env.ELECTRON_RENDERER_URL}`);
@@ -122,13 +135,15 @@ export const createSubWindow = async () => {
   let window: BrowserWindow | null = getWindow(false);
 
   if (!window || window?.isDestroyed()) {
+    const windowState = settingsStore.getSubWindowState();
+
     window = new BrowserWindow({
       title: 'Muwviz Visualizer Config',
       titleBarStyle: hasFrame ? 'default' : 'hidden',
       frame: hasFrame,
-      width: 400,
+      ...windowState,
       minWidth: 360,
-      height: 640,
+      maxWidth: 700,
       minHeight: 320,
       show: false,
       autoHideMenuBar: true,
@@ -154,6 +169,11 @@ export const createSubWindow = async () => {
   } else {
     window.focus();
   }
+};
+
+export const isWindowMaximized = (isMainWindow = true) => {
+  const window = getWindow(isMainWindow);
+  return window?.isMaximized();
 };
 
 export const minimizeWindow = (isMainWindow = true) => {

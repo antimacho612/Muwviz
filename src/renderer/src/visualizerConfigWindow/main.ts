@@ -18,6 +18,8 @@ import {
   connectMessagePort,
 } from '@renderer/commonUtils/messagePort';
 import { sendMessageToMainWindowKey } from './injectionKeys';
+import { isRejected } from '@shared/utils';
+import { useVisualizerConfigStore } from './stores/visualizerConfig';
 
 registErrorHandler();
 
@@ -69,5 +71,9 @@ async function handleOnCloseMainWindow() {
 }
 
 async function fetchDatas() {
-  await useWindowStore().fetch();
+  const { fetch: fetchWindowState } = useWindowStore();
+  const { fetch: fetchVisualizerConfig } = useVisualizerConfigStore();
+
+  const results = await Promise.allSettled([fetchWindowState(), fetchVisualizerConfig()]);
+  results.filter(isRejected).forEach((result) => console.error(result.reason.toString()));
 }

@@ -17,6 +17,10 @@ export const useWindowStore = defineStore('window', {
   },
 
   actions: {
+    async fetch() {
+      this.isWindowMaximized = await window.electronAPI.invoke.isWindowMaximized(true);
+    },
+
     toggleLeftSidePaneCollapsed() {
       this.isLeftSidePaneCollapsed = !this.isLeftSidePaneCollapsed;
     },

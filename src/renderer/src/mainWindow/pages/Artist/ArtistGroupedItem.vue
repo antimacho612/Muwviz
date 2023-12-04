@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { GroupedItem } from './grouping';
+import { UNKNOWN_ALBUM_TITLE } from '@renderer/mainWindow/constants';
 
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import ArtistAlbumSong from './ArtistAlbumSong.vue';
@@ -36,7 +37,7 @@ const computedSelectedSongs = computed(() => props.selectedSongs);
 
     <div class="album-name">
       <RouterLink :to="`/albums/${groupedItem.albumId}`">
-        {{ groupedItem.album }}
+        {{ groupedItem.album || UNKNOWN_ALBUM_TITLE }}
       </RouterLink>
     </div>
 

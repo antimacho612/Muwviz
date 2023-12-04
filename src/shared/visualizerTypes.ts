@@ -117,13 +117,12 @@ export type VisualizerConfig = {
   // when reflexRatio > 0 && reflexRatio !== .5
   reflexFit: boolean;
   mirror: Mirror;
-
+  showPeaks: boolean;
+  // When true and mode is 10 (Graph) and showPeaks is true, peaks are connected into a continuous line. It has no effect in other modes.
+  peakLine: boolean;
   scaleXLabel: ScaleXLabel;
   // This option has no effect when radial or lumiBars are set to true.
   showScaleY: boolean;
-  showPeaks: boolean;
-  // When true and mode is 10 (Graph) and showPeaks is true, peaks are connected into a continuous line. It has no effect in other modes.
-  showPeakLine: boolean;
 };
 
 export const getDefaultConfig = (): VisualizerConfig => ({
@@ -160,8 +159,8 @@ export const getDefaultConfig = (): VisualizerConfig => ({
   reflexBright: 1,
   reflexFit: true,
   mirror: 0,
+  showPeaks: true,
+  peakLine: false,
   scaleXLabel: 'Frequencies',
   showScaleY: false,
-  showPeaks: true,
-  showPeakLine: false,
 });

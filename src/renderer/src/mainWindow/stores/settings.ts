@@ -11,6 +11,7 @@ import AudioMotionAnalyzer from 'audiomotion-analyzer';
 export type SettingsStoreState = {
   scannedFolders: ScannedFolder[];
   artworkPath: string;
+  appVersion: string;
   audioMotionAnalizerVersion: string;
 } & AppearanceSettings;
 
@@ -22,6 +23,7 @@ export const useSettingsStore = defineStore('settings', {
       fontFamily: DEFAULT_SETTINGS.fontFamily,
       theme: DEFAULT_SETTINGS.theme,
       primaryColor: DEFAULT_SETTINGS.primaryColor,
+      appVersion: '',
       audioMotionAnalizerVersion: AudioMotionAnalyzer.version,
     };
   },
@@ -30,10 +32,11 @@ export const useSettingsStore = defineStore('settings', {
     async fetch() {
       console.debug('Fetching settings...');
 
-      const [artworkPath, scannedFolders, settings] = await Promise.all([
+      const [artworkPath, scannedFolders, settings, appVersion] = await Promise.all([
         window.electronAPI.invoke.getArtworkPath(),
         window.electronAPI.invoke.getScannedFolders(),
         window.electronAPI.invoke.getSettings(),
+        window.electronAPI.invoke.getAppVersion(),
       ]);
 
       this.scannedFolders = scannedFolders ?? [];
@@ -41,6 +44,7 @@ export const useSettingsStore = defineStore('settings', {
       this.fontFamily = settings.fontFamily;
       this.theme = settings.theme;
       this.primaryColor = settings.primaryColor;
+      this.appVersion = appVersion;
     },
 
     async saveChanges(keys: Set<keyof Settings>) {

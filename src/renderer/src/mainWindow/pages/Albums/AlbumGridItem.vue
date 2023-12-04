@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { UNKNOWN_ALBUM_TITLE, UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 import { Album } from '@shared/types';
 
 import { PlayIcon } from '@heroicons/vue/24/solid';
@@ -8,16 +9,17 @@ import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 
 const props = defineProps<{ album: Album }>();
 
-const emits = defineEmits<{
+type Emits = {
   clickItem: [e: MouseEvent];
   clickPlayButton: [e: MouseEvent];
   contextmenu: [e: MouseEvent];
-}>();
+};
+const emits = defineEmits<Emits>();
 
 const artistName = computed(() => {
-  if (!props.album.artists) return '-';
-  if (props.album.artists.length === 1) return props.album.artists[0].name;
-  return props.album.artists[0].name + ' 他';
+  if (!props.album.artists) return UNKNOWN_ARTIST_TITLE;
+  if (props.album.artists.length === 1) return props.album.artists[0].name || UNKNOWN_ARTIST_TITLE;
+  return (props.album.artists[0].name || UNKNOWN_ARTIST_TITLE) + ' 他';
 });
 </script>
 
@@ -27,15 +29,9 @@ const artistName = computed(() => {
     @click="emits('clickItem', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <Artwork
-      :src="album.artworkPath"
-      width="128px"
-      height="128px"
-      :show-play-icon="false"
-      class="artwork"
-    />
+    <Artwork :src="album.artworkPath" width="128px" height="128px" style="z-index: 1" />
     <div>
-      <div class="name" :title="album.name">{{ album.name }}</div>
+      <div class="name" :title="album.name">{{ album.name || UNKNOWN_ALBUM_TITLE }}</div>
       <div class="artist">{{ artistName }}</div>
     </div>
     <div class="song-count">{{ album.songCount }}</div>
@@ -57,10 +53,6 @@ const artistName = computed(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.artwork {
-  z-index: 1;
 }
 
 .song-count {

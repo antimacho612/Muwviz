@@ -43,7 +43,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
       :src="song.artworkPath"
       width="44px"
       height="44px"
-      :show-play-icon="true"
+      show-play-icon
       class="song-artwork"
       @click.stop="emits('clickArtwork', $event)"
       @dblclick.stop
@@ -152,4 +152,3 @@ const current = computed(() => props.song.id === currentSong.value?.id);
   }
 }
 </style>
-@renderer/mainWindow/composables/useAudioPlayer @renderer/utils

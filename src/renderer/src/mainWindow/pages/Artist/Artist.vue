@@ -6,6 +6,7 @@ import { groupSongs } from './grouping';
 import { useSongsSort } from '@mainWindow/composables/useSort';
 import { useSongsQuickSearch } from '@mainWindow/composables/useQuickSearch';
 import { useMultiSelectableSongList } from '@mainWindow/composables/useMultiSelectableSongList';
+import { UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 import { Song } from '@shared/types';
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
@@ -45,17 +46,17 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
 </script>
 
 <template>
-  <div class="w-full h-full overflow-hidden">
+  <div class="artist-page">
     <PageHeader>
       <BackButton to="/artists" />
     </PageHeader>
 
-    <div class="flex align-items-center" style="gap: 0.75rem; margin-bottom: 1rem">
+    <div class="artist-header">
       <ArtistImage class="w-3rem h-3rem" style="padding: 0.375rem" />
-      <span class="text-2xl font-bold">{{ artist?.name }}</span>
+      <span class="text-2xl font-bold">{{ artist?.name || UNKNOWN_ARTIST_TITLE }}</span>
     </div>
 
-    <div class="flex align-items-center justify-content-between" style="margin: 0 0.5rem 0.5rem">
+    <div class="widgets">
       <SortWidget
         v-model:sort-by="sortKey"
         v-model:order="order"
@@ -90,3 +91,25 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
     </DynamicScroller>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.artist-page {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.artist-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.widgets {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0.5rem 0.5rem;
+}
+</style>

@@ -7,7 +7,7 @@ import { useSongsQuickSearch } from '@mainWindow/composables/useQuickSearch';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
-import SongList from '@mainWindow/components/SongList/SongList.vue';
+import SongList from './SongList.vue';
 
 const { setQueue } = useAudioPlayer();
 const { songList } = useEntitiesStore();
@@ -53,7 +53,7 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .songs-page {
   width: 100%;
   height: 100%;

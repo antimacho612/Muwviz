@@ -71,7 +71,8 @@ export type Settings = {
   theme: Theme;
   primaryColor: string;
   showDesktopNotification: boolean;
-  windowSize: { width: number; height: number };
+  mainWindowState: { width: number; height: number; isMaximized: boolean };
+  subWindowState: { width: number; height: number; x?: number; y?: number };
 };
 
 export type AppearanceSettings = Pick<Settings, 'fontFamily' | 'theme' | 'primaryColor'>;
@@ -82,7 +83,8 @@ export const DEFAULT_SETTINGS: Settings = {
   primaryColor: '#7c3aed',
   theme: 'Light',
   showDesktopNotification: true,
-  windowSize: { width: 960, height: 640 },
+  mainWindowState: { width: 960, height: 640, isMaximized: false },
+  subWindowState: { width: 400, height: 640 },
 };
 
 export type ScanProgress = {

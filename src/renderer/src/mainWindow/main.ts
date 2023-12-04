@@ -35,6 +35,7 @@ import { useSettingsStore } from './stores/settings';
 import { useEntitiesStore } from './stores/entities';
 
 import '@renderer/assets/styles/style.scss';
+import { useWindowStore } from './stores/window';
 
 registErrorHandler();
 
@@ -73,10 +74,10 @@ app.provide(sendMessageToSubWindowKey, messagePort.sendMessage);
 app.mount('#app');
 
 async function fetchDatas() {
+  const { fetch: fetchWindowState } = useWindowStore();
   const { fetch: fecthSettings } = useSettingsStore();
   const { fetch: fecthEntities } = useEntitiesStore();
 
-  const results = await Promise.allSettled([fecthSettings(), fecthEntities()]);
-
+  const results = await Promise.allSettled([fetchWindowState(), fecthSettings(), fecthEntities()]);
   results.filter(isRejected).forEach((result) => console.error(result.reason.toString()));
 }

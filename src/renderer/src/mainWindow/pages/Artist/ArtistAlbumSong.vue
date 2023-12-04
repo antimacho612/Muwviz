@@ -42,7 +42,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
     </div>
 
     <div class="title-area">
-      <div class="title flex-auto single-line-clamp">{{ song.title }}</div>
+      <div class="title">{{ song.title }}</div>
       <BarsAnimation
         v-if="current"
         :pause="!isPlaying"

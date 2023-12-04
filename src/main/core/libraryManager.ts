@@ -26,10 +26,10 @@ export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) =
   const album = albumsStore.findByName(parsedSong.album);
   if (album) {
     albumId = album.id;
-    if (album.artists.every((artist) => artist.id !== artistId)) {
+    if (album.name !== '' && album.artists.every((artist) => artist.id !== artistId)) {
       album.artists.push({ id: artistId, name: parsedSong.artist });
     }
-    if (!album.artworkPath && parsedSong.artworkPath) {
+    if (album.name !== '' && !album.artworkPath && parsedSong.artworkPath) {
       album.artworkPath = parsedSong.artworkPath;
     }
     album.songCount++;

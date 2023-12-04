@@ -20,10 +20,6 @@ const TABS = [
     title: 'Lyrics',
     component: LyricsTab,
   },
-  {
-    title: 'Vizr',
-    component: LyricsTab,
-  },
 ] as const;
 </script>
 

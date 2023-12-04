@@ -1,29 +1,47 @@
 <script setup lang="ts">
 interface Props {
-  modelValue?: string | boolean | number | object;
+  modelValue?: boolean | number | string;
   size?: 'xs' | 'sm' | 'md' | 'lg';
+  options?: {
+    label: string;
+    value: boolean | number | string;
+    disabled?: boolean;
+    selected?: boolean;
+  }[];
 }
 
 withDefaults(defineProps<Props>(), {
   size: 'md',
+  options: () => [],
 });
 
 const emits = defineEmits<{
-  'update:modelValue': [modelValue: string | boolean | number | object];
+  'update:modelValue': [modelValue: boolean | number | string];
 }>();
 </script>
 
 <template>
   <select
+    :value="modelValue"
     class="c-select"
     :class="{
       'c-select-xs': size === 'xs',
       'c-select-sm': size === 'sm',
       'c-select-lg': size === 'lg',
     }"
-    @change="emits('update:modelValue', ($event.target as HTMLSelectElement).value)"
+    @change="
+      emits('update:modelValue', ($event.target as HTMLSelectElement).value as typeof modelValue)
+    "
   >
-    <slot></slot>
+    <option
+      v-for="option in options"
+      :key="option.label"
+      :value="option.value"
+      :disabled="option.disabled"
+      :selected="option.selected"
+    >
+      {{ option.label }}
+    </option>
   </select>
 </template>
 

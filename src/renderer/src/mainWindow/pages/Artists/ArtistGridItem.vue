@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Artist } from '@shared/types';
+import { UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 
 import { PlayIcon } from '@heroicons/vue/24/solid';
 import RecycleGridScrollerItem from '@mainWindow/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
@@ -21,9 +22,9 @@ const emits = defineEmits<Emits>();
     @click="emits('clickItem', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <ArtistImage class=".artist-image" />
+    <ArtistImage class="artist-image" />
 
-    <div class="name" :title="artist.name">{{ artist.name }}</div>
+    <div class="name" :title="artist.name">{{ artist.name || UNKNOWN_ARTIST_TITLE }}</div>
     <div class="song-count">{{ artist.songCount }}</div>
     <div
       v-ripple
@@ -31,7 +32,7 @@ const emits = defineEmits<Emits>();
       @click.stop="emits('clickPlayButton', $event)"
       @pointerdown.stop
     >
-      <PlayIcon class="icon-play"></PlayIcon>
+      <PlayIcon class="play-icon"></PlayIcon>
     </div>
   </RecycleGridScrollerItem>
 </template>
@@ -94,7 +95,7 @@ const emits = defineEmits<Emits>();
     background: rgba(var(--primary-color-rgb), 1);
   }
 
-  .icon-play {
+  .play-icon {
     width: 1.5rem;
     height: 1.5rem;
     color: #fff;

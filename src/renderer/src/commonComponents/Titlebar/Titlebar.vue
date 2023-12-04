@@ -3,9 +3,15 @@ import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue
 
 interface Props {
   isWindowMaximized?: boolean;
+  showTitle?: boolean;
+  showMaximizeButton?: boolean;
+  showMinimizeButton?: boolean;
 }
 withDefaults(defineProps<Props>(), {
   isWindowMaximized: false,
+  showTitle: true,
+  showMaximizeButton: true,
+  showMinimizeButton: true,
 });
 
 type Emits = {
@@ -18,7 +24,7 @@ const emits = defineEmits<Emits>();
 
 <template>
   <div class="titlebar">
-    <div class="title">
+    <div v-if="showTitle" class="title">
       <div style="display: flex; gap: 1px; align-items: center; height: 90%; margin-right: 4px">
         <div
           style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 30%"
@@ -42,11 +48,11 @@ const emits = defineEmits<Emits>();
 
       Muwviz
     </div>
-    <div class="buttons">
-      <div class="button" @click="emits('clickMinimizeButton', $event)">
+    <div class="buttons" :style="{ marginLeft: showTitle ? undefined : 'auto' }">
+      <div v-if="showMinimizeButton" class="button" @click="emits('clickMinimizeButton', $event)">
         <MinusIcon class="icon" />
       </div>
-      <div class="button" @click="emits('clickMaximizeButton', $event)">
+      <div v-if="showMaximizeButton" class="button" @click="emits('clickMaximizeButton', $event)">
         <Square2StackIcon v-if="isWindowMaximized" class="icon icon-unmiximize" style="" />
         <StopIcon v-else class="icon" style="" />
       </div>

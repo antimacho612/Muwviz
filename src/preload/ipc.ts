@@ -10,6 +10,7 @@ import {
   Settings,
   Song,
 } from '@shared/types';
+import { VisualizerConfig } from '@shared/visualizerTypes';
 
 export type ElectronAPI = GetApiType<
   {
@@ -43,6 +44,11 @@ export type ElectronAPI = GetApiType<
      * ビジュアライザー設定ウィンドウを開く
      */
     openVisualizerConfigWindow: () => Promise<void>;
+
+    /**
+     * ウィンドウが最大化された状態かどうかを取得する
+     */
+    isWindowMaximized: (isMainWindow: boolean) => Promise<boolean>;
 
     /**
      * ウィンドウを最小化する
@@ -105,6 +111,18 @@ export type ElectronAPI = GetApiType<
      * 全歌詞情報を取得する
      */
     getAllLyrics: () => Promise<Lyrics>;
+
+    /**
+     * 全ビジュアライザーの設定情報を取得する
+     */
+    getAllVisualizerConfig: () => Promise<VisualizerConfig[]>;
+
+    /**
+     * ビジュアライザーの設定を更新する
+     * @param index 更新対象のビジュアライザーのインデックス
+     * @param options 更新内容
+     */
+    updateVisualizerConfig: (index: number, options: Partial<VisualizerConfig>) => Promise<void>;
   },
   {
     /**
@@ -138,6 +156,8 @@ export const electronAPI: ElectronAPI = {
 
     openVisualizerConfigWindow: async () => await ipcRenderer.invoke('openVisualizerConfigWindow'),
 
+    isWindowMaximized: async (isMainWindow: boolean) =>
+      await ipcRenderer.invoke('isWindowMaximized', isMainWindow),
     minimizeWindow: async (isMainWindow: boolean) =>
       await ipcRenderer.invoke('minimizeWindow', isMainWindow),
     maximizeWindow: async (isMainWindow: boolean) =>
@@ -159,6 +179,10 @@ export const electronAPI: ElectronAPI = {
     getAllAlbums: async () => await ipcRenderer.invoke('getAllAlbums'),
     getAllArtists: async () => await ipcRenderer.invoke('getAllArtists'),
     getAllLyrics: async () => await ipcRenderer.invoke('getAllLyrics'),
+
+    getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
+    updateVisualizerConfig: async (index: number, options: Partial<VisualizerConfig>) =>
+      await ipcRenderer.invoke('updateVisualizerConfig', index, options),
   },
   on: {
     resizeWindow: (listener) => ipcRenderer.on('resizeWindow', listener),

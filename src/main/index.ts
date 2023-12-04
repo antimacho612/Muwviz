@@ -1,5 +1,5 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { BrowserWindow, MessageChannelMain, app, protocol } from 'electron';
+import { BrowserWindow, app, protocol } from 'electron';
 import log from 'electron-log/main';
 import path from 'path';
 import { STORES_DIR } from './core/paths';
@@ -12,6 +12,7 @@ import SettingsStore from './stores/settings';
 import SongsStore from './stores/songs';
 import { deleteOldLog } from './utils';
 import { createMainWindow } from './window';
+import VisualizerConfigStore from './stores/visualizerConfig';
 
 export let songsStore: SongsStore;
 export let albumsStore: AlbumsStore;
@@ -19,6 +20,7 @@ export let artistsStore: ArtistsStore;
 export let lyricsStore: LyricsStore;
 export let settingsStore: SettingsStore;
 export let scannedFoldersStore: ScannedFoldersStore;
+export let visualizerConfigStore: VisualizerConfigStore;
 
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) {
@@ -111,7 +113,10 @@ function initializeStore() {
   artistsStore = new ArtistsStore(path.join(STORES_DIR, 'artists.json'));
   lyricsStore = new LyricsStore(path.join(STORES_DIR, 'lyrics.json'));
   settingsStore = new SettingsStore(path.join(STORES_DIR, 'settings.json'));
-  scannedFoldersStore = new ScannedFoldersStore(path.join(STORES_DIR, 'scannedFolders.json'));
+  scannedFoldersStore = new ScannedFoldersStore(path.join(STORES_DIR, 'scanned-folders.json'));
+  visualizerConfigStore = new VisualizerConfigStore(
+    path.join(STORES_DIR, 'visualizer-config.json')
+  );
 }
 
 function registerProtocols() {

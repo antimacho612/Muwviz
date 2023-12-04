@@ -54,7 +54,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .song-list {
   height: calc(100% - 48px - 48px);
   overflow: hidden;
@@ -66,4 +66,3 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
   padding: 0 0.5rem;
 }
 </style>
-@renderer/mainWindow/composables/useContextMenu@renderer/mainWindow/composables/useMultiSelectableSongList
