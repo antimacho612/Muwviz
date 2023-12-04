@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 interface Props {
   modelValue?: boolean | number | string;
   size?: 'xs' | 'sm' | 'md' | 'lg';
@@ -6,39 +8,40 @@ interface Props {
     label: string;
     value: boolean | number | string;
     disabled?: boolean;
-    selected?: boolean;
   }[];
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   options: () => [],
 });
 
 const emits = defineEmits<{
-  'update:modelValue': [modelValue: boolean | number | string];
+  'update:modelValue': [value?: boolean | number | string];
 }>();
+
+const selectedValue = computed({
+  get: () => props.modelValue,
+  set: (value?: string | number | boolean) => emits('update:modelValue', value),
+});
 </script>
 
 <template>
   <select
-    :value="modelValue"
+    v-model="selectedValue"
     class="c-select"
     :class="{
       'c-select-xs': size === 'xs',
       'c-select-sm': size === 'sm',
       'c-select-lg': size === 'lg',
     }"
-    @change="
-      emits('update:modelValue', ($event.target as HTMLSelectElement).value as typeof modelValue)
-    "
   >
     <option
       v-for="option in options"
       :key="option.label"
       :value="option.value"
       :disabled="option.disabled"
-      :selected="option.selected"
+      :selected="option.value === props.modelValue"
     >
       {{ option.label }}
     </option>

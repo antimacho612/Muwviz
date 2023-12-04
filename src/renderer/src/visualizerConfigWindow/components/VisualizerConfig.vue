@@ -56,16 +56,11 @@ const onChangeFixedBarSwitch = () => {
           <Select
             v-model="config.mode"
             size="sm"
-            @change="onChangeValue({ key: 'mode', value: config.mode })"
+            :options="
+              Array.from(VISUALIZATION_MODE_MAP).map(([value, label]) => ({ label, value }))
+            "
+            @update:model-value="onChangeValue({ key: 'mode', value: config.mode })"
           >
-            <option
-              v-for="[mode, label] of VISUALIZATION_MODE_MAP"
-              :key="mode"
-              :value="mode"
-              :selected="mode === config.mode"
-            >
-              {{ label }}
-            </option>
           </Select>
         </ConfigItem>
       </ConfigRow>
@@ -75,17 +70,10 @@ const onChangeFixedBarSwitch = () => {
           <Select
             v-model="config.fftSize"
             size="sm"
+            :options="FFT_SIZES.map((fftSize) => ({ label: fftSize.toString(), value: fftSize }))"
             class="text-right"
-            @change="onChangeValue({ key: 'fftSize', value: config.fftSize })"
+            @update:model-value="onChangeValue({ key: 'fftSize', value: config.fftSize })"
           >
-            <option
-              v-for="fftSize in FFT_SIZES"
-              :key="fftSize"
-              :value="fftSize"
-              :selected="fftSize === config.fftSize"
-            >
-              {{ fftSize }}
-            </option>
           </Select>
         </ConfigItem>
         <ConfigItem item-name="FFT Size Smoothing Time Constant" style="width: 18rem">
@@ -107,34 +95,30 @@ const onChangeFixedBarSwitch = () => {
           <Select
             v-model="config.minFreq"
             size="sm"
+            :options="
+              MIN_FREQUENCIES.map((minFreq) => ({
+                label: `${minFreq} Hz`,
+                value: minFreq,
+              }))
+            "
             class="text-right"
-            @change="onChangeValue({ key: 'minFreq', value: config.minFreq })"
+            @update:model-value="onChangeValue({ key: 'minFreq', value: config.minFreq })"
           >
-            <option
-              v-for="minFreq in MIN_FREQUENCIES"
-              :key="minFreq"
-              :value="minFreq"
-              :selected="minFreq === config.minFreq"
-            >
-              {{ minFreq }} Hz
-            </option>
           </Select>
         </ConfigItem>
         <ConfigItem item-name="Max Frequency" class="w-7rem">
           <Select
             v-model="config.maxFreq"
             size="sm"
+            :options="
+              MAX_FREQUENCIES.map((maxFreq) => ({
+                label: `${maxFreq / 1000}k Hz`,
+                value: maxFreq,
+              }))
+            "
             class="text-right"
-            @change="onChangeValue({ key: 'maxFreq', value: config.maxFreq })"
+            @update:model-value="onChangeValue({ key: 'maxFreq', value: config.maxFreq })"
           >
-            <option
-              v-for="maxFreq in MAX_FREQUENCIES"
-              :key="maxFreq"
-              :value="maxFreq"
-              :selected="maxFreq === config.maxFreq"
-            >
-              {{ maxFreq / 1000 }}k Hz
-            </option>
           </Select>
         </ConfigItem>
         <ConfigItem item-name="Frequency Scale">
@@ -282,16 +266,9 @@ const onChangeFixedBarSwitch = () => {
           <Select
             v-model="config.gradientLeft"
             size="sm"
-            @change="onChangeValue({ key: 'gradientLeft', value: config.gradientLeft })"
+            :options="Array.from(BUILT_IN_GRADIENT_MAP).map(([value, label]) => ({ label, value }))"
+            @update:model-value="onChangeValue({ key: 'gradientLeft', value: config.gradientLeft })"
           >
-            <option
-              v-for="[buildInGradient, label] of BUILT_IN_GRADIENT_MAP"
-              :key="buildInGradient"
-              :value="buildInGradient"
-              :selected="buildInGradient === config.gradientLeft"
-            >
-              {{ label }}
-            </option>
           </Select>
         </ConfigItem>
         <ConfigItem
@@ -302,16 +279,11 @@ const onChangeFixedBarSwitch = () => {
           <Select
             v-model="config.gradientRight"
             size="sm"
-            @change="onChangeValue({ key: 'gradientRight', value: config.gradientRight })"
+            :options="Array.from(BUILT_IN_GRADIENT_MAP).map(([value, label]) => ({ label, value }))"
+            @update:model-value="
+              onChangeValue({ key: 'gradientRight', value: config.gradientRight })
+            "
           >
-            <option
-              v-for="[buildInGradient, label] of BUILT_IN_GRADIENT_MAP"
-              :key="buildInGradient"
-              :value="buildInGradient"
-              :selected="buildInGradient === config.gradientRight"
-            >
-              {{ label }}
-            </option>
           </Select>
         </ConfigItem>
         <ConfigItem v-if="config.channelLayout !== 'single'" item-name="Split Gradient">
