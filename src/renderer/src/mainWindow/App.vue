@@ -17,11 +17,11 @@ useIpcEventHandler();
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
 
 const { isWindowMaximized } = storeToRefs(useWindowStore());
-const onClickMinimizeButton = async () => await window.electronAPI.invoke.minimizeWindow(true);
-const onClickMaximizeButton = async () => await window.electronAPI.invoke.maximizeWindow(true);
+const onClickMinimizeButton = async () => await window.electron.invoke.minimizeWindow(true);
+const onClickMaximizeButton = async () => await window.electron.invoke.maximizeWindow(true);
 const onClickCloseButton = async () => {
   sendMessageToSubWindow && sendMessageToSubWindow({ channel: 'closeWindow' });
-  await window.electronAPI.invoke.closeWindow(true);
+  await window.electron.invoke.closeWindow(true);
 };
 </script>
 

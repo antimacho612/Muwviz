@@ -1,23 +1,29 @@
 <script setup lang="ts">
 import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { IconPin, IconPinFilled } from '@tabler/icons-vue';
 
 interface Props {
   isWindowMaximized?: boolean;
   showTitle?: boolean;
   showMaximizeButton?: boolean;
   showMinimizeButton?: boolean;
+  showPinButton?: boolean;
+  pinned?: boolean;
 }
 withDefaults(defineProps<Props>(), {
   isWindowMaximized: false,
   showTitle: true,
   showMaximizeButton: true,
   showMinimizeButton: true,
+  showPinButton: false,
+  pinned: false,
 });
 
 type Emits = {
   clickMinimizeButton: [e: MouseEvent];
   clickMaximizeButton: [e: MouseEvent];
   clickCloseButton: [e: MouseEvent];
+  clickPinButton: [e: MouseEvent];
 };
 const emits = defineEmits<Emits>();
 </script>
@@ -49,6 +55,10 @@ const emits = defineEmits<Emits>();
       Muwviz
     </div>
     <div class="c-titlebar-buttons" :style="{ marginLeft: showTitle ? undefined : 'auto' }">
+      <div v-if="showPinButton" class="c-titlebar-button" @click="emits('clickPinButton', $event)">
+        <IconPinFilled v-if="pinned" stroke-width="1.5" style="transform: rotate(-45deg)" />
+        <IconPin v-else stroke-width="1.5" />
+      </div>
       <div
         v-if="showMinimizeButton"
         class="c-titlebar-button"
@@ -61,8 +71,8 @@ const emits = defineEmits<Emits>();
         class="c-titlebar-button"
         @click="emits('clickMaximizeButton', $event)"
       >
-        <Square2StackIcon v-if="isWindowMaximized" class="icon unmiximize-icon" style="" />
-        <StopIcon v-else class="icon" style="" />
+        <Square2StackIcon v-if="isWindowMaximized" class="icon unmaximize-icon" />
+        <StopIcon v-else class="icon" />
       </div>
       <div
         class="c-titlebar-button c-titlebar-button-close"
@@ -124,7 +134,7 @@ const emits = defineEmits<Emits>();
       height: 20px;
       width: 20px;
 
-      &.unmiximize-icon {
+      &.unmaximize-icon {
         transform: scale(-1, 1);
       }
     }

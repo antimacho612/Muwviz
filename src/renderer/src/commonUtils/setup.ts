@@ -1,7 +1,7 @@
 import log from 'electron-log/renderer';
 import { POSITION } from 'vue-toastification';
 
-export const registErrorHandler = () => {
+export const registerErrorHandler = () => {
   // Consoleをオーバーライド
   Object.assign(console, log.functions);
 

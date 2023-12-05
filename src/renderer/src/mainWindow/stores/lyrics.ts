@@ -56,7 +56,7 @@ export const useLyricsStore = defineStore('lyrics', {
 
     async rebuild() {
       try {
-        const lyricsMap = await window.electronAPI.invoke.getAllLyrics();
+        const lyricsMap = await window.electron.invoke.getAllLyrics();
         Object.keys(lyricsMap).forEach((songId) => {
           const key = getLocalDbKey(songId);
           if (!Object.hasOwn(localStorage, key)) {

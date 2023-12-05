@@ -6,7 +6,7 @@ import {
   clickOutsideDirective,
   getRippleEffectOptions,
   getToastPluginOptions,
-  registErrorHandler,
+  registerErrorHandler,
 } from '@renderer/commonUtils/setup';
 
 import 'modern-css-reset/dist/reset.min.css';
@@ -29,7 +29,7 @@ import { audioPlayerKey, sendMessageToSubWindowKey } from './injectionKeys';
 import { audioPlayer } from './core/audioPlayer';
 
 import { connectMessagePort } from '@renderer/commonUtils/messagePort';
-import { handleOnRecieveMessageFromSub } from './messageHandler';
+import { handleOnReceiveMessageFromSub } from './messageHandler';
 
 import { useSettingsStore } from './stores/settings';
 import { useEntitiesStore } from './stores/entities';
@@ -37,7 +37,7 @@ import { useEntitiesStore } from './stores/entities';
 import '@renderer/assets/styles/style.scss';
 import { useWindowStore } from './stores/window';
 
-registErrorHandler();
+registerErrorHandler();
 
 const app = createApp(App);
 app.config.errorHandler = (err) => console.error(err);
@@ -68,16 +68,16 @@ app.use(clickOutsideDirective);
 app.provide(audioPlayerKey, audioPlayer());
 
 // Message Port
-const messagePort = connectMessagePort<'Main'>(handleOnRecieveMessageFromSub);
+const messagePort = connectMessagePort<'Main'>(handleOnReceiveMessageFromSub);
 app.provide(sendMessageToSubWindowKey, messagePort.sendMessage);
 
 app.mount('#app');
 
 async function fetchDatas() {
   const { fetch: fetchWindowState } = useWindowStore();
-  const { fetch: fecthSettings } = useSettingsStore();
-  const { fetch: fecthEntities } = useEntitiesStore();
+  const { fetch: fetchSettings } = useSettingsStore();
+  const { fetch: fetchEntities } = useEntitiesStore();
 
-  const results = await Promise.allSettled([fetchWindowState(), fecthSettings(), fecthEntities()]);
+  const results = await Promise.allSettled([fetchWindowState(), fetchSettings(), fetchEntities()]);
   results.filter(isRejected).forEach((result) => console.error(result.reason.toString()));
 }

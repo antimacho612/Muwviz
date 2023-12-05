@@ -17,10 +17,12 @@ import {
   closeWindow,
   createSubWindow,
   getWindow,
+  isWindowAlwaysOnTop,
   isWindowMaximized,
   maximizeWindow,
   minimizeWindow,
   openFileBrowser,
+  setWindowAlwaysOnTop,
 } from './window';
 import { deleteEntitiesByScanId } from './core/libraryManager';
 
@@ -57,6 +59,16 @@ export const registerIpcChannels = () => {
 
   // ウィンドウを閉じる
   ipcMain.handle('closeWindow', async (_, isMainWindow) => closeWindow(isMainWindow));
+
+  // ウィンドウが常に他のウィンドウの上に表示されるようになっているかどうかを取得する
+  ipcMain.handle('isWindowAlwaysOnTop', async (_, isMainWindow) =>
+    isWindowAlwaysOnTop(isMainWindow)
+  );
+
+  // ウィンドウを常に他のウィンドウの上に表示するかどうかを設定する
+  ipcMain.handle('setWindowAlwaysOnTop', async (_, isMainWindow, flag) =>
+    setWindowAlwaysOnTop(isMainWindow, flag)
+  );
 
   // 設定を取得する
   ipcMain.handle('getSettings', async () => settingsStore.getData());

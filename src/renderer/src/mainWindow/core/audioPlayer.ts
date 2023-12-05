@@ -103,7 +103,7 @@ export const audioPlayer = () => {
     }
 
     // main側に再生状態を伝える ← 必要だったら
-    // await window.electronAPI.invoke.updatePlaybackState(playAfterLoad || playerStatus !== 'PAUSED' ? 'PLAYING' : 'PAUSED')
+    // await window.electron.invoke.updatePlaybackState(playAfterLoad || playerStatus !== 'PAUSED' ? 'PLAYING' : 'PAUSED')
     // 再生回数増やす
     // incrementPlayCount(song.id)
   };

@@ -11,7 +11,7 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 const { scannedFolders, artworkPath } = storeToRefs(useSettingsStore());
 
 const openSettingsModal = inject(openLibraryEditModalKey);
-const openArtworkDir = async () => await window.electronAPI.invoke.openPath(artworkPath.value);
+const openArtworkDir = async () => await window.electron.invoke.openPath(artworkPath.value);
 </script>
 
 <template>

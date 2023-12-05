@@ -13,7 +13,7 @@ const { visualizers } = useWindowStore();
 const containerEls = ref<HTMLDivElement[]>();
 
 onMounted(async () => {
-  const options = await window.electronAPI.invoke.getAllVisualizerConfig();
+  const options = await window.electron.invoke.getAllVisualizerConfig();
   let source: HTMLMediaElement | AudioNode = audio;
   containerEls.value?.forEach((containerEl, index) => {
     const isFirst = index === 0;
@@ -40,7 +40,7 @@ onBeforeUnmount(() => {
 
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
 const onClickOpenConfigWindowButton = async (index: number) => {
-  await window.electronAPI.invoke.openVisualizerConfigWindow();
+  await window.electron.invoke.openVisualizerConfigWindow();
   sendMessageToSubWindow &&
     sendMessageToSubWindow({ channel: 'changeVisualizerSelection', payload: { index } });
 };

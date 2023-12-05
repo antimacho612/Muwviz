@@ -33,10 +33,10 @@ export const useSettingsStore = defineStore('settings', {
       console.debug('Fetching settings...');
 
       const [artworkPath, scannedFolders, settings, appVersion] = await Promise.all([
-        window.electronAPI.invoke.getArtworkPath(),
-        window.electronAPI.invoke.getScannedFolders(),
-        window.electronAPI.invoke.getSettings(),
-        window.electronAPI.invoke.getAppVersion(),
+        window.electron.invoke.getArtworkPath(),
+        window.electron.invoke.getScannedFolders(),
+        window.electron.invoke.getSettings(),
+        window.electron.invoke.getAppVersion(),
       ]);
 
       this.scannedFolders = scannedFolders ?? [];
@@ -66,7 +66,7 @@ export const useSettingsStore = defineStore('settings', {
         }
       });
 
-      await window.electronAPI.invoke.updateSettings(items);
+      await window.electron.invoke.updateSettings(items);
     },
   },
 });

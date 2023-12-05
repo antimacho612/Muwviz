@@ -8,12 +8,18 @@ import TabMenu from '@renderer/commonComponents/TabMenu/TabMenu.vue';
 import Titlebar from '@renderer/commonComponents/Titlebar/Titlebar.vue';
 import VisualizerConfig from '@visualizerConfigWindow/components/VisualizerConfig.vue';
 
-const { fontFamily, theme, primaryColor, currentVisualizerIndex } = storeToRefs(useWindowStore());
+const { isAlwaysOnTop, currentVisualizerIndex, fontFamily, theme, primaryColor } = storeToRefs(
+  useWindowStore()
+);
 
 useAppearance(fontFamily, theme, primaryColor);
 
-const onClickMinimizeButton = async () => await window.electronAPI.invoke.minimizeWindow(false);
-const onClickCloseButton = async () => await window.electronAPI.invoke.closeWindow(false);
+const onClickMinimizeButton = async () => await window.electron.invoke.minimizeWindow(false);
+const onClickCloseButton = async () => await window.electron.invoke.closeWindow(false);
+const onClickPinButton = async () => {
+  await window.electron.invoke.setWindowAlwaysOnTop(false, !isAlwaysOnTop.value);
+  isAlwaysOnTop.value = !isAlwaysOnTop.value;
+};
 
 useIpcEventHandler();
 </script>
@@ -22,8 +28,11 @@ useIpcEventHandler();
   <Titlebar
     :show-title="false"
     :show-maximize-button="false"
+    show-pin-button
+    :pinned="isAlwaysOnTop"
     @click-minimize-button="onClickMinimizeButton"
     @click-close-button="onClickCloseButton"
+    @click-pin-button="onClickPinButton"
   ></Titlebar>
   <div class="main">
     <h2 class="text-lg ml-1">ビジュアライザー</h2>

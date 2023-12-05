@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 
-import { getRippleEffectOptions, registErrorHandler } from '@renderer/commonUtils/setup';
+import { getRippleEffectOptions, registerErrorHandler } from '@renderer/commonUtils/setup';
 
 import 'modern-css-reset/dist/reset.min.css';
 import 'primeflex/primeflex.min.css';
@@ -21,7 +21,7 @@ import { sendMessageToMainWindowKey } from './injectionKeys';
 import { isRejected } from '@shared/utils';
 import { useVisualizerConfigStore } from './stores/visualizerConfig';
 
-registErrorHandler();
+registerErrorHandler();
 
 const app = createApp(App);
 app.config.errorHandler = (err) => console.log(err);
@@ -34,12 +34,12 @@ await fetchDatas();
 app.use(VWave, getRippleEffectOptions());
 
 // Message Port
-const messagePort = connectMessagePort<'Sub'>(handleOnRecieveMessageFromMain);
+const messagePort = connectMessagePort<'Sub'>(handleOnReceiveMessageFromMain);
 app.provide(sendMessageToMainWindowKey, messagePort.sendMessage);
 
 app.mount('#app');
 
-async function handleOnRecieveMessageFromMain(message: MainToSubMessage) {
+async function handleOnReceiveMessageFromMain(message: MainToSubMessage) {
   switch (message.channel) {
     case 'changeAppearance':
       handleOnChangeAppearance(message.payload);
@@ -75,7 +75,7 @@ function handleOnChangeAppearance(payload: ChangeAppearancePayload) {
 }
 
 async function handleOnCloseMainWindow() {
-  await window.electronAPI.invoke.closeWindow(false);
+  await window.electron.invoke.closeWindow(false);
 }
 
 async function fetchDatas() {

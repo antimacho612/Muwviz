@@ -29,9 +29,9 @@ export const useEntitiesStore = defineStore('entities', {
       console.debug('Fetching entities...');
 
       const [songs, albums, artists] = await Promise.all([
-        window.electronAPI.invoke.getAllSongs(),
-        window.electronAPI.invoke.getAllAlbums(),
-        window.electronAPI.invoke.getAllArtists(),
+        window.electron.invoke.getAllSongs(),
+        window.electron.invoke.getAllAlbums(),
+        window.electron.invoke.getAllArtists(),
       ]);
 
       this.songsMap = new Map(songs.map((song) => [song.id, song]));

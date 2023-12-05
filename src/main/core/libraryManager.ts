@@ -66,7 +66,7 @@ export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) =
   });
 };
 
-const deleteArtworksIfNoRefered = (artworkPaths: Set<string>) => {
+const deleteArtworksIfNoReferred = (artworkPaths: Set<string>) => {
   const songs = songsStore.getData();
   const albums = albumsStore.getData();
 
@@ -127,7 +127,7 @@ export const deleteEntitiesByScanId = async (scanId: string) => {
   }
 
   // 参照されなくなったアートワークを削除
-  if (artworkPaths.size) deleteArtworksIfNoRefered(artworkPaths);
+  if (artworkPaths.size) deleteArtworksIfNoReferred(artworkPaths);
 
   scannedFoldersStore.delete(scanId);
 

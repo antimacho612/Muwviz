@@ -66,6 +66,18 @@ export type ElectronAPI = GetApiType<
     closeWindow: (isMainWindow: boolean) => Promise<void>;
 
     /**
+     * ウィンドウが常に他のウィンドウの上に表示されるようになっているかどうかを取得する
+     */
+    isWindowAlwaysOnTop: (isMainWindow: boolean) => Promise<boolean>;
+
+    /**
+     * ウィンドウを常に他のウィンドウの上に表示するかどうかを設定する
+     * @param isMainWindow 設定対象がメインウィンドウかどうか
+     * @param flag トップに表示するかどうか
+     */
+    setWindowAlwaysOnTop: (isMainWindow: boolean, flag: boolean) => Promise<void>;
+
+    /**
      * 設定を取得する
      */
     getSettings: () => Promise<Settings>;
@@ -147,32 +159,32 @@ export const electronAPI: ElectronAPI = {
     getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
     getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
 
-    openFileBrowser: async (
-      isMainWindow: boolean,
-      mode: 'File' | 'Folder',
-      filters?: Electron.FileFilter[]
-    ) => await ipcRenderer.invoke('openFileBrowser', isMainWindow, mode, filters),
-    openPath: async (path: string) => await ipcRenderer.invoke('openPath', path),
+    openFileBrowser: async (isMainWindow, mode, filters) =>
+      await ipcRenderer.invoke('openFileBrowser', isMainWindow, mode, filters),
+    openPath: async (path) => await ipcRenderer.invoke('openPath', path),
 
     openVisualizerConfigWindow: async () => await ipcRenderer.invoke('openVisualizerConfigWindow'),
 
-    isWindowMaximized: async (isMainWindow: boolean) =>
+    isWindowMaximized: async (isMainWindow) =>
       await ipcRenderer.invoke('isWindowMaximized', isMainWindow),
-    minimizeWindow: async (isMainWindow: boolean) =>
+    minimizeWindow: async (isMainWindow) =>
       await ipcRenderer.invoke('minimizeWindow', isMainWindow),
-    maximizeWindow: async (isMainWindow: boolean) =>
+    maximizeWindow: async (isMainWindow) =>
       await ipcRenderer.invoke('maximizeWindow', isMainWindow),
-    closeWindow: async (isMainWindow: boolean) =>
-      await ipcRenderer.invoke('closeWindow', isMainWindow),
+    closeWindow: async (isMainWindow) => await ipcRenderer.invoke('closeWindow', isMainWindow),
+    isWindowAlwaysOnTop: async (isMainWindow) =>
+      await ipcRenderer.invoke('isWindowAlwaysOnTop', isMainWindow),
+    setWindowAlwaysOnTop: async (isMainWindow, flag) =>
+      await ipcRenderer.invoke('setWindowAlwaysOnTop', isMainWindow, flag),
 
     getSettings: async () => await ipcRenderer.invoke('getSettings'),
     updateSettings: async (items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) =>
       await ipcRenderer.invoke('updateSettings', items),
 
     getScannedFolders: async () => await ipcRenderer.invoke('getScannedFolders'),
-    scanFolder: async (folderPath: string, resortLibrary?: boolean) =>
+    scanFolder: async (folderPath, resortLibrary) =>
       await ipcRenderer.invoke('scanFolder', folderPath, resortLibrary),
-    deleteEntitiesByScanId: async (scanId: string) =>
+    deleteEntitiesByScanId: async (scanId) =>
       await ipcRenderer.invoke('deleteEntitiesByScanId', scanId),
 
     getAllSongs: async () => await ipcRenderer.invoke('getAllSongs'),
@@ -181,7 +193,7 @@ export const electronAPI: ElectronAPI = {
     getAllLyrics: async () => await ipcRenderer.invoke('getAllLyrics'),
 
     getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
-    updateVisualizerConfig: async (index: number, options: Partial<VisualizerConfig>) =>
+    updateVisualizerConfig: async (index, options) =>
       await ipcRenderer.invoke('updateVisualizerConfig', index, options),
   },
   on: {

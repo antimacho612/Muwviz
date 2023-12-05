@@ -15,7 +15,7 @@ export const useVisualizerConfigStore = defineStore('visualizerConfig', {
   actions: {
     async fetch() {
       console.log('Fetching visualizer config...');
-      this.visualizerConfig = await window.electronAPI.invoke.getAllVisualizerConfig();
+      this.visualizerConfig = await window.electron.invoke.getAllVisualizerConfig();
     },
   },
 });

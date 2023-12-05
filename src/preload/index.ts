@@ -16,11 +16,11 @@ ipcRenderer.on('messagePort', async (e) => {
 // just add to the DOM global.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+    contextBridge.exposeInMainWorld('electron', electronAPI);
   } catch (error) {
     console.error(error);
   }
 } else {
   // @ts-ignore (define in dts)
-  window.electronAPI = electronAPI;
+  window.electron = electronAPI;
 }

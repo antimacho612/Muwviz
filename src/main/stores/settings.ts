@@ -23,7 +23,13 @@ export default class SettingsStore extends BaseJSONStore<Settings> {
     return this.cachedData?.subWindowState ?? DEFAULT_SETTINGS.subWindowState;
   }
 
-  public setSubWindowState(windowState: { width: number; height: number; x?: number; y?: number }) {
+  public setSubWindowState(windowState: {
+    width: number;
+    height: number;
+    alwaysOnTop: boolean;
+    x?: number;
+    y?: number;
+  }) {
     if (!this.cachedData) return;
     this.cachedData.subWindowState = windowState;
   }

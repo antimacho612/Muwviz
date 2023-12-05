@@ -41,7 +41,7 @@ const currentVisualizerOptions = computed(() => visualizerConfig[currentIndex.va
 const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
 
 const onChangeValue = async (keyValue: KeyValue<VisualizerConfig>) => {
-  await window.electronAPI.invoke.updateVisualizerConfig(currentIndex.value, {
+  await window.electron.invoke.updateVisualizerConfig(currentIndex.value, {
     [keyValue.key]: keyValue.value,
   });
 

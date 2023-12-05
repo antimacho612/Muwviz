@@ -7,7 +7,7 @@ const handleOnChangeVisualizerConfig = (payload: ChangeVisualizerConfigPayload) 
   if (visualizer) visualizer.changeProperty({ ...payload });
 };
 
-export const handleOnRecieveMessageFromSub = (message: SubToMainMessage) => {
+export const handleOnReceiveMessageFromSub = (message: SubToMainMessage) => {
   switch (message.channel) {
     case 'changeVisualizerConfig':
       handleOnChangeVisualizerConfig(message.payload);

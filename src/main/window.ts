@@ -17,13 +17,15 @@ let mainWindowId: number | undefined;
 let subWindowId: number | undefined;
 
 const onCloseWindow = async (_event: Event, window: BrowserWindow, isMainWindow = true) => {
-  const [width, height] = window.getSize();
   if (isMainWindow) {
+    const [width, height] = window.getSize();
     settingsStore.setMainWindowState({ width, height, isMaximized: window.isMaximized() });
     await settingsStore.save();
   } else {
-    const [x, y] = window.getPosition();
-    settingsStore.setSubWindowState({ width, height, x, y });
+    settingsStore.setSubWindowState({
+      alwaysOnTop: window.isAlwaysOnTop(),
+      ...window.getBounds(),
+    });
     await visualizerConfigStore.save();
   }
 };
@@ -200,4 +202,14 @@ export const openFileBrowser = (isMainWindow: boolean, options: OpenDialogOption
 export const closeWindow = (isMainWindow = true) => {
   const window = getWindow(isMainWindow);
   window && !window.isDestroyed() && window.close();
+};
+
+export const isWindowAlwaysOnTop = (isMainWindow: boolean) => {
+  const window = getWindow(isMainWindow);
+  return window && window.isAlwaysOnTop();
+};
+
+export const setWindowAlwaysOnTop = (isMainWindow: boolean, flag: boolean) => {
+  const window = getWindow(isMainWindow);
+  window && window.setAlwaysOnTop(flag);
 };

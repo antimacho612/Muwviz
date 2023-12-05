@@ -32,7 +32,7 @@ const alreadyAdded = (path: string) =>
   );
 
 const onClickAddFolderButton = async () => {
-  const result = await window.electronAPI.invoke.openFileBrowser(true, 'Folder');
+  const result = await window.electron.invoke.openFileBrowser(true, 'Folder');
   if (result.canceled) return;
 
   for (const path of result.filePaths) {
@@ -57,7 +57,7 @@ const onClickScanButton = async () => {
   for (const folder of foldersToScan.value) {
     folder.isScanning = true;
     try {
-      await window.electronAPI.invoke.scanFolder(folder.path);
+      await window.electron.invoke.scanFolder(folder.path);
     } catch (e) {
       console.error(e);
       folder.status = 'エラーが発生しました。';
@@ -71,7 +71,7 @@ const onClickScanButton = async () => {
 };
 
 const progressBarValue = ref(0);
-window.electronAPI.on.updateScanProgress(async (_, progress) => {
+window.electron.on.updateScanProgress(async (_, progress) => {
   const target = foldersToScan.value.find((folder) => folder.path === progress.path);
   if (!target) return;
 
