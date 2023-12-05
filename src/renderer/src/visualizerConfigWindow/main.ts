@@ -44,10 +44,18 @@ async function handleOnRecieveMessageFromMain(message: MainToSubMessage) {
     case 'changeAppearance':
       handleOnChangeAppearance(message.payload);
       break;
+    case 'changeVisualizerSelection':
+      // TODO: handle
+      handleOnChangeVisualizerSelection(message.payload);
+      break;
     case 'closeWindow':
       handleOnCloseMainWindow();
       break;
   }
+}
+
+function handleOnChangeVisualizerSelection(payload: { index: number }) {
+  useWindowStore().currentVisualizerIndex = payload.index;
 }
 
 function handleOnChangeAppearance(payload: ChangeAppearancePayload) {

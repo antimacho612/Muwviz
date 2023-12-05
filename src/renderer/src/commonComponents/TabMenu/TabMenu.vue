@@ -15,9 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
 });
 
-const emits = defineEmits<{
-  'update:activeMenuIndex': [activeMenuIndex: number];
-}>();
+const emits = defineEmits<{ 'update:activeMenuIndex': [activeMenuIndex: number] }>();
 
 const activeIndex = computed({
   get: () => props.activeMenuIndex,
@@ -51,7 +49,7 @@ const activeColorTranslation = computed(() =>
 
 <template>
   <div
-    class="tab-menu"
+    class="c-tab-menu"
     :style="{
       flexDirection: direction === 'horizontal' ? 'row' : 'column',
       alignItems: direction === 'horizontal' ? 'center' : undefined,
@@ -62,7 +60,7 @@ const activeColorTranslation = computed(() =>
       :key="tab.title"
       v-ripple
       type="button"
-      class="tab-menu-button"
+      class="c-tab-menu-button"
       :class="[{ active: i === activeIndex }, tabButtonClass]"
       :style="{ width: buttonWidth, height: buttonHeight }"
       @click="activeIndex = i"
@@ -81,14 +79,14 @@ const activeColorTranslation = computed(() =>
 </template>
 
 <style lang="scss" scoped>
-.tab-menu {
+.c-tab-menu {
   padding: 0.5rem;
   position: relative;
   display: flex;
   gap: 0.5rem;
 }
 
-.tab-menu-button {
+.c-tab-menu-button {
   display: flex;
   align-items: center;
   column-gap: 0.5rem;

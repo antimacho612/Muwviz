@@ -6,19 +6,19 @@ interface Props {
   size?: 'xs' | 'sm' | 'md' | 'lg';
   selectAllOnFocus?: boolean;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   size: 'md',
   selectAllOnFocus: false,
 });
 
-const inputEl = ref<HTMLInputElement>();
-
-const emits = defineEmits<{
+type Emits = {
   focus: [e: FocusEvent];
   'update:modelValue': [value: string];
-}>();
+};
+const emits = defineEmits<Emits>();
+
+const inputEl = ref<HTMLInputElement>();
 
 const onInput = () => {
   if (!inputEl.value) return;

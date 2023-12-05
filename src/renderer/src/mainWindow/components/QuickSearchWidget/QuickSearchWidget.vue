@@ -28,7 +28,7 @@ const text = computed({
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .quick-search-widget {
   position: relative;
   display: inline-block;

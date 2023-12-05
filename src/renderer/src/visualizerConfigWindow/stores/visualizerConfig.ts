@@ -1,4 +1,4 @@
-import { VisualizerConfig, getDefaultConfig } from '@shared/visualizerTypes';
+import { VisualizerConfig } from '@shared/visualizerTypes';
 import { defineStore } from 'pinia';
 
 type VisualizerConfigStoreState = {

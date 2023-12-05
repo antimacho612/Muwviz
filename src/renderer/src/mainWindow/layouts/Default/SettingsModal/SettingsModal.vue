@@ -10,7 +10,7 @@ import {
   ComputerDesktopIcon,
   InformationCircleIcon,
 } from '@heroicons/vue/24/solid';
-import TabMenu from '@mainWindow/components/TabMenu/TabMenu.vue';
+import TabMenu from '@renderer/commonComponents/TabMenu/TabMenu.vue';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import LibraryTab from './LibraryTab.vue';

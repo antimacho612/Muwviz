@@ -9,6 +9,10 @@ export type MainToSubMessage =
       payload: ChangeAppearancePayload;
     }
   | {
+      channel: 'changeVisualizerSelection';
+      payload: { index: number };
+    }
+  | {
       channel: 'closeWindow';
     };
 

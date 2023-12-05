@@ -120,7 +120,8 @@ export type VisualizerConfig = {
   showPeaks: boolean;
   // When true and mode is 10 (Graph) and showPeaks is true, peaks are connected into a continuous line. It has no effect in other modes.
   peakLine: boolean;
-  scaleXLabel: ScaleXLabel;
+  showScaleX: boolean;
+  noteLabels: boolean;
   // This option has no effect when radial or lumiBars are set to true.
   showScaleY: boolean;
 };
@@ -161,6 +162,7 @@ export const getDefaultConfig = (): VisualizerConfig => ({
   mirror: 0,
   showPeaks: true,
   peakLine: false,
-  scaleXLabel: 'Frequencies',
+  showScaleX: true,
+  noteLabels: false,
   showScaleY: false,
 });

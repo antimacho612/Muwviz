@@ -1,14 +1,14 @@
-import AudioMotionAnalyzer from 'audiomotion-analyzer';
+import AudioMotionAnalyzer, { ConstructorOptions } from 'audiomotion-analyzer';
 import { VisualizerConfig } from '@shared/visualizerTypes';
 import { KeyValue } from '@shared/types';
 
-export const useVisualizer = (containerEl: HTMLDivElement, audio: HTMLAudioElement | AudioNode) => {
-  const analyzer = new AudioMotionAnalyzer(containerEl, {
-    source: audio,
-    overlay: true,
-    bgAlpha: 0,
-    showBgColor: false,
-  });
+export const useVisualizer = (
+  containerEl: HTMLDivElement,
+  constructorOptions: ConstructorOptions
+) => {
+  const analyzer = new AudioMotionAnalyzer(containerEl, constructorOptions);
+
+  const getConnectedSource = () => analyzer.connectedSources[0];
 
   const isOn = () => analyzer.isOn;
   const start = () => {
@@ -25,20 +25,11 @@ export const useVisualizer = (containerEl: HTMLDivElement, audio: HTMLAudioEleme
     if (analyzer.isDestroyed) return;
 
     const { key, value } = keyValuePair;
-
-    if (key === 'scaleXLabel') {
-      if (value === 'None') {
-        analyzer.showScaleX = false;
-      } else {
-        analyzer.showScaleX = true;
-        analyzer.noteLabels = value === 'Musical Notes';
-      }
-    } else {
-      analyzer.setOptions({ [key]: value });
-    }
+    analyzer.setOptions({ [key]: value });
   };
 
   return {
+    getConnectedSource,
     isOn,
     start,
     stop,

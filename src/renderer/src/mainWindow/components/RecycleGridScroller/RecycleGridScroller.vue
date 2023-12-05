@@ -54,7 +54,7 @@ const onResizeScroller = useDebounceFn(resizeScroller, 300);
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .scroller-wrapper {
   height: v-bind(scrollerHeight);
   width: 100%;

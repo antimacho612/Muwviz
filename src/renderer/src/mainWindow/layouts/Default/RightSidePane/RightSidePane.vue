@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import TabMenu from '@mainWindow/components/TabMenu/TabMenu.vue';
+import TabMenu from '@renderer/commonComponents/TabMenu/TabMenu.vue';
 import InfoTab from './InfoTab.vue';
 import QueueTab from './QueueTab.vue';
 import LyricsTab from './LyricsTab.vue';
@@ -34,7 +34,7 @@ const TABS = [
     </TabMenu>
 
     <div class="tab-panel">
-      <Transition mode="out-in" enter-active-class="fadeIn" leave-active-class="fadeOut">
+      <Transition mode="out-in" enter-active-class="fade-in" leave-active-class="fade-out">
         <KeepAlive>
           <component :is="TABS[activeMenuIndex].component" />
         </KeepAlive>
@@ -67,11 +67,11 @@ const TABS = [
   overflow: hidden;
 }
 
-.fadeIn {
+.fade-in {
   @include animation($name: fadeIn);
 }
 
-.fadeOut {
+.fade-out {
   @include animation($name: fadeOut);
 }
 </style>

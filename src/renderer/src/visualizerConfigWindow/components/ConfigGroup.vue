@@ -72,7 +72,7 @@ const setHeightToContentDiv = (height?: '0' | 'scrollHeight') => {
 
 .title {
   font-weight: bold;
-  font-size: map-get($map: $fontSizes, $key: xl);
+  font-size: map-get($map: $fontSizes, $key: lg);
 }
 
 .divider {
