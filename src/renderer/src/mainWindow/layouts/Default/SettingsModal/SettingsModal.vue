@@ -158,7 +158,7 @@ const TABS = [
     height: 1.25rem;
     width: 1.25rem;
     color: var(--primary-color);
-    transition: color var(--transition-duration);
+    transition: color $transitionDuration;
   }
 }
 

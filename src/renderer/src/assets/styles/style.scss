@@ -1,9 +1,44 @@
+@use 'sass:list';
 @use './components/' as *;
 
 // CSS Variables
+$themeVariables: (
+  color-scheme: light dark,
+  primary-text-color: #596377 #adadad,
+  secondary-text-color: #6b7280 #777e8b,
+  disabled-text-color: #71717a #838383,
+
+  background-color: #e4ebf5 #2a2c31,
+  disabled-bg-color: #d4d4d8 #505050,
+
+  divider-color: #d4d4d8 #3a3a3a,
+
+  radio-check-dot-color: #bec8e4 #838383,
+  color-swatch-wrapper-color: #bec8e4 #3d3d3d,
+  toggle-button-dot-color--off: #bec8e4 #838383,
+  toggle-button-dot-color--on: #e4ebf5 #e7e7e7,
+  artist-img-bg-color: #e0e0e0 #393939,
+  artist-img-icon-color: #888 #adadad,
+
+  outline-color: 'rgba(var(--primary-color--lightest-rgb), 0.5)'
+    'rgba(var(--primary-color--lightest-rgb), 0.5)',
+  outline-color--bordered: 'rgba(var(--primary-color--lightest-rgb), 0.5)'
+    'rgba(var(--primary-color--lightest-rgb), 0.15)',
+
+  shadow-color--light: #fff #4d4e50,
+  shadow-color--dark: #c8d0e7 #17181b,
+  shadow-flat: '6px 6px 12px var(--shadow-color--dark), -4px -4px 8px var(--shadow-color--light)'
+    '6px 6px 12px var(--shadow-color--dark), -3px -3px 6px var(--shadow-color--light)',
+  shadow-flat--hover:
+    '2.5px 2.5px 5px var(--shadow-color--dark), -1.5px -1.5px 4px var(--shadow-color--light)'
+    '2.5px 2.5px 5px var(--shadow-color--dark), -1.5px -1.5px 4px var(--shadow-color--light)',
+  shadow-pressed:
+    'inset 4px 4px 6px var(--shadow-color--dark), inset -3px -3px 6px var(--shadow-color--light)'
+    'inset 3px 3px 6px var(--shadow-color--dark), inset -2px -2px 6px var(--shadow-color--light)',
+);
+
 :root {
   --font-family: system-ui;
-  --ripple-color: rgba(var(--primary-color-rgb), 0.4);
 
   --primary-color: #7c3aed;
   --primary-color-rgb: 147, 51, 234;
@@ -11,73 +46,17 @@
   --primary-color--lighter-rgb: 168, 85, 247;
   --primary-color--lightest: #c4b5fd;
   --primary-color--lightest-rgb: 196, 181, 253;
+  --ripple-color: rgba(var(--primary-color-rgb), 0.4);
 
-  --transition-duration: #{$transitionDuration};
-}
+  @each $key, $values in $themeVariables {
+    --#{$key}: #{list.nth($values, 1)};
+  }
 
-:root {
-  color-scheme: light;
-
-  --primary-text-color: #596377;
-  --secondary-text-color: #6b7280;
-  --disabled-text-color: #71717a;
-
-  --background-color: #e4ebf5;
-  --disabled-bg-color: #d4d4d8;
-
-  --divider-color: #d4d4d8;
-
-  --outline-color: rgba(var(--primary-color--lightest-rgb), 0.5);
-  --outline-color--bordered: rgba(var(--primary-color--lightest-rgb), 0.5);
-
-  --shadow-color--light: #fff;
-  --shadow-color--dark: #c8d0e7;
-  --shadow-flat: 6px 6px 12px var(--shadow-color--dark), -4px -4px 8px var(--shadow-color--light);
-  --shadow-flat--hover: 2.5px 2.5px 5px var(--shadow-color--dark),
-    -1.5px -1.5px 4px var(--shadow-color--light);
-  --shadow-pressed: inset 4px 4px 6px var(--shadow-color--dark),
-    inset -3px -3px 6px var(--shadow-color--light);
-
-  --radio-check-dot-color: #bec8e4;
-  --color-swatch-wrapper-color: #bec8e4;
-  --artist-img-bg-color: #e0e0e0;
-  --artist-img-icon-color: #888;
-
-  --toggle-button-dot-color--off: #bec8e4;
-  --toggle-button-dot-color--on: #e4ebf5;
-}
-
-.dark {
-  color-scheme: dark;
-
-  --primary-text-color: #adadad;
-  --secondary-text-color: #777e8b;
-
-  --background-color: #2a2c31;
-
-  --disabled-text-color: #838383;
-  --disabled-bg-color: #505050;
-
-  --divider-color: #3a3a3a;
-
-  --outline-color: rgba(var(--primary-color--lightest-rgb), 0.5);
-  --outline-color--bordered: rgba(var(--primary-color--lightest-rgb), 0.15);
-
-  --shadow-color--light: #4d4e50;
-  --shadow-color--dark: #17181b;
-  --shadow-flat: 6px 6px 12px var(--shadow-color--dark), -3px -3px 6px var(--shadow-color--light);
-  --shadow-flat--hover: 2.5px 2.5px 5px var(--shadow-color--dark),
-    -1.5px -1.5px 4px var(--shadow-color--light);
-  --shadow-pressed: inset 3px 3px 6px var(--shadow-color--dark),
-    inset -2px -2px 6px var(--shadow-color--light);
-
-  --radio-check-dot-color: #838383;
-  --color-swatch-wrapper-color: #3d3d3d;
-  --artist-img-bg-color: #393939;
-  --artist-img-icon-color: #adadad;
-
-  --toggle-button-dot-color--off: #838383;
-  --toggle-button-dot-color--on: #e7e7e7;
+  &.dark {
+    @each $key, $values in $themeVariables {
+      --#{$key}: #{list.nth($values, 2)};
+    }
+  }
 }
 
 *,
@@ -137,56 +116,6 @@ img {
   background: rgba(var(--primary-color--lightest-rgb), 0.5);
   box-shadow: $innerShadow;
   border-radius: 10px;
-}
-
-.position-center-y {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.position-center-x {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.position-center-xy {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.single-line-clamp {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bg-default {
-  background-color: var(--background-color);
-}
-
-.border-radius-sm {
-  border-radius: 0.5rem;
-}
-
-.border-radius-md {
-  border-radius: 0.75rem;
-}
-
-.border-radius-lg {
-  border-radius: 1rem;
-}
-
-.border-radius-xl {
-  border-radius: 1.25rem;
-}
-
-.border-radius-full {
-  border-radius: 9999px;
-}
-
-.color-primary {
-  color: var(--primary-color);
 }
 
 .active-menu-color {
