@@ -39,7 +39,8 @@ export const useLyricsStore = defineStore('lyrics', {
       return lyricsData;
     },
 
-    async fecthApi(songId: string, title: string, artist: string) {
+    async fetchApi(songId: string, title: string, artist: string) {
+      // TODO:
       console.log('fetchApi');
 
       const options = {

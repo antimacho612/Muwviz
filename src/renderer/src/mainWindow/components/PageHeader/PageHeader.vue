@@ -9,15 +9,17 @@ const { collapseLeftSidePane } = useWindowStore();
 
 <template>
   <div
-    class="flex align-items-centere justify-content-between"
+    class="flex align-items-center justify-content-between"
     style="height: 2.5rem; margin-bottom: 0.5rem"
   >
     <h2 v-if="$slots.title" class="font-bold">
       <slot name="title"></slot>
     </h2>
+
     <div class="flex-grow-1">
       <slot></slot>
     </div>
+
     <Button
       size="sm"
       :icon="XMarkIcon"
@@ -27,4 +29,3 @@ const { collapseLeftSidePane } = useWindowStore();
     />
   </div>
 </template>
-@renderer/mainWindow/stores/window

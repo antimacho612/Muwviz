@@ -39,12 +39,12 @@ const onFocus = () => {
 <template>
   <input
     ref="inputEl"
-    class="c-inputtext"
+    class="c-input-text"
     spellcheck="false"
     :class="{
-      'c-inputtext-xs': size === 'xs',
-      'c-inputtext-sm': size === 'sm',
-      'c-inputtext-lg': size === 'lg',
+      'c-input-text-xs': size === 'xs',
+      'c-input-text-sm': size === 'sm',
+      'c-input-text-lg': size === 'lg',
     }"
     :value="modelValue"
     @input="onInput"
@@ -52,8 +52,8 @@ const onFocus = () => {
   />
 </template>
 
-<style lang="scss">
-.c-inputtext {
+<style lang="scss" scoped>
+.c-input-text {
   font-size: 1rem;
   line-height: normal;
   color: var(--primary-text-color);
@@ -81,16 +81,16 @@ const onFocus = () => {
     @include focusedInput;
   }
 
-  &.c-inputtext-xs {
+  &.c-input-text-xs {
     height: 2rem;
     padding: 0.25rem 0.75rem;
   }
 
-  &.c-inputtext-sm {
+  &.c-input-text-sm {
     height: 2.5rem;
   }
 
-  &.c-inputtext-lg {
+  &.c-input-text-lg {
     height: 3.5rem;
   }
 }

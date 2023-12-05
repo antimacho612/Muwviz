@@ -224,9 +224,9 @@ export const audioPlayer = () => {
   }
 
   // function toggleShuffle() {
-  //   isShufflOn.value = !isShufflOn.value;
+  //   isShuffleOn.value = !isShuffleOn.value;
 
-  //   if (isShufflOn.value) {
+  //   if (isShuffleOn.value) {
   //     shuffleQueue(songQueue.value, currentSongIndex.value);
   //   } else {
   //     currentSongIndex.value = originalSongQueue.indexOf(currentSongId.value);
@@ -251,7 +251,7 @@ export const audioPlayer = () => {
   // }
 
   document.addEventListener('keydown', (event) => {
-    // TODO: bind evnet
+    // TODO: bind event
     // console.log(event.code);
   });
 

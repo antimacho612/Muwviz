@@ -9,7 +9,6 @@ interface Props {
   order: Order;
   items: { key: string; title: string }[];
 }
-
 const props = defineProps<Props>();
 
 type Emits = {

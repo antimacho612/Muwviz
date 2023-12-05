@@ -15,10 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectAllOnFocus: false,
 });
 
-type Emits = {
-  'update:modelValue': [value: number];
-};
-const emits = defineEmits<Emits>();
+const emits = defineEmits<{ 'update:modelValue': [value: number] }>();
 
 const handleMinMax = (num: number) => {
   if (props.min !== undefined && props.max !== undefined) {

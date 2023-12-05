@@ -5,7 +5,6 @@ interface Props {
   height?: string;
   color?: string;
 }
-
 withDefaults(defineProps<Props>(), {
   pause: false,
   width: '40px',

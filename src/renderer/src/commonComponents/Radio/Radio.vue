@@ -10,6 +10,10 @@ interface Props {
   modelValue?: boolean | string | number | object;
   disabled?: boolean;
 }
+const props = withDefaults(defineProps<Props>(), {
+  size: 'md',
+  disabled: false,
+});
 
 type Emits = {
   'update:modelValue': [modelValue?: boolean | string | number | object];
@@ -18,12 +22,6 @@ type Emits = {
   focus: [e: FocusEvent];
   blur: [e: FocusEvent];
 };
-
-const props = withDefaults(defineProps<Props>(), {
-  size: 'md',
-  disabled: false,
-});
-
 const emits = defineEmits<Emits>();
 
 const inputEl = ref<HTMLInputElement>();
@@ -86,7 +84,7 @@ const checked = computed(
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .c-radio {
   position: relative;
   display: inline-flex;

@@ -75,7 +75,7 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
       style="height: calc(100% - 9rem)"
     >
       <template #default="{ item, active }">
-        <DynamicScrollerItem :item="item" :active="active" :size-dependences="[item.songs]">
+        <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.songs]">
           <ArtistGroupedItem
             :grouped-item="item"
             :selected-songs="selectedSongs"

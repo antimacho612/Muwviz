@@ -9,7 +9,6 @@ interface Props {
   size?: 'md' | 'lg';
   tabButtonClass?: string;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   activeMenuIndex: 0,
   size: 'md',

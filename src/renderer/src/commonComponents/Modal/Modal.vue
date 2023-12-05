@@ -7,20 +7,17 @@ interface Props {
   closeOnPressEsc?: boolean;
   zIndex?: number;
 }
-
 withDefaults(defineProps<Props>(), {
   isOpen: false,
   closeOnClickOutside: true,
   closeOnPressEsc: true,
   zIndex: 1050,
 });
+
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
 
-const wapperEl = ref<HTMLElement>();
-
-const onOpened = () => wapperEl.value?.focus();
-
-const close = () => emits('update:isOpen', false);
+const wrapperEl = ref<HTMLElement>();
+const onOpened = () => wrapperEl.value?.focus();
 </script>
 
 <template>
@@ -34,21 +31,21 @@ const close = () => emits('update:isOpen', false);
   >
     <div
       v-show="isOpen"
-      ref="wapperEl"
+      ref="wrapperEl"
       class="c-modal-wrapper"
       :style="{ zIndex: zIndex + 1 }"
       tabindex="-1"
       role="dialog"
       aria-modal="true"
-      @click.self="closeOnClickOutside && close()"
-      @keydown.esc.stop="closeOnPressEsc && close()"
+      @click.self="closeOnClickOutside && emits('update:isOpen', false)"
+      @keydown.esc.stop="closeOnPressEsc && emits('update:isOpen', false)"
     >
       <slot></slot>
     </div>
   </Transition>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .c-modal-backdrop {
   position: absolute;
   inset: 0;

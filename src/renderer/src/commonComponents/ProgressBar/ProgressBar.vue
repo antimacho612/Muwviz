@@ -1,7 +1,5 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ value: number }>(), {
-  value: 0,
-});
+withDefaults(defineProps<{ value: number }>(), { value: 0 });
 </script>
 
 <template>
@@ -14,7 +12,7 @@ withDefaults(defineProps<{ value: number }>(), {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .c-progress-bar {
   position: relative;
   width: 100%;

@@ -13,9 +13,7 @@ const props = withDefaults(defineProps<Props>(), {
   showPlayIcon: false,
 });
 
-const emits = defineEmits<{
-  click: [e: MouseEvent];
-}>();
+const emits = defineEmits<{ click: [e: MouseEvent] }>();
 
 const artworkImgSrc = computed(() => (props.src ? `media://${props.src}` : ''));
 

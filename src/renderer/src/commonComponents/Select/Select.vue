@@ -10,15 +10,12 @@ interface Props {
     disabled?: boolean;
   }[];
 }
-
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   options: () => [],
 });
 
-const emits = defineEmits<{
-  'update:modelValue': [value?: boolean | number | string];
-}>();
+const emits = defineEmits<{ 'update:modelValue': [value?: boolean | number | string] }>();
 
 const selectedValue = computed({
   get: () => props.modelValue,

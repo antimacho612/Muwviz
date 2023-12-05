@@ -9,7 +9,7 @@ export const sendMessageToSubWindowKey: InjectionKey<(message: MainToSubMessage)
   Symbol('SendMessageToSubWindow');
 
 export const showSongDetailModalKey: InjectionKey<(song: Song) => void> =
-  Symbol('ShowSongDetalModal');
+  Symbol('ShowSongDetailModal');
 
 export const openSettingsModalKey: InjectionKey<() => void> = Symbol('OpenSettingsModal');
 

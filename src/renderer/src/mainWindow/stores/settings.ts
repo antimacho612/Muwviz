@@ -12,7 +12,7 @@ export type SettingsStoreState = {
   scannedFolders: ScannedFolder[];
   artworkPath: string;
   appVersion: string;
-  audioMotionAnalizerVersion: string;
+  audioMotionAnalyzerVersion: string;
 } & AppearanceSettings;
 
 export const useSettingsStore = defineStore('settings', {
@@ -24,7 +24,7 @@ export const useSettingsStore = defineStore('settings', {
       theme: DEFAULT_SETTINGS.theme,
       primaryColor: DEFAULT_SETTINGS.primaryColor,
       appVersion: '',
-      audioMotionAnalizerVersion: AudioMotionAnalyzer.version,
+      audioMotionAnalyzerVersion: AudioMotionAnalyzer.version,
     };
   },
 

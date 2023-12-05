@@ -13,11 +13,6 @@ interface Props {
   format?: (value: number) => string;
   lazy?: boolean;
 }
-
-type Emits = {
-  'update:modelValue': [value: number];
-};
-
 const props = withDefaults(defineProps<Props>(), {
   modelValue: 0,
   disabled: false,
@@ -30,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   lazy: true,
 });
 
-const emits = defineEmits<Emits>();
+const emits = defineEmits<{ 'update:modelValue': [value: number] }>();
 
 const sliderElement = ref<HTMLDivElement>();
 const dotElement = ref<HTMLSpanElement>();
@@ -266,15 +261,9 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .c-slider {
   --bar-width: v-bind(props.barWidth);
-}
-</style>
-
-<style lang="scss">
-.c-slider {
-  --bar-width: 1;
 
   position: relative;
   border-radius: $borderRadiusFull;
@@ -301,8 +290,8 @@ onBeforeUnmount(() => {
 
 .c-slider-dot {
   position: absolute;
-  width: calc(1rem * var(--bar-width) * 1.5);
-  height: calc(1rem * var(--bar-width) * 1.5);
+  width: calc(1rem * var(--bar-width, 1) * 1.5);
+  height: calc(1rem * var(--bar-width, 1) * 1.5);
   border-radius: $borderRadiusFull;
   background: #fff;
   box-shadow: 2.5px 2.5px 5px var(--shadow-color--dark);

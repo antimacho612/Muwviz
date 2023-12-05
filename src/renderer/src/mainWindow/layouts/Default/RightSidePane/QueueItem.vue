@@ -54,7 +54,7 @@ const current = computed(() => props.index === currentSongIndex.value);
       :icon="TrashIcon"
       size="xs"
       text
-      class="delele-button"
+      class="delete-button"
       @click.stop="emits('clickDeleteButton', $event)"
       @dblclick.stop
     />
@@ -130,7 +130,7 @@ const current = computed(() => props.index === currentSongIndex.value);
   margin-right: 0.5rem;
 }
 
-.delele-button {
+.delete-button {
   --ripple-color: rgba(255, 0, 0, 0.3);
   background: var(--background-color) !important;
   position: absolute;
@@ -150,7 +150,7 @@ const current = computed(() => props.index === currentSongIndex.value);
 }
 
 .hover {
-  .delele-button {
+  .delete-button {
     visibility: visible;
     opacity: 1;
   }

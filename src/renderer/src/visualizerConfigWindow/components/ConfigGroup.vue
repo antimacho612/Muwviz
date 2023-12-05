@@ -4,11 +4,7 @@ import { ref } from 'vue';
 import { ChevronUpIcon } from '@heroicons/vue/24/outline';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
-interface Props {
-  title: string;
-}
-
-defineProps<Props>();
+defineProps<{ title: string }>();
 
 const contentEl = ref<HTMLDivElement>();
 const isCollapsed = ref(false);

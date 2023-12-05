@@ -4,7 +4,7 @@ import { useSettingsStore } from '@mainWindow/stores/settings';
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 
-const { appVersion, audioMotionAnalizerVersion } = useSettingsStore();
+const { appVersion, audioMotionAnalyzerVersion } = useSettingsStore();
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const { appVersion, audioMotionAnalizerVersion } = useSettingsStore();
     </BaseSettingsItem>
 
     <BaseSettingsItem title="audioMotion-analyzer (Visualizer)のバージョン">
-      <span>{{ audioMotionAnalizerVersion }}</span>
+      <span>{{ audioMotionAnalyzerVersion }}</span>
       <a target="_blank" href="https://audiomotion.dev/" class="ml-4">https://audiomotion.dev/</a>
     </BaseSettingsItem>
   </BaseSettingsTabPanel>

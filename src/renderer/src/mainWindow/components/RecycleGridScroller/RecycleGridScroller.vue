@@ -9,7 +9,6 @@ interface Props {
   itemHeight: number;
   baseItemWidth: number;
 }
-
 const props = defineProps<Props>();
 
 const scrollerWrapperEl = ref<HTMLDivElement>();

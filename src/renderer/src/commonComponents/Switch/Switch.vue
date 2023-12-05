@@ -73,7 +73,7 @@ const onBlur = (e: FocusEvent) => {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .c-toggle-button {
   position: relative;
   width: 4rem;

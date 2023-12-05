@@ -28,11 +28,7 @@ import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue'
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
 
-interface Props {
-  currentVisualizerIndex: number;
-}
-
-const props = defineProps<Props>();
+const props = defineProps<{ currentVisualizerIndex: number }>();
 const currentIndex = computed(() => props.currentVisualizerIndex);
 
 const { visualizerConfig } = useVisualizerConfigStore();

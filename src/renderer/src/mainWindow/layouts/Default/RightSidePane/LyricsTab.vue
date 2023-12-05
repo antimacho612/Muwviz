@@ -10,9 +10,9 @@ const { currentSong } = useAudioPlayer();
 const lyricsStore = useLyricsStore();
 
 const FONT_SIZES = [
-  { key: 'sm', value: '0.875rem', dispName: '小' },
-  { key: 'md', value: '1rem', dispName: '中' },
-  { key: 'lg', value: '1.125rem', dispName: '大' },
+  { value: '0.875rem', label: '小' },
+  { value: '1rem', label: '中' },
+  { value: '1.125rem', label: '大' },
 ] as const;
 
 const lyricsData = ref<LyricsData | undefined>();
@@ -20,7 +20,7 @@ const fontSize = ref(FONT_SIZES[0].value);
 
 onMounted(async () => {
   await lyricsStore.rebuild();
-  // await lyrics.fecthApi('', 'title', 'artist');
+  // await lyrics.fetchApi('', 'title', 'artist');
 });
 
 watch(
@@ -46,10 +46,12 @@ watch(
       <div>
         <label>
           サイズ:
-          <Select v-model="fontSize" size="xs" class="font-size-select">
-            <option v-for="size in FONT_SIZES" :key="size.key" :value="size.value">
-              {{ size.dispName }}
-            </option>
+          <Select
+            v-model="fontSize"
+            size="xs"
+            :options="FONT_SIZES.map((fontSize) => ({ ...fontSize }))"
+            class="font-size-select"
+          >
           </Select>
         </label>
       </div>

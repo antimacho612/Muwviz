@@ -14,7 +14,7 @@ export type ContextMenuArgs<T extends ContextMenuType> = T extends 'SONG'
     };
 
 export const useContextMenu = <T extends ContextMenuType>(type: T) => {
-  let showSongDetailModal: (song: Song) => void | undefined;
+  let showSongDetailModal: ((song: Song) => void) | undefined;
 
   onMounted(() => {
     if (type === 'SONG') {
@@ -38,7 +38,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
             },
             onClick: () => {
               // FIXME: asを使用しないように変更したい
-              showSongDetailModal((args as ContextMenuArgs<'SONG'>).song);
+              showSongDetailModal && showSongDetailModal((args as ContextMenuArgs<'SONG'>).song);
             },
           },
         ];
