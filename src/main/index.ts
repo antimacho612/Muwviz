@@ -23,9 +23,7 @@ export let scannedFoldersStore: ScannedFoldersStore;
 export let visualizerConfigStore: VisualizerConfigStore;
 
 // 多重起動防止
-if (!app.requestSingleInstanceLock()) {
-  app.quit();
-}
+if (!app.requestSingleInstanceLock()) app.quit();
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -62,16 +60,12 @@ app.whenReady().then(async () => {
   await createMainWindow();
 
   app.on('activate', async () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      await createMainWindow();
-    }
+    if (BrowserWindow.getAllWindows().length === 0) await createMainWindow();
   });
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  if (process.platform !== 'darwin') app.quit();
 });
 
 function initializeLogger() {

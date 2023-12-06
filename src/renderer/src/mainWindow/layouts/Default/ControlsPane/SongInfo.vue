@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
-import { toHyphenIfEmpty } from '@renderer/commonUtils';
+import { formatAlbumTitle, formatArtistName, toHyphenIfEmpty } from '@renderer/commonUtils';
 
 import Artwork from '@renderer/mainWindow/components/Artwork/Artwork.vue';
 
@@ -16,14 +16,14 @@ const { currentSong } = useAudioPlayer();
       <div class="artist-and-album">
         <div class="artist">
           <RouterLink v-if="currentSong" :to="`/artists/${currentSong.artistId}`">
-            {{ toHyphenIfEmpty(currentSong.artist) }}
+            {{ formatArtistName(currentSong.artist) }}
           </RouterLink>
           <span v-else>-</span>
         </div>
         ／
         <div class="album">
           <RouterLink v-if="currentSong" :to="`/albums/${currentSong.albumId}`">
-            {{ toHyphenIfEmpty(currentSong.album) }}
+            {{ formatAlbumTitle(currentSong.album) }}
           </RouterLink>
           <span v-else>-</span>
         </div>

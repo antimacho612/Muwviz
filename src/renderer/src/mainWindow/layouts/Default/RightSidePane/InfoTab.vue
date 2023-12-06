@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
-import { formatBytes, formatTime, toHyphenIfEmpty } from '@renderer/commonUtils';
+import {
+  formatAlbumTitle,
+  formatArtistName,
+  formatBytes,
+  formatTime,
+  toHyphenIfEmpty,
+} from '@renderer/commonUtils';
 
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 
@@ -21,11 +27,11 @@ const { currentSong } = useAudioPlayer();
       <div class="detail-info">
         <div class="row">
           <div class="prop-name">アーティスト</div>
-          <div class="prop-value">{{ toHyphenIfEmpty(currentSong.artist) }}</div>
+          <div class="prop-value">{{ formatArtistName(currentSong.artist) }}</div>
         </div>
         <div class="row">
           <div class="prop-name">アルバム</div>
-          <div class="prop-value">{{ toHyphenIfEmpty(currentSong.album) }}</div>
+          <div class="prop-value">{{ formatAlbumTitle(currentSong.album) }}</div>
         </div>
         <div class="row two-items">
           <div class="prop-name">ディスク</div>

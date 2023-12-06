@@ -34,7 +34,6 @@ export const useSongsSort = (
   }
 
   watch([sortKey, order], () => {
-    console.log('hakka');
     if (sortKey.value === 'Artist' && order.value === 'ASC') {
       sortedSongs.value = [...songs];
     } else {

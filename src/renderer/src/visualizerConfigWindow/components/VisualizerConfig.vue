@@ -28,8 +28,6 @@ import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue'
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
 
-// TODO: Enable toggle on/off, change background-color, choose from presets, save as presets, save gradients...
-
 const props = defineProps<{ currentVisualizerIndex: number }>();
 const currentIndex = computed(() => props.currentVisualizerIndex);
 
