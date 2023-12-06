@@ -54,7 +54,7 @@ export type SortOption<T> = {
   order?: Order;
 };
 
-export type SongsSortKey = 'Artist' | 'Album' | 'Title' | 'TrackNo' | 'PlayCount';
+export type SongsSortKey = 'Artist' | 'Album' | 'Title' | 'TrackNo';
 export type AlbumsSortKey = 'Name' | 'SongCount';
 export type ArtistsSortKey = 'Name' | 'SongCount';
 

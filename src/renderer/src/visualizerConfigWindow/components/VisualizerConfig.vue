@@ -28,6 +28,8 @@ import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue'
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
 
+// TODO: Enable toggle on/off, change background-color, choose from presets, save as presets, save gradients...
+
 const props = defineProps<{ currentVisualizerIndex: number }>();
 const currentIndex = computed(() => props.currentVisualizerIndex);
 
@@ -487,8 +489,12 @@ const onChangeScaleXLabel = async () => {
       </ConfigRow>
 
       <ConfigRow>
-        <!-- // TODO:  (mode 10 only) -->
-        <ConfigItem item-name="Line Width" class="flex-grow-1" style="max-width: 18rem">
+        <ConfigItem
+          v-if="currentVisualizerOptions.mode === 10"
+          item-name="Line Width"
+          class="flex-grow-1"
+          style="max-width: 18rem"
+        >
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
               v-model="currentVisualizerOptions.lineWidth"

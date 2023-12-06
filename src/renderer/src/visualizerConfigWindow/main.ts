@@ -12,14 +12,12 @@ import VWave from 'v-wave';
 
 import { useWindowStore } from './stores/window';
 
-import {
-  ChangeAppearancePayload,
-  MainToSubMessage,
-  connectMessagePort,
-} from '@renderer/commonUtils/messagePort';
 import { sendMessageToMainWindowKey } from './injectionKeys';
 import { isRejected } from '@shared/utils';
 import { useVisualizerConfigStore } from './stores/visualizerConfig';
+
+import { connectMessagePort } from '@renderer/commonUtils/messagePort';
+import { handleOnReceiveMessageFromMain } from './messageHandler';
 
 registerErrorHandler();
 
@@ -38,45 +36,6 @@ const messagePort = connectMessagePort<'Sub'>(handleOnReceiveMessageFromMain);
 app.provide(sendMessageToMainWindowKey, messagePort.sendMessage);
 
 app.mount('#app');
-
-async function handleOnReceiveMessageFromMain(message: MainToSubMessage) {
-  switch (message.channel) {
-    case 'changeAppearance':
-      handleOnChangeAppearance(message.payload);
-      break;
-    case 'changeVisualizerSelection':
-      // TODO: handle
-      handleOnChangeVisualizerSelection(message.payload);
-      break;
-    case 'closeWindow':
-      handleOnCloseMainWindow();
-      break;
-  }
-}
-
-function handleOnChangeVisualizerSelection(payload: { index: number }) {
-  useWindowStore().currentVisualizerIndex = payload.index;
-}
-
-function handleOnChangeAppearance(payload: ChangeAppearancePayload) {
-  const windowStore = useWindowStore();
-
-  switch (payload.key) {
-    case 'fontFamily':
-      windowStore.fontFamily = payload.value;
-      break;
-    case 'theme':
-      windowStore.theme = payload.value;
-      break;
-    case 'primaryColor':
-      windowStore.primaryColor = payload.value;
-      break;
-  }
-}
-
-async function handleOnCloseMainWindow() {
-  await window.electron.invoke.closeWindow(false);
-}
 
 async function fetchDatas() {
   const { fetch: fetchWindowState } = useWindowStore();

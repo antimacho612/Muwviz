@@ -98,15 +98,6 @@ export const getSongsSortOptions = (key: SongsSortKey, order: Order): SortOption
         { key: 'album' },
         { key: 'title' },
       ];
-    case 'PlayCount':
-      // TODO:
-      return [
-        { key: 'artist', order },
-        { key: 'album' },
-        { key: 'diskNo' },
-        { key: 'trackNo' },
-        { key: 'title' },
-      ];
   }
 };
 
