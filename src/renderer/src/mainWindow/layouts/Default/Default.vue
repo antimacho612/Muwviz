@@ -48,7 +48,7 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
   grid-template:
     'left   center right ' 1fr
     'bottom bottom bottom' $bottomHeight
-    / #{$sidebarCollapsedWidth + 1rem} 1fr 360px;
+    / #{$sidebarCollapsedWidth + 1rem} 1fr 320px;
   height: 100%;
   max-height: 100%;
   width: 100%;

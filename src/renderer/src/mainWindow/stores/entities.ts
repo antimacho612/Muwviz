@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { isRejected } from '@shared/utils';
 import { Album, Artist, Song } from '@shared/types';
 
 type EntitiesStoreState = {
@@ -41,6 +42,14 @@ export const useEntitiesStore = defineStore('entities', {
       console.debug(
         `Fetched entities(${this.songsMap.size} songs, ${this.albumsMap.size} albums, ${this.artistsMap.size} artists)`
       );
+
+      // メイン側のキャッシュクリア
+      const results = await Promise.allSettled([
+        window.electron.invoke.clearSongsCache(),
+        window.electron.invoke.clearAlbumsCache(),
+        window.electron.invoke.clearArtistsCache(),
+      ]);
+      results.filter(isRejected).forEach((result) => console.error(result.reason.toString()));
     },
 
     getAlbumById(albumId: string) {

@@ -144,7 +144,7 @@ export const createSubWindow = async () => {
       titleBarStyle: hasFrame ? 'default' : 'hidden',
       frame: hasFrame,
       ...windowState,
-      minWidth: 360,
+      minWidth: 320,
       maxWidth: 700,
       minHeight: 320,
       show: false,
@@ -169,6 +169,7 @@ export const createSubWindow = async () => {
       await window.loadFile(path.join(__dirname, '../renderer/visualizer-config.html'));
     }
   } else {
+    window.restore();
     window.focus();
   }
 };

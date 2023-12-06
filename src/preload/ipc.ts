@@ -110,9 +110,19 @@ export type ElectronAPI = GetApiType<
     getAllSongs: () => Promise<Song[]>;
 
     /**
+     * 楽曲情報のキャッシュ（メイン側で保持しているデータ）を削除する
+     */
+    clearSongsCache: () => Promise<void>;
+
+    /**
      * 全アルバム情報を取得する
      */
     getAllAlbums: () => Promise<Album[]>;
+
+    /**
+     * アルバム情報のキャッシュ（メイン側で保持しているデータ）を削除する
+     */
+    clearAlbumsCache: () => Promise<void>;
 
     /**
      * 全アーティスト情報を取得する
@@ -120,9 +130,19 @@ export type ElectronAPI = GetApiType<
     getAllArtists: () => Promise<Artist[]>;
 
     /**
+     * アーティスト情報のキャッシュ（メイン側で保持しているデータ）を削除する
+     */
+    clearArtistsCache: () => Promise<void>;
+
+    /**
      * 全歌詞情報を取得する
      */
     getAllLyrics: () => Promise<Lyrics>;
+
+    /**
+     * 歌詞情報のキャッシュ（メイン側で保持しているデータ）を削除する
+     */
+    clearLyricsCache: () => Promise<void>;
 
     /**
      * 全ビジュアライザーの設定情報を取得する
@@ -188,9 +208,13 @@ export const electronAPI: ElectronAPI = {
       await ipcRenderer.invoke('deleteEntitiesByScanId', scanId),
 
     getAllSongs: async () => await ipcRenderer.invoke('getAllSongs'),
+    clearSongsCache: async () => await ipcRenderer.invoke('clearSongsCache'),
     getAllAlbums: async () => await ipcRenderer.invoke('getAllAlbums'),
+    clearAlbumsCache: async () => await ipcRenderer.invoke('clearAlbumsCache'),
     getAllArtists: async () => await ipcRenderer.invoke('getAllArtists'),
+    clearArtistsCache: async () => await ipcRenderer.invoke('clearArtistsCache'),
     getAllLyrics: async () => await ipcRenderer.invoke('getAllLyrics'),
+    clearLyricsCache: async () => await ipcRenderer.invoke('clearLyricsCache'),
 
     getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
     updateVisualizerConfig: async (index, options) =>

@@ -40,9 +40,9 @@ const showContextMenu = (_: MouseEvent) => {
         >
           <template #default="{ item, index }">
             <QueueItem
+              :index="index"
               :queue-id="item.queueId"
               :song="songsMap.get(item.songId)"
-              :index="index"
               @click-delete-button="onClickDeleteButton(item.queueId)"
               @double-click-row="onDoubleClickRow(item.queueId)"
               @contextmenu="showContextMenu"

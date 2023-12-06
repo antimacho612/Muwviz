@@ -118,15 +118,15 @@ const { currentSong } = useAudioPlayer();
     }
 
     .prop-name {
-      width: 27.5%;
+      flex: 0 0 auto;
+      width: 30%;
       display: inline-flex;
       flex-shrink: 0;
       font-weight: 500;
     }
 
     .prop-value {
-      width: 72.5%;
-      flex: 0 0 auto;
+      flex: 0 1 auto;
       text-wrap: wrap;
       overflow-wrap: break-word;
 

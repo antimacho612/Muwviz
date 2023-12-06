@@ -60,6 +60,11 @@ useIpcEventHandler();
 }
 
 :deep(.tab-menu-button) {
+  font-size: map-get($map: $fontSizes, $key: sm);
+  @media (min-width: 400px) {
+    font-size: map-get($map: $fontSizes, $key: md);
+  }
+  font-size: map-get($map: $fontSizes, $key: sm);
   justify-content: center;
 }
 

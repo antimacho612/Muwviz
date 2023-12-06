@@ -70,6 +70,8 @@ export const useLyricsStore = defineStore('lyrics', {
         });
       } catch (e) {
         console.error(e);
+      } finally {
+        await window.electron.invoke.clearLyricsCache();
       }
     },
   },

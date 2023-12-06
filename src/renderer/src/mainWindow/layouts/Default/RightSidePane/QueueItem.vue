@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
-import { toHyphenIfEmpty } from '@renderer/commonUtils';
+import { UNKNOWN_ALBUM_TITLE, UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 import { Song } from '@shared/types';
 
 import { TrashIcon } from '@heroicons/vue/24/outline';
@@ -9,8 +9,8 @@ import BarsAnimation from '@mainWindow/components/BarsAnimation/BarsAnimation.vu
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
 interface Props {
+  index: number;
   queueId: string;
-  index?: number;
   song?: Song;
 }
 const props = defineProps<Props>();
@@ -34,11 +34,11 @@ const current = computed(() => props.index === currentSongIndex.value);
     @dblclick="emits('doubleClickRow', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <div class="index">{{ index === undefined ? '-' : index + 1 }}</div>
+    <div class="index">{{ index + 1 }}</div>
     <div class="song-info">
       <span class="title">{{ song?.title }}</span>
       <span class="artist-and-album">
-        {{ toHyphenIfEmpty(song?.artist) }}／{{ toHyphenIfEmpty(song?.album) }}
+        {{ song?.artist || UNKNOWN_ARTIST_TITLE }}／{{ song?.album || UNKNOWN_ALBUM_TITLE }}
       </span>
     </div>
     <BarsAnimation
@@ -98,7 +98,7 @@ const current = computed(() => props.index === currentSongIndex.value);
 .index {
   position: relative;
   flex-shrink: 0;
-  width: 1.25rem;
+  width: 1.5rem;
   text-align: center;
   color: var(--secondary-text-color);
   font-size: map-get($fontSizes, xs);

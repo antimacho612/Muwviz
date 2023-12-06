@@ -92,12 +92,18 @@ export const registerIpcChannels = () => {
 
   // 全楽曲情報を取得する
   ipcMain.handle('getAllSongs', async () => songsStore.getData());
+  // 楽曲情報のキャッシュ（メイン側で保持しているデータ）を削除する
+  ipcMain.handle('clearSongsCache', async () => songsStore.clearCache());
 
   // 全アルバム情報を取得する
   ipcMain.handle('getAllAlbums', async () => albumsStore.getData());
+  // アルバム情報のキャッシュ（メイン側で保持しているデータ）を削除する
+  ipcMain.handle('clearAlbumsCache', async () => albumsStore.clearCache());
 
   // 全アーティスト情報を取得する
   ipcMain.handle('getAllArtists', async () => artistsStore.getData());
+  // アーティスト情報のキャッシュ（メイン側で保持しているデータ）を削除する
+  ipcMain.handle('clearArtistsCache', async () => artistsStore.clearCache());
 
   // 全歌詞情報を取得する
   ipcMain.handle('getAllLyrics', async () => {
@@ -105,6 +111,8 @@ export const registerIpcChannels = () => {
     lyricsStore.clearCache();
     return lyrics;
   });
+  // 歌詞情報のキャッシュ（メイン側で保持しているデータ）を削除する
+  ipcMain.handle('clearLyricsCache', async () => lyricsStore.clearCache());
 
   // 全ビジュアライザーの設定情報を取得する
   ipcMain.handle('getAllVisualizerConfig', async () => visualizerConfigStore.getVisualizerConfig());
