@@ -1,4 +1,13 @@
-import { Order, Song, SongsSortKey, SortOption } from './types';
+import {
+  Album,
+  AlbumsSortKey,
+  Artist,
+  ArtistsSortKey,
+  Order,
+  Song,
+  SongsSortKey,
+  SortOption,
+} from './types';
 
 export const getRandomInt = (max: number, min = 0) =>
   Math.floor(Math.random() * (max + 1 - min)) + min;
@@ -42,13 +51,8 @@ export const sortArrayOfObjects = <T>(array: T[], sortOptions: SortOption<T>[]) 
           return collator.compare(first, second);
         }
 
-        if (first) {
-          return -1;
-        }
-
-        if (second) {
-          return 1;
-        }
+        if (first) return -1;
+        if (second) return 1;
 
         return 0;
       }
@@ -86,6 +90,14 @@ export const getSongsSortOptions = (key: SongsSortKey, order: Order): SortOption
         { key: 'diskNo' },
         { key: 'trackNo' },
       ];
+    case 'TrackNo':
+      return [
+        { key: 'diskNo', order },
+        { key: 'trackNo', order },
+        { key: 'artist' },
+        { key: 'album' },
+        { key: 'title' },
+      ];
     case 'PlayCount':
       // TODO:
       return [
@@ -97,6 +109,12 @@ export const getSongsSortOptions = (key: SongsSortKey, order: Order): SortOption
       ];
   }
 };
+
+export const getAlbumsSortOptions = (key: AlbumsSortKey, order: Order): SortOption<Album>[] =>
+  key === 'Name' ? [{ key: 'name', order }] : [{ key: 'songCount', order }, { key: 'name' }];
+
+export const getArtistsSortOptions = (key: ArtistsSortKey, order: Order): SortOption<Artist>[] =>
+  key === 'Name' ? [{ key: 'name', order }] : [{ key: 'songCount', order }, { key: 'name' }];
 
 export const isRejected = (input: PromiseSettledResult<unknown>): input is PromiseRejectedResult =>
   input.status === 'rejected';

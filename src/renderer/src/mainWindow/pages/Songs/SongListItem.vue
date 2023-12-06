@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
-import { formatTime, toHyphenIfEmpty } from '@renderer/commonUtils';
+import { formatAlbumTitle, formatArtistName, formatTime } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
@@ -55,7 +55,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
         <span class="title">{{ song.title }}</span>
         <div class="artist">
           <RouterLink :to="`/artists/${song.artistId}`">
-            {{ toHyphenIfEmpty(song.artist) }}
+            {{ formatArtistName(song.artist) }}
           </RouterLink>
         </div>
       </div>
@@ -72,7 +72,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 
     <div class="trailing-area">
       <RouterLink :to="`/albums/${song.albumId}`" class="album">
-        {{ toHyphenIfEmpty(song.album) }}
+        {{ formatAlbumTitle(song.album) }}
       </RouterLink>
       <span class="duration">{{ formatTime(song.duration) }}</span>
     </div>
@@ -133,7 +133,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
   }
 
   .artist {
-    font-size: map-get($fontSizes, sm);
+    font-size: 0.8125rem;
     color: var(--secondary-text-color);
     @include singleLineClamp;
   }
@@ -147,7 +147,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
   justify-content: space-between;
 
   .album {
-    font-size: 1rem;
+    font-size: map-get($fontSizes, sm);
     @include singleLineClamp;
   }
 }

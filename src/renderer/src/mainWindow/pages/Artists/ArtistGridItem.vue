@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { formatArtistName } from '@renderer/commonUtils';
 import { Artist } from '@shared/types';
-import { UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 
 import { PlayIcon } from '@heroicons/vue/24/solid';
 import RecycleGridScrollerItem from '@mainWindow/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
 import ArtistImage from '@mainWindow/components/ArtistImage/ArtistImage.vue';
 
-defineProps<{ artist: Artist }>();
+const props = defineProps<{ artist: Artist }>();
 
 type Emits = {
   clickItem: [e: MouseEvent];
@@ -14,6 +15,8 @@ type Emits = {
   contextmenu: [e: MouseEvent];
 };
 const emits = defineEmits<Emits>();
+
+const formattedArtistName = computed(() => formatArtistName(props.artist.name));
 </script>
 
 <template>
@@ -24,7 +27,7 @@ const emits = defineEmits<Emits>();
   >
     <ArtistImage class="artist-image" />
 
-    <div class="name" :title="artist.name">{{ artist.name || UNKNOWN_ARTIST_TITLE }}</div>
+    <div class="name" :title="formattedArtistName">{{ formattedArtistName }}</div>
     <div class="song-count">{{ artist.songCount }}</div>
     <div
       v-ripple

@@ -10,7 +10,7 @@ const { collapseLeftSidePane } = useWindowStore();
 <template>
   <div
     class="flex align-items-center justify-content-between"
-    style="height: 2.5rem; margin-bottom: 0.5rem"
+    style="height: 3rem; padding-bottom: 0.5rem"
   >
     <h2 v-if="$slots.title" class="font-bold">
       <slot name="title"></slot>

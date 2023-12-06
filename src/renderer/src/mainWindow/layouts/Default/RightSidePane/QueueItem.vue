@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
-import { UNKNOWN_ALBUM_TITLE, UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
+import { formatAlbumTitle, formatArtistName } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import { TrashIcon } from '@heroicons/vue/24/outline';
@@ -38,7 +38,7 @@ const current = computed(() => props.index === currentSongIndex.value);
     <div class="song-info">
       <span class="title">{{ song?.title }}</span>
       <span class="artist-and-album">
-        {{ song?.artist || UNKNOWN_ARTIST_TITLE }}／{{ song?.album || UNKNOWN_ALBUM_TITLE }}
+        {{ formatArtistName(song?.artist) }}／{{ formatAlbumTitle(song?.album) }}
       </span>
     </div>
     <BarsAnimation

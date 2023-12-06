@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
-import { formatDiskAndTrackNo, formatTime } from '@renderer/commonUtils';
+import { formatArtistName, formatDiskAndTrackNo, formatTime } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
 import RecycleScrollerItem from '@mainWindow/components/RecycleScrollerItem/RecycleScrollerItem.vue';
 import BarsAnimation from '@mainWindow/components/BarsAnimation/BarsAnimation.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
-import { UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 
 interface Props {
   song: Song;
@@ -52,7 +51,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
       />
     </div>
     <RouterLink :to="`/artists/${song.artistId}`" class="artist">
-      {{ song.artist || UNKNOWN_ARTIST_TITLE }}
+      {{ formatArtistName(song.artist) }}
     </RouterLink>
     <div class="duration">{{ formatTime(song.duration) }}</div>
     <Button

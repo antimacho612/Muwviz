@@ -1,3 +1,6 @@
+export const formatArtistName = (name?: string) => name || '不明なアーティスト';
+export const formatAlbumTitle = (title?: string) => title || '不明なアルバム';
+
 export const formatTime = (ms?: number): string => {
   if (typeof ms !== 'number' || !Number.isFinite(ms) || ms < 0) {
     return '--:--';

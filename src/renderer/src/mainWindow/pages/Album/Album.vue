@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
-import { useResizeObserver } from '@vueuse/core';
 import { useSongsSort } from '@mainWindow/composables/useSort';
 import { useSongsQuickSearch } from '@mainWindow/composables/useQuickSearch';
 import { useMultiSelectableSongList } from '@mainWindow/composables/useMultiSelectableSongList';
 import { useContextMenu } from '@mainWindow/composables/useContextMenu';
+import { formatAlbumTitle } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
+import { PlayIcon } from '@heroicons/vue/24/solid';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import BackButton from '@mainWindow/components/BackButton/BackButton.vue';
-import { PlayIcon } from '@heroicons/vue/24/solid';
 import AlbumSong from './AlbumSong.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
-import { UNKNOWN_ALBUM_TITLE } from '@renderer/mainWindow/constants';
 
 const props = defineProps<{ albumId: string }>();
 
@@ -46,14 +44,6 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
     songContextMenu.show(e, { song });
   }
 };
-
-const headerEl = ref<HTMLDivElement>();
-const artworkWidth = ref('100%');
-useResizeObserver(headerEl, (entries) => {
-  const entry = entries[0];
-  const { height } = entry.contentRect;
-  artworkWidth.value = `${height}px`;
-});
 </script>
 
 <template>
@@ -62,11 +52,11 @@ useResizeObserver(headerEl, (entries) => {
       <BackButton to="/albums" />
     </PageHeader>
 
-    <div ref="headerEl" class="header">
-      <Artwork :src="album?.artworkPath" :width="artworkWidth" class="artwork" />
+    <div class="header">
+      <Artwork :src="album?.artworkPath" width="6.5rem" class="artwork" />
 
       <div class="header-main">
-        <div class="title">{{ album?.name || UNKNOWN_ALBUM_TITLE }}</div>
+        <div class="title">{{ formatAlbumTitle(album?.name) }}</div>
         <div class="bottom">
           <div class="artists">
             <template v-if="album?.name">
@@ -90,8 +80,9 @@ useResizeObserver(headerEl, (entries) => {
         v-model:sort-by="sortKey"
         v-model:order="order"
         :items="[
-          { key: 'Title', title: 'タイトル' },
-          { key: 'PlayCount', title: '再生回数' },
+          { key: 'Title', label: 'タイトル' },
+          { key: 'Artist', label: 'アーティスト' },
+          { key: 'TrackNo', label: 'ディスク-トラックNo' },
         ]"
       />
       <QuickSearchWidget v-model="searchText" />
@@ -132,8 +123,7 @@ useResizeObserver(headerEl, (entries) => {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
-  height: 15%;
-  min-height: 6.5rem;
+  height: 7.5rem;
   padding: 0.5rem;
   overflow: hidden;
 }
@@ -178,14 +168,15 @@ useResizeObserver(headerEl, (entries) => {
 }
 
 .widgets {
-  margin: 0 0.5rem 1rem;
+  height: 3rem;
+  padding: 0 0.5rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .album-songs {
-  height: 85%;
+  height: calc(100% - 13.5rem);
   width: 100%;
   overflow: hidden;
 }

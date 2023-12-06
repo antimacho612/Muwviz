@@ -2,12 +2,19 @@
 import { useRouter } from 'vue-router';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
+import { useArtistsSort } from '@renderer/mainWindow/composables/useSort';
+import { useArtistsQuickSearch } from '@renderer/mainWindow/composables/useQuickSearch';
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
+import SortWidget from '@renderer/mainWindow/components/SortWidget/SortWidget.vue';
+import QuickSearchWidget from '@renderer/mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import ArtistGridItem from './ArtistGridItem.vue';
 
 const { artistList, getArtistSongs } = useEntitiesStore();
+
+const { sortedArtists, sortKey, order } = useArtistsSort(artistList);
+const { searchText, filteredArtists } = useArtistsQuickSearch(sortedArtists);
 
 const router = useRouter();
 const onClickItem = (artistId: string) => router.push(`artists/${artistId}`);
@@ -31,9 +38,21 @@ const showContextMenu = (_e: MouseEvent, _artistId: string) => {
       <template #actions></template>
     </PageHeader>
 
+    <div class="widgets">
+      <SortWidget
+        v-model:sort-by="sortKey"
+        v-model:order="order"
+        :items="[
+          { key: 'Name', label: '名前' },
+          { key: 'SongCount', label: '曲数' },
+        ]"
+      />
+      <QuickSearchWidget v-model="searchText" />
+    </div>
+
     <RecycleGridScroller
-      scroller-height="calc(100% - 96px)"
-      :items="artistList"
+      scroller-height="calc(100% - 6rem)"
+      :items="filteredArtists"
       key-field="id"
       :item-height="192"
       :base-item-width="176"
@@ -55,5 +74,13 @@ const showContextMenu = (_e: MouseEvent, _artistId: string) => {
   height: 100%;
   width: 100%;
   overflow: hidden;
+}
+
+.widgets {
+  height: 3rem;
+  padding: 0 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

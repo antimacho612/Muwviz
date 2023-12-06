@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { UNKNOWN_ALBUM_TITLE, UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
+import { formatAlbumTitle } from '@renderer/commonUtils';
 import { Album } from '@shared/types';
 
 import { PlayIcon } from '@heroicons/vue/24/solid';
@@ -17,10 +17,12 @@ type Emits = {
 const emits = defineEmits<Emits>();
 
 const artistName = computed(() => {
-  if (!props.album.artists) return UNKNOWN_ARTIST_TITLE;
-  if (props.album.artists.length === 1) return props.album.artists[0].name || UNKNOWN_ARTIST_TITLE;
-  return (props.album.artists[0].name || UNKNOWN_ARTIST_TITLE) + ' 他';
+  if (!props.album.artists) return '不明なアーティスト';
+  if (props.album.artists.length === 1) return props.album.artists[0].name || '不明なアーティスト';
+  return (props.album.artists[0].name || '不明なアーティスト') + ' 他';
 });
+
+const albumName = computed(() => formatAlbumTitle(props.album.name));
 </script>
 
 <template>
@@ -31,7 +33,7 @@ const artistName = computed(() => {
   >
     <Artwork :src="album.artworkPath" width="128px" height="128px" style="z-index: 1" />
     <div>
-      <div class="name" :title="album.name">{{ album.name || UNKNOWN_ALBUM_TITLE }}</div>
+      <div class="name" :title="albumName">{{ albumName }}</div>
       <div class="artist">{{ artistName }}</div>
     </div>
     <div class="song-count">{{ album.songCount }}</div>

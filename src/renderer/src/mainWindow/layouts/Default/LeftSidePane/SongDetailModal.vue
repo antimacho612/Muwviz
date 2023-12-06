@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { formatTime, formatBytes, toHyphenIfEmpty } from '@renderer/commonUtils';
+import {
+  formatTime,
+  formatBytes,
+  toHyphenIfEmpty,
+  formatArtistName,
+  formatAlbumTitle,
+} from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import { XMarkIcon } from '@heroicons/vue/24/outline';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
-import { UNKNOWN_ALBUM_TITLE, UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
 
 interface Props {
   song?: Song;
@@ -48,15 +53,11 @@ const opened = computed({
         <div class="info">
           <div class="row">
             <div class="prop-name" style="width: 20%">アーティスト</div>
-            <div class="prop-value" style="width: 80%">
-              {{ song?.artist || UNKNOWN_ARTIST_TITLE }}
-            </div>
+            <div class="prop-value" style="width: 80%">{{ formatArtistName(song?.artist) }}</div>
           </div>
           <div class="row">
             <div class="prop-name" style="width: 20%">アルバム</div>
-            <div class="prop-value" style="width: 80%">
-              {{ song?.album || UNKNOWN_ALBUM_TITLE }}
-            </div>
+            <div class="prop-value" style="width: 80%">{{ formatAlbumTitle(song?.album) }}</div>
           </div>
           <div class="row">
             <div class="prop-name" style="width: 20%">ディスク</div>

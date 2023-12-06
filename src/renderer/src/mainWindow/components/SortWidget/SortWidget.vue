@@ -7,7 +7,7 @@ import { Order } from '@shared/types';
 interface Props {
   sortBy: string;
   order: Order;
-  items: { key: string; title: string }[];
+  items: { key: string; label: string }[];
 }
 const props = defineProps<Props>();
 
@@ -40,7 +40,7 @@ const onSortButtonClick = (key: string) => {
       }"
       @click="onSortButtonClick(item.key)"
     >
-      <span class="btn-label">{{ item.title }}</span>
+      <span class="btn-label">{{ item.label }}</span>
       <PlayIcon v-if="sortBy === item.key" class="btn-icon" />
       <ChevronUpDownIcon v-else class="btn-icon icon-up-down" />
     </Button>

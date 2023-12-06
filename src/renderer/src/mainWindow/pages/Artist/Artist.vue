@@ -6,7 +6,7 @@ import { groupSongs } from './grouping';
 import { useSongsSort } from '@mainWindow/composables/useSort';
 import { useSongsQuickSearch } from '@mainWindow/composables/useQuickSearch';
 import { useMultiSelectableSongList } from '@mainWindow/composables/useMultiSelectableSongList';
-import { UNKNOWN_ARTIST_TITLE } from '@renderer/mainWindow/constants';
+import { formatArtistName } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
@@ -23,7 +23,10 @@ const artist = getArtistById(props.artistId);
 const artistSongs = getArtistSongs(props.artistId);
 
 // ソート、クイックサーチ
-const { sortKey, order, sortedSongs } = useSongsSort(artistSongs);
+const { sortKey, order, sortedSongs } = useSongsSort(artistSongs, {
+  sortKey: 'Album',
+  order: 'ASC',
+});
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 
 // 楽曲グルーピング
@@ -53,7 +56,7 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
 
     <div class="artist-header">
       <ArtistImage class="w-3rem h-3rem" style="padding: 0.375rem" />
-      <span class="text-2xl font-bold">{{ artist?.name || UNKNOWN_ARTIST_TITLE }}</span>
+      <span class="text-2xl font-bold">{{ formatArtistName(artist?.name) }}</span>
     </div>
 
     <div class="widgets">
@@ -61,8 +64,8 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
         v-model:sort-by="sortKey"
         v-model:order="order"
         :items="[
-          { key: 'Title', title: 'タイトル' },
-          { key: 'PlayCount', title: '再生回数' },
+          { key: 'Album', label: 'アルバム' },
+          { key: 'Title', label: 'タイトル' },
         ]"
       />
       <QuickSearchWidget v-model="searchText" />
@@ -72,7 +75,7 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
       v-click-outside="clearSelection"
       :items="songGroups"
       :min-item-size="54"
-      style="height: calc(100% - 9rem)"
+      style="height: calc(100% - 10rem)"
     >
       <template #default="{ item, active }">
         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.songs]">
@@ -100,16 +103,18 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
 }
 
 .artist-header {
+  height: 4rem;
+  padding-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1rem;
 }
 
 .widgets {
+  height: 3rem;
+  padding: 0 0.5rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 0.5rem 0.5rem;
 }
 </style>
