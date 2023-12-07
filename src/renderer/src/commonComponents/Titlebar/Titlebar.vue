@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { IconPin, IconPinFilled } from '@tabler/icons-vue';
+import LogoIcon from '@renderer/assets/icons/logo.svg?component';
 
 interface Props {
   isWindowMaximized?: boolean;
@@ -30,31 +31,11 @@ const emits = defineEmits<Emits>();
 
 <template>
   <div class="c-titlebar">
-    <div v-if="showTitle" class="c-titlebar-title">
-      <div style="display: flex; gap: 1px; align-items: center; height: 90%; margin-right: 4px">
-        <div
-          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 30%"
-        ></div>
-        <div
-          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 55%"
-        ></div>
-        <div
-          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 75%"
-        ></div>
-        <div
-          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 35%"
-        ></div>
-        <div
-          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 70%"
-        ></div>
-        <div
-          style="width: 3px; background: var(--primary-color); border-radius: 100%; height: 45%"
-        ></div>
-      </div>
-
-      Muwviz
+    <div v-if="showTitle" class="c-titlebar-left">
+      <LogoIcon />
+      <span class="c-titlebar-title">Muwviz</span>
     </div>
-    <div class="c-titlebar-buttons" :style="{ marginLeft: showTitle ? undefined : 'auto' }">
+    <div class="c-titlebar-right" :style="{ marginLeft: showTitle ? undefined : 'auto' }">
       <div v-if="showPinButton" class="c-titlebar-button" @click="emits('clickPinButton', $event)">
         <IconPinFilled v-if="pinned" stroke-width="1.5" style="transform: rotate(-45deg)" />
         <IconPin v-else stroke-width="1.5" />
@@ -97,17 +78,21 @@ const emits = defineEmits<Emits>();
   z-index: 100;
 }
 
-.c-titlebar-title {
+.c-titlebar-left {
   height: 100%;
   display: flex;
   align-items: center;
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 1;
-  padding-left: 8px;
+  column-gap: 0.25rem;
+  padding-left: 0.5rem;
+
+  .c-titlebar-title {
+    font-size: 16px;
+    line-height: 1;
+    font-weight: bold;
+  }
 }
 
-.c-titlebar-buttons {
+.c-titlebar-right {
   -webkit-app-region: no-drag;
   height: 100%;
   display: flex;

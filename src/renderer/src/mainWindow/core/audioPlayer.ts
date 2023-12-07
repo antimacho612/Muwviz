@@ -3,9 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useToast } from 'vue-toastification';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { useSongQueue } from './songQueue';
-import { Song } from '@shared/types';
-
-export type RepeatState = 'OFF' | 'ALL' | 'ONCE';
+import { RepeatState, Song } from '@shared/types';
 
 const toast = useToast();
 
@@ -14,7 +12,7 @@ export const audioPlayer = () => {
   const isLoading = ref(false);
   const volume = ref(100);
   const isMuted = ref(false);
-  const isShufflOn = ref(false);
+  const isShuffleOn = ref(false);
   const repeat = ref<RepeatState>('OFF');
   const duration = ref(0);
   const currentTime = ref(0);
@@ -69,9 +67,15 @@ export const audioPlayer = () => {
 
   // 曲終了時
   audio.onended = async () => {
-    if (repeat.value !== 'ONCE') {
-      isPlaying.value = true;
-      nextSong();
+    // repeat === 'ONCE'の場合はaudioにloop = trueが設定してあるため、自動でループ再生される
+    if (repeat.value === 'ONCE') return;
+
+    if (repeat.value === 'ALL' || songQueue.hasNext()) {
+      nextSong(true);
+    } else {
+      setCurrentTime(0);
+      isPlaying.value = false;
+      toast.info('キューの最後の曲の再生が終了しました。');
     }
   };
 
@@ -110,20 +114,14 @@ export const audioPlayer = () => {
 
   const pause = () => audio.pause();
 
-  const togglePlay = async () => {
-    if (isPlaying.value) {
-      audio.pause();
-    } else {
-      await play();
-    }
-  };
+  const togglePlay = async () => (isPlaying.value ? audio.pause() : await play());
 
   const playSongInQueue = async (queueId: string) => {
     songQueue.setCurrent(queueId);
     await loadSong();
   };
 
-  const nextSong = async () => {
+  const nextSong = async (autoPlay = false) => {
     if (!songQueue.length.value) {
       setCurrentTime(0);
       return;
@@ -131,7 +129,7 @@ export const audioPlayer = () => {
 
     if (songQueue.hasNext() || repeat.value === 'ALL') {
       songQueue.next(true);
-      await loadSong(isPlaying.value);
+      await loadSong(autoPlay);
     } else {
       toast.warning('キューに次の曲がありません。');
     }
@@ -223,17 +221,17 @@ export const audioPlayer = () => {
     resetAudio();
   }
 
-  // function toggleShuffle() {
-  //   isShuffleOn.value = !isShuffleOn.value;
+  function toggleShuffle() {
+    isShuffleOn.value = !isShuffleOn.value;
 
-  //   if (isShuffleOn.value) {
-  //     shuffleQueue(songQueue.value, currentSongIndex.value);
-  //   } else {
-  //     currentSongIndex.value = originalSongQueue.indexOf(currentSongId.value);
-  //     songQueue.value = originalSongQueue;
-  //     originalSongQueue = [];
-  //   }
-  // }
+    // if (shuffle.value) {
+    //   shuffleQueue(songQueue.value, currentSongIndex.value);
+    // } else {
+    //   currentSongIndex.value = originalSongQueue.indexOf(currentSongId.value);
+    //   songQueue.value = originalSongQueue;
+    //   originalSongQueue = [];
+    // }
+  }
 
   // // TODO: キュー内の曲をシャッフルする関数に変える
   // function shuffleQueue(queue: string[], firstSongIndex = -1) {
@@ -264,6 +262,8 @@ export const audioPlayer = () => {
     currentTime: readonly(currentTime),
     volume: readonly(volume),
     isMuted: readonly(isMuted),
+    repeat: readonly(repeat),
+    isShuffleOn: readonly(isShuffleOn),
 
     queueItems: songQueue.allItems,
     currentSongIndex: songQueue.currentIndex,
@@ -279,13 +279,12 @@ export const audioPlayer = () => {
     toggleMute,
     setCurrentTime,
     setRepeat,
+    toggleShuffle,
 
     playSongInQueue,
     setQueue,
     clearQueue,
     removeSongsFromQueue,
-
-    // toggleShuffle,
   };
 };
 

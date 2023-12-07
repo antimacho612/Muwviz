@@ -4,6 +4,7 @@ import {
   MessageChannelMain,
   OpenDialogOptions,
   dialog,
+  nativeImage,
   shell,
 } from 'electron';
 import { is } from '@electron-toolkit/utils';
@@ -11,6 +12,10 @@ import path from 'path';
 import { settingsStore, visualizerConfigStore } from '.';
 import { sendWindowMaximized } from './ipc';
 import icon from '../../resources/icon.png?asset';
+import prevIcon from '../../resources/prev-icon.png?asset';
+import playIcon from '../../resources/play-icon.png?asset';
+import pauseIcon from '../../resources/pause-icon.png?asset';
+import nextIcon from '../../resources/next-icon.png?asset';
 import { DEFAULT_SETTINGS } from '@shared/types';
 
 let mainWindowId: number | undefined;
@@ -78,6 +83,35 @@ const registerWindowEvents = (
   }
 };
 
+const createThumbarButtons = (window: BrowserWindow) => {
+  window.setThumbarButtons([
+    {
+      icon: nativeImage.createFromPath(prevIcon),
+      click: () => console.log('clicked'),
+      tooltip: '前へ',
+    },
+    {
+      icon: nativeImage.createFromPath(playIcon),
+      click: () => {
+        console.log('click');
+      },
+      tooltip: '再生',
+    },
+    {
+      icon: nativeImage.createFromPath(pauseIcon),
+      click: () => {
+        console.log('click');
+      },
+      tooltip: '停止',
+    },
+    {
+      icon: nativeImage.createFromPath(nextIcon),
+      click: () => console.log('clicked'),
+      tooltip: '次へ',
+    },
+  ]);
+};
+
 const createTray = async () => {
   // TODO: 未実装
 };
@@ -103,7 +137,7 @@ export const createMainWindow = async () => {
     height: windowState.isMaximized ? DEFAULT_SETTINGS.mainWindowState.height : windowState.height,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       contextIsolation: true,
       devTools: true,
@@ -120,6 +154,8 @@ export const createMainWindow = async () => {
   } else {
     await window.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
+
+  createThumbarButtons(window);
 
   await createTray();
 };
@@ -149,7 +185,7 @@ export const createSubWindow = async () => {
       minHeight: 320,
       show: false,
       autoHideMenuBar: true,
-      ...(process.platform === 'linux' ? { icon } : {}),
+      icon,
       webPreferences: {
         contextIsolation: true,
         devTools: true,

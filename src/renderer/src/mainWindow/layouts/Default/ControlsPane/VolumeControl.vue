@@ -2,40 +2,36 @@
 import { computed } from 'vue';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
 
-import { SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/vue/24/solid';
+import VolumeIcon from '@renderer/assets/icons/volume.svg?component';
+import VolumeMuteIcon from '@renderer/assets/icons/volume-mute.svg?component';
 import Slider from '@renderer/commonComponents/Slider/Slider.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
-const audioPlayer = useAudioPlayer();
+const { isMuted, volume, setVolume, toggleMute } = useAudioPlayer();
 
-const volume = computed({
-  get: () => (audioPlayer.isMuted.value ? 0 : audioPlayer.volume.value),
-  set: (value: number) => {
-    audioPlayer.setVolume(value);
-  },
+const volumeRef = computed({
+  get: () => (isMuted.value ? 0 : volume.value),
+  set: (value: number) => setVolume(value),
 });
-const buttonIcon = computed(() => (audioPlayer.isMuted.value ? SpeakerXMarkIcon : SpeakerWaveIcon));
 </script>
 
 <template>
   <div class="volume-control">
     <Button
-      :icon="buttonIcon"
+      :icon="isMuted ? VolumeMuteIcon : VolumeIcon"
       size="sm"
       text
-      :title="audioPlayer.isMuted ? 'ミュート解除(m)' : 'ミュート(m)'"
-      @click="audioPlayer.toggleMute"
+      :title="isMuted ? 'ミュート解除(m)' : 'ミュート(m)'"
+      @click="toggleMute"
     />
-    <Slider v-model="volume" :bar-width="0.5" :min="0" :max="100" :lazy="false" />
+    <Slider v-model="volumeRef" :bar-width="0.5" :min="0" :max="100" :lazy="false" />
   </div>
 </template>
 
-<style lang="scss">
+<style scoped>
 .volume-control {
-  max-width: 12.5rem;
-  margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 </style>

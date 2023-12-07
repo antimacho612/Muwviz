@@ -18,18 +18,13 @@ export const useSongQueue = () => {
     currentIndex.value = orderedItems.value.findIndex((item) => item.queueId === queueId);
   };
 
-  function hasNext() {
-    const len = length.value;
-    return !!len && currentIndex.value < len;
-  }
+  const hasNext = () => !!length.value && currentIndex.value < length.value - 1;
 
-  function next(loop = false) {
+  const next = (loop = false) => {
     const len = length.value;
     const current = currentIndex.value;
 
-    if (!len) {
-      throw new Error('キューに曲がありません。');
-    }
+    if (!len) throw new Error('キューに曲がありません。');
 
     if (current === -1) {
       currentIndex.value = 0;
@@ -37,38 +32,30 @@ export const useSongQueue = () => {
     }
 
     const isLast = len === current + 1;
-    if (isLast && !loop) {
-      throw new Error('キューに次の曲がありません。');
-    }
+    if (isLast && !loop) throw new Error('キューに次の曲がありません。');
 
     currentIndex.value = isLast ? 0 : current + 1;
-  }
+  };
 
-  function hasPrevious() {
-    return !!length.value && currentIndex.value > 0;
-  }
+  const hasPrevious = () => !!length.value && currentIndex.value > 0;
 
-  function previous(loop = false) {
+  const previous = (loop = false) => {
     const len = length.value;
     const current = currentIndex.value;
 
-    if (!len) {
-      throw new Error('キューに曲がありません。');
-    }
+    if (!len) throw new Error('キューに曲がありません。');
 
     if (current === -1) {
       currentIndex.value = 0;
       return;
     }
 
-    if (current === 0 && !loop) {
-      throw new Error('キューに前の曲がありません。');
-    }
+    if (current === 0 && !loop) throw new Error('キューに前の曲がありません。');
 
     currentIndex.value = current === 0 ? len - 1 : current - 1;
-  }
+  };
 
-  function setItems(songIds: string[], shuffle: boolean, firstSongIndex: number) {
+  const setItems = (songIds: string[], shuffle: boolean, firstSongIndex: number) => {
     clearItems();
 
     // QueueId用のタイムスタンプ
@@ -89,28 +76,24 @@ export const useSongQueue = () => {
     }
 
     currentIndex.value = shuffle ? 0 : firstSongIndex;
-  }
+  };
 
-  function clearItems() {
+  const clearItems = () => {
     originalItems = [];
     orderedItems.value = [];
     currentIndex.value = -1;
-  }
+  };
 
-  function removeItems(...queueIds: string[]) {
+  const removeItems = (...queueIds: string[]) => {
     let decrement = 0;
 
     orderedItems.value = orderedItems.value.filter((queueItem, index) => {
       // 削除対象外
-      if (!queueIds.includes(queueItem.queueId)) {
-        return true;
-      }
+      if (!queueIds.includes(queueItem.queueId)) return true;
 
       // 削除対象
-      if (index < currentIndex.value) {
-        // 現在再生中の曲より前に位置する曲の削除時、再生中の曲のインデックスがずれないように-1する
-        decrement++;
-      }
+      // 現在再生中の曲より前に位置する曲の削除時、再生中の曲のインデックスがずれないように-1する
+      if (index < currentIndex.value) decrement++;
 
       return false;
     });
@@ -120,7 +103,7 @@ export const useSongQueue = () => {
 
     // インデックス補正
     currentIndex.value -= decrement;
-  }
+  };
 
   return {
     currentIndex: readonly(currentIndex),

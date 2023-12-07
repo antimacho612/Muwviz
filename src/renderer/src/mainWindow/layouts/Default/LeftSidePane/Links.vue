@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { MusicalNoteIcon, FolderIcon, UserGroupIcon, StarIcon } from '@heroicons/vue/24/solid';
+import { UserGroupIcon, StarIcon } from '@heroicons/vue/24/solid';
+import MusicIcon from '@renderer/assets/icons/music.svg?component';
+import AlbumIcon from '@renderer/assets/icons/album.svg?component';
 
 const LINKS = [
   {
     to: '/songs',
     title: 'All Songs',
-    icon: MusicalNoteIcon,
+    icon: MusicIcon,
   },
   {
     to: '/albums',
     title: 'Albums',
-    icon: FolderIcon,
+    icon: AlbumIcon,
   },
   {
     to: '/artists',

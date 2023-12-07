@@ -60,6 +60,7 @@
     "typescript": "^5.1.6",
     "v-wave": "^1.5.1",
     "vite": "^4.4.9",
+    "vite-svg-loader": "^5.1.0",
     "vue": "^3.3.7",
     "vue-final-modal": "^4.4.5",
     "vue-router": "^4.2.5",

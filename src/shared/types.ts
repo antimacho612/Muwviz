@@ -47,6 +47,8 @@ export type Lyrics = {
   [songId: string]: string;
 };
 
+export type RepeatState = 'OFF' | 'ALL' | 'ONCE';
+
 export type Order = 'ASC' | 'DESC';
 
 export type SortOption<T> = {

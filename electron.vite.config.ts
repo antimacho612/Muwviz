@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { resolve } from 'path';
+import svgLoader from 'vite-svg-loader';
 
 /**
  * @type {import('electron-vite').UserConfig}
@@ -27,7 +28,7 @@ export default defineConfig({
     },
   },
   renderer: {
-    plugins: [vue()],
+    plugins: [vue(), svgLoader()],
     build: {
       rollupOptions: {
         input: {
