@@ -27,6 +27,7 @@ withDefaults(defineProps<Props>(), {
   .bars-animation-bar {
     display: inline-block;
     background: var(--primary-text-color);
+    border-radius: $borderRadiusFull;
     width: 25%;
     height: 100%;
 
@@ -54,6 +55,24 @@ withDefaults(defineProps<Props>(), {
 
   &.pause .bars-animation-bar {
     animation-play-state: paused;
+  }
+}
+
+@keyframes up-and-down {
+  10% {
+    height: 30%;
+  }
+  30% {
+    height: 100%;
+  }
+  60% {
+    height: 50%;
+  }
+  80% {
+    height: 75%;
+  }
+  100% {
+    height: 60%;
   }
 }
 </style>

@@ -18,7 +18,7 @@ type Emits = {
 const emits = defineEmits<Emits>();
 
 const onSortButtonClick = (key: string) => {
-  const order = key === props.sortBy && props.order === 'ASC' ? 'DESC' : 'ASC';
+  const order = key === props.sortBy && props.order === 'Asc' ? 'Desc' : 'Asc';
   if (key !== props.sortBy) {
     emits('update:sortBy', key);
   }
@@ -35,8 +35,8 @@ const onSortButtonClick = (key: string) => {
       text
       class="sort-btn"
       :class="{
-        'active-asc': item.key === sortBy && order === 'ASC',
-        'active-desc': item.key === sortBy && order === 'DESC',
+        'active-asc': item.key === sortBy && order === 'Asc',
+        'active-desc': item.key === sortBy && order === 'Desc',
       }"
       @click="onSortButtonClick(item.key)"
     >

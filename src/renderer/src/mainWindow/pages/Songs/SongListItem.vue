@@ -25,7 +25,7 @@ type Emits = {
 };
 const emits = defineEmits<Emits>();
 
-const { isPlaying, currentSong } = useAudioPlayer();
+const { playerState, currentSong } = useAudioPlayer();
 const current = computed(() => props.song.id === currentSong.value?.id);
 </script>
 
@@ -62,7 +62,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
 
       <BarsAnimation
         v-if="current"
-        :pause="!isPlaying"
+        :pause="playerState !== 'Playing'"
         width="1rem"
         height="1.25rem"
         color="var(--primary-color)"

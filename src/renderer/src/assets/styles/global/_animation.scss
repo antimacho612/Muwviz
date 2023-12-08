@@ -67,24 +67,11 @@
   }
 }
 
-@keyframes up-and-down {
-  10% {
-    height: 30%;
+@keyframes left-to-right {
+  from {
+    left: -5rem;
   }
-
-  30% {
-    height: 100%;
-  }
-
-  60% {
-    height: 50%;
-  }
-
-  80% {
-    height: 75%;
-  }
-
-  100% {
-    height: 60%;
+  to {
+    left: 100%;
   }
 }

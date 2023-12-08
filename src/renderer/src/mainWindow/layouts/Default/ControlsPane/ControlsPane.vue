@@ -3,39 +3,34 @@ import { computed } from 'vue';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
 
 import { PlayIcon, PauseIcon, BackwardIcon, ForwardIcon } from '@heroicons/vue/24/solid';
-import { IconRepeatOff, IconRepeat, IconRepeatOnce, IconArrowsShuffle } from '@tabler/icons-vue';
+import { IconRepeatOff, IconRepeat, IconRepeatOnce } from '@tabler/icons-vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
+import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
 import Timeline from './Timeline.vue';
 import SongInfo from './SongInfo.vue';
 import VolumeControl from './VolumeControl.vue';
 
-const {
-  isPlaying,
-  repeat,
-  isShuffleOn,
-  previousSong,
-  togglePlay,
-  nextSong,
-  setRepeat,
-  toggleShuffle,
-} = useAudioPlayer();
+const { playerState, repeat, previousSong, togglePlay, nextSong, setRepeat } = useAudioPlayer();
+
+const playerDisabled = computed(
+  () => playerState.value === 'UnReady' || playerState.value === 'Loading'
+);
+
 const playPauseButtonAttrs = computed(() => ({
-  icon: isPlaying.value ? PauseIcon : PlayIcon,
-  title: isPlaying.value ? '一時停止' : '再生',
+  title: playerState.value === 'Playing' ? '一時停止' : '再生',
+  disabled: playerDisabled.value,
 }));
 
 const toggleRepeatButtonAttrs = computed(() => ({
   icon:
-    repeat.value === 'OFF' ? IconRepeatOff : repeat.value === 'ALL' ? IconRepeat : IconRepeatOnce,
+    repeat.value === 'Off' ? IconRepeatOff : repeat.value === 'All' ? IconRepeat : IconRepeatOnce,
   title:
-    repeat.value === 'OFF'
+    repeat.value === 'Off'
       ? 'キューのループON'
-      : repeat.value === 'ALL'
+      : repeat.value === 'All'
       ? '1曲ループON'
       : 'ループOFF',
 }));
-
-const toggleShuffleButtonTitle = isShuffleOn.value ? 'シャッフルOFF' : 'シャッフルON';
 </script>
 
 <template>
@@ -49,30 +44,31 @@ const toggleShuffleButtonTitle = isShuffleOn.value ? 'シャッフルOFF' : 'シ
       </div>
       <div class="bottom-center">
         <div class="flex align-items-center column-gap-5">
-          <Button text :icon="BackwardIcon" @click="previousSong" />
+          <Button text :icon="BackwardIcon" :disabled="playerDisabled" @click="previousSong" />
           <Button
             size="lg"
-            :icon="playPauseButtonAttrs.icon"
             :title="playPauseButtonAttrs.title"
+            :disabled="playPauseButtonAttrs.disabled"
             @click="togglePlay()"
-          />
-          <Button :icon="ForwardIcon" text @click="nextSong" />
+          >
+            <PauseIcon v-if="playerState === 'Playing'" style="height: 2rem" />
+            <LoadingAnimation
+              v-else-if="playerState === 'Loading'"
+              size="2rem"
+              color="var(--disabled-text-color)"
+            />
+            <PlayIcon v-else style="height: 2rem" />
+          </Button>
+          <Button :icon="ForwardIcon" text :disabled="playerDisabled" @click="nextSong" />
         </div>
         <div class="flex align-items-center column-gap-2">
           <Button
             text
             :icon="toggleRepeatButtonAttrs.icon"
             :title="toggleRepeatButtonAttrs.title"
-            :class="{ 'repeat-on': repeat !== 'OFF' }"
-            @click="setRepeat(repeat === 'OFF' ? 'ALL' : repeat === 'ALL' ? 'ONCE' : 'OFF')"
+            :class="{ 'repeat-on': repeat !== 'Off' }"
+            @click="setRepeat(repeat === 'Off' ? 'All' : repeat === 'All' ? 'Once' : 'Off')"
           />
-          <Button
-            text
-            :icon="IconArrowsShuffle"
-            :title="toggleShuffleButtonTitle"
-            :class="{ 'shuffle-on': isShuffleOn }"
-            @click="toggleShuffle"
-          ></Button>
         </div>
       </div>
       <div class="bottom-right">
@@ -117,9 +113,7 @@ const toggleShuffleButtonTitle = isShuffleOn.value ? 'シャッフルOFF' : 'シ
 }
 
 .repeat-on,
-.repeat-on:hover,
-.shuffle-on,
-.shuffle-on:hover {
+.repeat-on:hover {
   color: var(--primary-color) !important;
   box-shadow: $innerShadow !important;
 }

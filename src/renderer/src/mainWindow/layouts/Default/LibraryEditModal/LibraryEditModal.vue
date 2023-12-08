@@ -5,6 +5,7 @@ import { useToast } from 'vue-toastification';
 import { FolderPlusIcon, MagnifyingGlassCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
+import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
 import ProgressBar from '@renderer/commonComponents/ProgressBar/ProgressBar.vue';
 
 type ScanStatus = {
@@ -131,7 +132,7 @@ watch(
                   class="delete-button"
                   @click="onClickDeleteButton(index)"
                 />
-                <div v-else-if="folder.isScanning" class="scanning-animation"></div>
+                <LoadingAnimation v-else-if="folder.isScanning" size="1.5rem"></LoadingAnimation>
               </td>
               <td>{{ folder.path }}</td>
               <td style="white-space: pre-line">{{ folder.status }}</td>
@@ -217,31 +218,6 @@ watch(
 
   td {
     padding: 0.25rem 0.5rem;
-  }
-}
-
-.scanning-animation {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: $borderRadiusFull;
-  border-top: 0.75rem double var(--primary-color--lighter);
-  border-bottom: 0.75rem double var(--primary-color--lighter);
-  border-left: 0.75rem solid transparent;
-  border-right: 0.75rem solid transparent;
-  @include animation(
-    $name: scanning,
-    $duration: 1s,
-    $timingFunction: ease-in-out,
-    $iterationCount: infinite
-  );
-}
-
-@keyframes scanning {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
   }
 }
 

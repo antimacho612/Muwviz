@@ -4,12 +4,12 @@ import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer'
 import { formatAlbumTitle, formatArtistName } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
-import { TrashIcon } from '@heroicons/vue/24/outline';
-import BarsAnimation from '@mainWindow/components/BarsAnimation/BarsAnimation.vue';
+import DeleteIcon from '@renderer/assets/icons/delete-outlined.svg?component';
 import Button from '@renderer/commonComponents/Button/Button.vue';
+import BarsAnimation from '@mainWindow/components/BarsAnimation/BarsAnimation.vue';
 
 interface Props {
-  index: number;
+  index?: number;
   queueId: string;
   song?: Song;
 }
@@ -22,7 +22,7 @@ type Emits = {
 };
 const emits = defineEmits<Emits>();
 
-const { isPlaying, currentSongIndex } = useAudioPlayer();
+const { playerState, currentSongIndex } = useAudioPlayer();
 const current = computed(() => props.index === currentSongIndex.value);
 </script>
 
@@ -34,7 +34,7 @@ const current = computed(() => props.index === currentSongIndex.value);
     @dblclick="emits('doubleClickRow', $event)"
     @contextmenu="emits('contextmenu', $event)"
   >
-    <div class="index">{{ index + 1 }}</div>
+    <div class="index">{{ index !== undefined ? index + 1 : '-' }}</div>
     <div class="song-info">
       <span class="title">{{ song?.title }}</span>
       <span class="artist-and-album">
@@ -43,7 +43,7 @@ const current = computed(() => props.index === currentSongIndex.value);
     </div>
     <BarsAnimation
       v-if="current"
-      :pause="!isPlaying"
+      :pause="playerState !== 'Playing'"
       width="1rem"
       height="1.25rem"
       color="var(--primary-color)"
@@ -51,11 +51,12 @@ const current = computed(() => props.index === currentSongIndex.value);
     />
     <Button
       v-else
-      :icon="TrashIcon"
+      :icon="DeleteIcon"
       size="xs"
       text
       class="delete-button"
       @click.stop="emits('clickDeleteButton', $event)"
+      @pointerdown.stop
       @dblclick.stop
     />
   </div>

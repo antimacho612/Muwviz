@@ -25,7 +25,7 @@ const artistSongs = getArtistSongs(props.artistId);
 // ソート、クイックサーチ
 const { sortKey, order, sortedSongs } = useSongsSort(artistSongs, {
   sortKey: 'Album',
-  order: 'ASC',
+  order: 'Asc',
 });
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 

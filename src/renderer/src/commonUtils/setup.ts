@@ -1,5 +1,6 @@
 import log from 'electron-log/renderer';
-import { POSITION } from 'vue-toastification';
+import deepEqual from 'fast-deep-equal';
+import { POSITION, PluginOptions } from 'vue-toastification';
 
 export const registerErrorHandler = () => {
   // Consoleをオーバーライド
@@ -16,12 +17,19 @@ export const registerErrorHandler = () => {
   };
 };
 
-export const getToastPluginOptions = () => ({
+export const getToastPluginOptions = (): PluginOptions => ({
   position: POSITION.TOP_CENTER,
   timeout: 5000,
   draggable: false,
   maxToasts: 5,
   transition: 'Vue-Toastification__fade',
+  filterBeforeCreate: (toast, toasts) => {
+    // 同一Type, IDのメッセージは重複して表示しない
+    if (toasts.some((t) => t.type === toast.type && t.id === toast.id)) {
+      return false;
+    }
+    return toast;
+  },
 });
 
 export const getRippleEffectOptions = () => ({

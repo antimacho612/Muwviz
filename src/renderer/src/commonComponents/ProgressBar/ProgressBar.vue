@@ -62,13 +62,4 @@ withDefaults(defineProps<{ value: number }>(), { value: 0 });
   margin-right: 0.5rem;
   z-index: 2;
 }
-
-@keyframes left-to-right {
-  from {
-    left: -5rem;
-  }
-  to {
-    left: 100%;
-  }
-}
 </style>

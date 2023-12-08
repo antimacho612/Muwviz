@@ -47,9 +47,10 @@ export type Lyrics = {
   [songId: string]: string;
 };
 
-export type RepeatState = 'OFF' | 'ALL' | 'ONCE';
+export type PlayerState = 'UnReady' | 'Playing' | 'StandBy' | 'Loading';
+export type RepeatState = 'Off' | 'All' | 'Once';
 
-export type Order = 'ASC' | 'DESC';
+export type Order = 'Asc' | 'Desc';
 
 export type SortOption<T> = {
   key: keyof Partial<T>;

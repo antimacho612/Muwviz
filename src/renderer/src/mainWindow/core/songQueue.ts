@@ -1,4 +1,5 @@
 import { computed, readonly, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 import { shuffleArray } from '@shared/utils';
 
 type SongQueueItem = {
@@ -6,16 +7,17 @@ type SongQueueItem = {
   songId: string;
 };
 
+const toast = useToast();
+
 export const useSongQueue = () => {
-  let originalItems: SongQueueItem[] = [];
-  const orderedItems = ref<SongQueueItem[]>([]);
+  const items = ref<SongQueueItem[]>([]);
   const currentIndex = ref(-1);
 
-  const length = computed(() => orderedItems.value.length);
-  const currentItem = computed(() => orderedItems.value[currentIndex.value]);
+  const length = computed(() => items.value.length);
+  const currentItem = computed(() => items.value[currentIndex.value]);
 
   const setCurrent = (queueId: string) => {
-    currentIndex.value = orderedItems.value.findIndex((item) => item.queueId === queueId);
+    currentIndex.value = items.value.findIndex((item) => item.queueId === queueId);
   };
 
   const hasNext = () => !!length.value && currentIndex.value < length.value - 1;
@@ -56,38 +58,42 @@ export const useSongQueue = () => {
   };
 
   const setItems = (songIds: string[], shuffle: boolean, firstSongIndex: number) => {
-    clearItems();
+    clearItems(true);
 
     // QueueId用のタイムスタンプ
     const timestamp = Date.now();
+    const queueItems = songIds.map((songId, index) => ({
+      queueId: `${timestamp}-${index}`,
+      songId,
+    }));
 
     if (shuffle) {
-      // シャッフルON時は元の並び順を保持しておく
-      originalItems = songIds.map((songId, index) => ({
-        queueId: `${timestamp}-${index}`,
-        songId,
-      }));
-      orderedItems.value = shuffleArray(originalItems, firstSongIndex);
+      items.value = shuffleArray(queueItems, firstSongIndex);
     } else {
-      orderedItems.value = songIds.map((songId, index) => ({
-        queueId: `${timestamp}-${index}`,
-        songId,
-      }));
+      items.value = queueItems;
     }
 
     currentIndex.value = shuffle ? 0 : firstSongIndex;
   };
 
-  const clearItems = () => {
-    originalItems = [];
-    orderedItems.value = [];
-    currentIndex.value = -1;
+  /**
+   * キューから要素を削除する
+   * @param all 全要素削除するかどうか。falseを指定すると現在の曲は削除対象から除外する。
+   */
+  const clearItems = (all = true) => {
+    if (!all && currentIndex.value >= 0) {
+      items.value = [currentItem.value];
+      currentIndex.value = 0;
+    } else if (currentIndex.value >= 0) {
+      items.value = [];
+      currentIndex.value = -1;
+    }
   };
 
   const removeItems = (...queueIds: string[]) => {
     let decrement = 0;
 
-    orderedItems.value = orderedItems.value.filter((queueItem, index) => {
+    items.value = items.value.filter((queueItem, index) => {
       // 削除対象外
       if (!queueIds.includes(queueItem.queueId)) return true;
 
@@ -98,17 +104,23 @@ export const useSongQueue = () => {
       return false;
     });
 
-    // キューアイテム、並び変え前のキュー（シャッフルON時）から曲を削除
-    originalItems.filter((queueItem) => !queueIds.includes(queueItem.queueId));
-
     // インデックス補正
     currentIndex.value -= decrement;
+  };
+
+  const shuffle = () => {
+    if (currentIndex.value >= 0) {
+      items.value = shuffleArray(items.value, currentIndex.value);
+      currentIndex.value = 0;
+
+      toast.info('キューをシャッフルしました。');
+    }
   };
 
   return {
     currentIndex: readonly(currentIndex),
     currentItem,
-    allItems: readonly(orderedItems),
+    allItems: readonly(items),
     length,
 
     setCurrent,
@@ -121,5 +133,7 @@ export const useSongQueue = () => {
     setItems,
     clearItems,
     removeItems,
+
+    shuffle,
   };
 };

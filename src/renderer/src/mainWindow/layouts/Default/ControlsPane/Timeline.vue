@@ -5,12 +5,12 @@ import { formatTime } from '@renderer/commonUtils';
 
 import Slider from '@renderer/commonComponents/Slider/Slider.vue';
 
-const audioPlayer = useAudioPlayer();
+const { currentTime, duration, playerState, setCurrentTime } = useAudioPlayer();
 
-const currentTime = computed({
-  get: () => audioPlayer.currentTime.value,
+const currentTimeRef = computed({
+  get: () => currentTime.value,
   set: (value: number) => {
-    audioPlayer.setCurrentTime(value);
+    setCurrentTime(value);
   },
 });
 </script>
@@ -19,13 +19,14 @@ const currentTime = computed({
   <div class="timeline">
     <span class="timeline-current-time">{{ formatTime(currentTime) }}</span>
     <Slider
-      v-model="currentTime"
+      v-model="currentTimeRef"
       :bar-width="0.75"
-      :max="audioPlayer.duration.value"
+      :max="duration"
       :format="formatTime"
+      :disabled="playerState === 'UnReady' || playerState === 'Loading'"
       class="timeline-slider"
     />
-    <span class="timeline-duration">{{ formatTime(audioPlayer.duration.value) }}</span>
+    <span class="timeline-duration">{{ formatTime(duration) }}</span>
   </div>
 </template>
 

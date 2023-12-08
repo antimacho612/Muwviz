@@ -39,7 +39,7 @@ export const sortArrayOfObjects = <T>(array: T[], sortOptions: SortOption<T>[]) 
 
     for (const opt of sortOptions) {
       const [first, second] =
-        opt.order !== 'DESC' ? [a[opt.key], b[opt.key]] : [b[opt.key], a[opt.key]];
+        opt.order !== 'Desc' ? [a[opt.key], b[opt.key]] : [b[opt.key], a[opt.key]];
 
       if (first !== second) {
         if (typeof first === 'number' && typeof second === 'number') {

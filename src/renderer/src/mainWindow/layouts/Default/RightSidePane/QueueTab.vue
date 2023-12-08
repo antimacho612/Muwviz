@@ -3,9 +3,19 @@ import { ref } from 'vue';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@renderer/mainWindow/stores/entities';
 
+import Button from '@renderer/commonComponents/Button/Button.vue';
+import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
+import DeleteIcon from '@renderer/assets/icons/delete.svg?component';
 import QueueItem from './QueueItem.vue';
 
-const { queueItems, currentSongIndex, playSongInQueue, removeSongsFromQueue } = useAudioPlayer();
+const {
+  queueItems,
+  currentSongIndex,
+  playSongInQueue,
+  shuffleQueue,
+  clearQueue,
+  removeSongsFromQueue,
+} = useAudioPlayer();
 const { songsMap } = useEntitiesStore();
 
 const scroller = ref();
@@ -28,6 +38,11 @@ const showContextMenu = (_: MouseEvent) => {
   <div class="queue-tab">
     <template v-if="!queueItems.length">キューが空です👀</template>
     <template v-else>
+      <div class="actions">
+        <Button size="xs" :icon="ShuffleIcon" title="キューをシャッフル" @click="shuffleQueue" />
+        <Button size="xs" :icon="DeleteIcon" title="キューをクリア" @click="clearQueue"></Button>
+      </div>
+
       <div class="queue-list">
         <RecycleScroller
           ref="scroller"
@@ -63,6 +78,14 @@ const showContextMenu = (_: MouseEvent) => {
   align-items: center;
   gap: 0.5rem;
   overflow: hidden;
+}
+
+.actions {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
 }
 
 .queue-list {
