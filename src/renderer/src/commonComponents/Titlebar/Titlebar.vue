@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { MinusIcon, Square2StackIcon, StopIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import { IconPin, IconPinFilled } from '@tabler/icons-vue';
+import MinimizeIcon from '@renderer/assets/icons/minimize.svg?component';
+import CloseIcon from '@renderer/assets/icons/close.svg?component';
+import SquareIcon from '@renderer/assets/icons/square.svg?component';
+import SquareStackIcon from '@renderer/assets/icons/square-stack.svg?component';
+import PinIcon from '@renderer/assets/icons/pin.svg?component';
+import PinOutlinedIcon from '@renderer/assets/icons/pin-outlined.svg?component';
 import LogoIcon from '@renderer/assets/icons/logo.svg?component';
 
 interface Props {
@@ -37,29 +41,29 @@ const emits = defineEmits<Emits>();
     </div>
     <div class="c-titlebar-right" :style="{ marginLeft: showTitle ? undefined : 'auto' }">
       <div v-if="showPinButton" class="c-titlebar-button" @click="emits('clickPinButton', $event)">
-        <IconPinFilled v-if="pinned" stroke-width="1.5" style="transform: rotate(-45deg)" />
-        <IconPin v-else stroke-width="1.5" />
+        <PinIcon v-if="pinned" class="icon" />
+        <PinOutlinedIcon v-else class="icon" />
       </div>
       <div
         v-if="showMinimizeButton"
         class="c-titlebar-button"
         @click="emits('clickMinimizeButton', $event)"
       >
-        <MinusIcon class="icon" />
+        <MinimizeIcon class="icon" />
       </div>
       <div
         v-if="showMaximizeButton"
         class="c-titlebar-button"
         @click="emits('clickMaximizeButton', $event)"
       >
-        <Square2StackIcon v-if="isWindowMaximized" class="icon unmaximize-icon" />
-        <StopIcon v-else class="icon" />
+        <SquareStackIcon v-if="isWindowMaximized" class="icon" />
+        <SquareIcon v-else class="icon" />
       </div>
       <div
         class="c-titlebar-button c-titlebar-button-close"
         @click="emits('clickCloseButton', $event)"
       >
-        <XMarkIcon class="icon" />
+        <CloseIcon class="icon" />
       </div>
     </div>
   </div>
@@ -118,10 +122,6 @@ const emits = defineEmits<Emits>();
     .icon {
       height: 20px;
       width: 20px;
-
-      &.unmaximize-icon {
-        transform: scale(-1, 1);
-      }
     }
   }
 }

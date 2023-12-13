@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PlayIcon } from '@heroicons/vue/24/solid';
-import { ChevronUpDownIcon } from '@heroicons/vue/24/outline';
+import PlayIcon from '@renderer/assets/icons/play.svg?component';
+import ChevronUpDownArrowIcon from '@renderer/assets/icons/chevron-up-down-arrow.svg?component';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import { Order } from '@shared/types';
 
@@ -42,7 +42,7 @@ const onSortButtonClick = (key: string) => {
     >
       <span class="btn-label">{{ item.label }}</span>
       <PlayIcon v-if="sortBy === item.key" class="btn-icon" />
-      <ChevronUpDownIcon v-else class="btn-icon icon-up-down" />
+      <ChevronUpDownArrowIcon v-else class="btn-icon icon-up-down" />
     </Button>
   </div>
 </template>
@@ -61,10 +61,6 @@ const onSortButtonClick = (key: string) => {
   height: 1.25rem;
   margin-left: 0.5rem;
   transition: transform $transitionDuration;
-
-  &.icon-up-down {
-    padding: 0;
-  }
 }
 
 .sort-btn {

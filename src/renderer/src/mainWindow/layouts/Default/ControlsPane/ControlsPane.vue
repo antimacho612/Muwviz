@@ -2,8 +2,13 @@
 import { computed } from 'vue';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
 
-import { PlayIcon, PauseIcon, BackwardIcon, ForwardIcon } from '@heroicons/vue/24/solid';
-import { IconRepeatOff, IconRepeat, IconRepeatOnce } from '@tabler/icons-vue';
+import PauseIcon from '@renderer/assets/icons/pause.svg?component';
+import BackwardIcon from '@renderer/assets/icons/backward.svg?component';
+import ForwardIcon from '@renderer/assets/icons/forward.svg?component';
+import PlayIcon from '@renderer/assets/icons/play.svg?component';
+import RepeatIcon from '@renderer/assets/icons/repeat.svg?component';
+import RepeatOffIcon from '@renderer/assets/icons/repeat-off.svg?component';
+import RepeatOnceIcon from '@renderer/assets/icons/repeat-once.svg?component';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
 import Timeline from './Timeline.vue';
@@ -23,7 +28,7 @@ const playPauseButtonAttrs = computed(() => ({
 
 const toggleRepeatButtonAttrs = computed(() => ({
   icon:
-    repeat.value === 'Off' ? IconRepeatOff : repeat.value === 'All' ? IconRepeat : IconRepeatOnce,
+    repeat.value === 'Off' ? RepeatOffIcon : repeat.value === 'All' ? RepeatIcon : RepeatOnceIcon,
   title:
     repeat.value === 'Off'
       ? 'キューのループON'

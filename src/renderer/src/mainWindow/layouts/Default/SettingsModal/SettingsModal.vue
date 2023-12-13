@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { XMarkIcon } from '@heroicons/vue/24/outline';
-import {
-  Cog6ToothIcon,
-  SparklesIcon,
-  BuildingLibraryIcon,
-  ChevronRightIcon,
-  ComputerDesktopIcon,
-  InformationCircleIcon,
-} from '@heroicons/vue/24/solid';
+import CloseIcon from '@renderer/assets/icons/close.svg?component';
+import SettingsIcon from '@renderer/assets/icons/settings.svg?component';
+import LibraryIcon from '@renderer/assets/icons/library.svg?component';
+import SparklesIcon from '@renderer/assets/icons/sparkles.svg?component';
+import SystemIcon from '@renderer/assets/icons/system.svg?component';
+import InformationIcon from '@renderer/assets/icons/information.svg?component';
+import ChevronRightIcon from '@renderer/assets/icons/chevron-right.svg?component';
 import TabMenu from '@renderer/commonComponents/TabMenu/TabMenu.vue';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
@@ -30,7 +28,7 @@ const activeMenuIndex = ref(0);
 const TABS = [
   {
     title: 'Library',
-    icon: BuildingLibraryIcon,
+    icon: LibraryIcon,
     component: LibraryTab,
   },
   {
@@ -40,12 +38,12 @@ const TABS = [
   },
   {
     title: 'System',
-    icon: ComputerDesktopIcon,
+    icon: SystemIcon,
     component: SystemTab,
   },
   {
     title: 'About',
-    icon: InformationCircleIcon,
+    icon: InformationIcon,
     component: AboutTab,
   },
 ] as const;
@@ -62,10 +60,10 @@ const TABS = [
       <div class="content-grid">
         <div class="header">
           <div class="title" style="">
-            <Cog6ToothIcon style="width: 1.75rem; height: 1.75rem" />
+            <SettingsIcon style="width: 1.75rem; height: 1.75rem" />
             <h3>設定</h3>
           </div>
-          <Button :icon="XMarkIcon" text @click="emits('update:isOpen', false)"></Button>
+          <Button :icon="CloseIcon" text @click="emits('update:isOpen', false)"></Button>
         </div>
 
         <TabMenu

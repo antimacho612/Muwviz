@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { formatArtistName } from '@renderer/commonUtils';
 import { Artist } from '@shared/types';
 
-import { PlayIcon } from '@heroicons/vue/24/solid';
+import PlayIcon from '@renderer/assets/icons/play.svg?component';
 import RecycleGridScrollerItem from '@mainWindow/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
 import ArtistImage from '@mainWindow/components/ArtistImage/ArtistImage.vue';
 

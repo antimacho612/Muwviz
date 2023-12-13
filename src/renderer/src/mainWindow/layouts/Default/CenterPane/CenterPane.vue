@@ -2,7 +2,7 @@
 import { inject } from 'vue';
 import { openSettingsModalKey } from '@renderer/mainWindow/injectionKeys';
 
-import { Cog6ToothIcon } from '@heroicons/vue/24/solid';
+import SettingsIcon from '@renderer/assets/icons/settings.svg?component';
 import Visualizers from './Visualizers.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
@@ -12,7 +12,7 @@ const openSettingsModal = inject(openSettingsModalKey);
 <template>
   <div class="center-pane">
     <div class="head">
-      <Button text :icon="Cog6ToothIcon" title="設定" @click="openSettingsModal?.()" />
+      <Button text :icon="SettingsIcon" title="設定" @click="openSettingsModal?.()" />
     </div>
     <div class="main">
       <Visualizers />

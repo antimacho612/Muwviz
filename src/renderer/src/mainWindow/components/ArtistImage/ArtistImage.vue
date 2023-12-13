@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserIcon } from '@heroicons/vue/24/solid';
+import UserIcon from '@renderer/assets/icons/user.svg?component';
 </script>
 
 <template>

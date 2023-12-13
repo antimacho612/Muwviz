@@ -2,10 +2,7 @@ import AudioMotionAnalyzer, { ConstructorOptions } from 'audiomotion-analyzer';
 import { VisualizerConfig } from '@shared/visualizerTypes';
 import { KeyValue } from '@shared/types';
 
-export const useVisualizer = (
-  containerEl: HTMLDivElement,
-  constructorOptions: ConstructorOptions
-) => {
+const visualizer = (containerEl: HTMLDivElement, constructorOptions: ConstructorOptions) => {
   const analyzer = new AudioMotionAnalyzer(containerEl, constructorOptions);
 
   const getConnectedSource = () => analyzer.connectedSources[0];
@@ -38,3 +35,5 @@ export const useVisualizer = (
     changeProperty,
   };
 };
+
+export default visualizer;

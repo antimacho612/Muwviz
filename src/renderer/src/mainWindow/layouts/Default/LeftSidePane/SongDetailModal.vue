@@ -9,7 +9,7 @@ import {
 } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
-import { XMarkIcon } from '@heroicons/vue/24/outline';
+import CloseIcon from '@renderer/assets/icons/close.svg?component';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
@@ -37,7 +37,7 @@ const opened = computed({
         <Button
           class="modal-close-button"
           size="sm"
-          :icon="XMarkIcon"
+          :icon="CloseIcon"
           text
           @click="emits('update:isOpen', false)"
         />

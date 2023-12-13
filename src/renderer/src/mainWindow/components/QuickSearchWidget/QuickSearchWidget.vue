@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import CloseIcon from '@renderer/assets/icons/close.svg?component';
+import SearchIcon from '@renderer/assets/icons/search.svg?component';
 import InputText from '@renderer/commonComponents/InputText/InputText.vue';
 
 const props = defineProps<{ modelValue: string }>();
@@ -15,7 +16,7 @@ const text = computed({
 
 <template>
   <div class="quick-search-widget">
-    <MagnifyingGlassIcon class="icon-search" />
+    <SearchIcon class="search-icon" />
     <InputText
       v-model="text"
       type="text"
@@ -24,7 +25,7 @@ const text = computed({
       placeholder="検索..."
       class="input-text"
     />
-    <XMarkIcon v-if="text !== ''" class="icon-x" @click="text = ''" />
+    <CloseIcon v-if="text !== ''" class="close-icon" @click="text = ''" />
   </div>
 </template>
 
@@ -33,7 +34,7 @@ const text = computed({
   position: relative;
   display: inline-block;
 
-  .icon-search {
+  .search-icon {
     position: absolute;
     top: 50%;
     left: 0.5rem;
@@ -48,7 +49,7 @@ const text = computed({
     padding-right: 2.25rem;
   }
 
-  .icon-x {
+  .close-icon {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -57,6 +58,10 @@ const text = computed({
     width: 1.5rem;
     height: 1.5rem;
     cursor: pointer;
+
+    &:hover {
+      color: red;
+    }
   }
 }
 </style>

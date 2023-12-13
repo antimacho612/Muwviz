@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserGroupIcon, StarIcon } from '@heroicons/vue/24/solid';
+import UserGroupIcon from '@renderer/assets/icons/user-group.svg?component';
 import MusicIcon from '@renderer/assets/icons/music.svg?component';
 import AlbumIcon from '@renderer/assets/icons/album.svg?component';
 
@@ -18,11 +18,6 @@ const LINKS = [
     to: '/artists',
     title: 'Artists',
     icon: UserGroupIcon,
-  },
-  {
-    to: '/playlists',
-    title: 'Playlists',
-    icon: StarIcon,
   },
 ] as const;
 

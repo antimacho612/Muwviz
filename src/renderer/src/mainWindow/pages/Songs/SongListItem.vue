@@ -4,7 +4,7 @@ import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { formatAlbumTitle, formatArtistName, formatTime } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
-import { EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
+import EllipsisIcon from '@renderer/assets/icons/ellipsis.svg?component';
 import RecycleScrollerItem from '@mainWindow/components/RecycleScrollerItem/RecycleScrollerItem.vue';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import BarsAnimation from '@mainWindow/components/BarsAnimation/BarsAnimation.vue';
@@ -78,7 +78,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
     </div>
 
     <Button
-      :icon="EllipsisVerticalIcon"
+      :icon="EllipsisIcon"
       size="sm"
       text
       @click.stop="emits('clickEllipsisButton', $event)"

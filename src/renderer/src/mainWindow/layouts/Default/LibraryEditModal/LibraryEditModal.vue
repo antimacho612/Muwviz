@@ -2,7 +2,9 @@
 import { computed, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 
-import { FolderPlusIcon, MagnifyingGlassCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import AddFolderIcon from '@renderer/assets/icons/add-folder.svg?component';
+import Search2Icon from '@renderer/assets/icons/search2.svg?component';
+import DeleteIcon from '@renderer/assets/icons/delete-outlined.svg?component';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
@@ -107,7 +109,7 @@ watch(
       <div class="header">
         <div class="title">スキャン対象のフォルダ</div>
         <Button v-if="status === 'WAITING'" size="sm" text @click="onClickAddFolderButton">
-          <FolderPlusIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
+          <AddFolderIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
           フォルダを追加...
         </Button>
       </div>
@@ -126,7 +128,7 @@ watch(
               <td class="text-center">
                 <Button
                   v-if="status === 'WAITING'"
-                  :icon="TrashIcon"
+                  :icon="DeleteIcon"
                   size="sm"
                   text
                   class="delete-button"
@@ -152,7 +154,7 @@ watch(
           :disabled="!foldersToScan.length"
           @click="onClickScanButton"
         >
-          <MagnifyingGlassCircleIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
+          <Search2Icon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
           スキャン
         </Button>
         <Button

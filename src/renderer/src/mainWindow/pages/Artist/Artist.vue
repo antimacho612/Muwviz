@@ -33,7 +33,7 @@ const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 const songGroups = computed(() => groupSongs(filteredSongs.value));
 
 // マルチセレクト
-const { selectedSongs, clearSelection, onSelectItem } = useMultiSelectableSongList(filteredSongs);
+const { selectedSongs, clearSelection, onClickItem } = useMultiSelectableSongList(filteredSongs);
 
 // イベント
 const { setQueue } = useAudioPlayer();
@@ -83,9 +83,12 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
             :grouped-item="item"
             :selected-songs="selectedSongs"
             @click-play="onClickPlay(item.songs)"
-            @click-song-row="(index, songId) => onSelectItem(item.baseIndex + index, songId)"
+            @click-song-row="
+              (e: MouseEvent, index: number, songId: string) =>
+                onClickItem(e, item.baseIndex + index, songId)
+            "
             @double-click-song-row="
-              async (index, _) => await onDoubleClickSongRow(item.songs, index)
+              async (_e, index, _songId) => await onDoubleClickSongRow(item.songs, index)
             "
             @click-outside-of-list="clearSelection"
           />

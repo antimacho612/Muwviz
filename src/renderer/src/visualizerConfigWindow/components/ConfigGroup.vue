@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { ChevronUpIcon } from '@heroicons/vue/24/outline';
+import ChevronUpIcon from '@renderer/assets/icons/chevron-up.svg?component';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
 defineProps<{ title: string }>();

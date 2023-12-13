@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import { useWindowStore } from '@mainWindow/stores/window';
 
-import { XMarkIcon } from '@heroicons/vue/24/solid';
+import CloseIcon from '@renderer/assets/icons/close.svg?component';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
 const { collapseLeftSidePane } = useWindowStore();
 </script>
 
 <template>
-  <div
-    class="flex align-items-center justify-content-between"
-    style="height: 3rem; padding-bottom: 0.5rem"
-  >
+  <div class="h-3rem pb-2 flex align-items-center justify-content-between column-gap-4">
     <h2 v-if="$slots.title" class="font-bold">
       <slot name="title"></slot>
     </h2>
@@ -22,7 +19,7 @@ const { collapseLeftSidePane } = useWindowStore();
 
     <Button
       size="sm"
-      :icon="XMarkIcon"
+      :icon="CloseIcon"
       text
       class="flex-grow-0 flex-shrink-0"
       @click="collapseLeftSidePane"

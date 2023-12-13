@@ -1,7 +1,7 @@
 import fsAsync from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
-import { scanProgressReporter } from '@main/utils/scanProgressReporter';
+import scanProgressReporter from '@main/utils/scanProgressReporter';
 import { getAlbumsSortOptions, getArtistsSortOptions, getSongsSortOptions } from '@shared/utils';
 import { albumsStore, artistsStore, lyricsStore, scannedFoldersStore, songsStore } from '..';
 import { ParsedSong, parseSongFile } from './songFileParser';
@@ -76,9 +76,9 @@ export const scanFolder = async (folderPath: string, resortLibrary = true) => {
   if (hasAnySongsScanned && resortLibrary) {
     console.debug('Resorting library...');
 
-    songsStore.sort(getSongsSortOptions('Artist', 'ASC'));
-    albumsStore.sort(getAlbumsSortOptions('Name', 'ASC'));
-    artistsStore.sort(getArtistsSortOptions('Name', 'ASC'));
+    songsStore.sort(getSongsSortOptions('Artist', 'Asc'));
+    albumsStore.sort(getAlbumsSortOptions('Name', 'Asc'));
+    artistsStore.sort(getArtistsSortOptions('Name', 'Asc'));
   }
 
   if (hasAnySongsScanned) {

@@ -1,6 +1,6 @@
 import { sendScanProgressToMain } from '@main/ipc';
 
-export const scanProgressReporter = (path: string) => {
+const scanProgressReporter = (path: string) => {
   const progress = {
     path,
     totalFilesCount: 0,
@@ -36,3 +36,5 @@ export const scanProgressReporter = (path: string) => {
     report,
   };
 };
+
+export default scanProgressReporter;

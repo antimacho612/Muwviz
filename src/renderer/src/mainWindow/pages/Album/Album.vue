@@ -8,7 +8,7 @@ import { useContextMenu } from '@mainWindow/composables/useContextMenu';
 import { formatAlbumTitle } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
-import { PlayIcon } from '@heroicons/vue/24/solid';
+import PlayIcon from '@renderer/assets/icons/play.svg?component';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import BackButton from '@mainWindow/components/BackButton/BackButton.vue';
 import AlbumSong from './AlbumSong.vue';
@@ -26,7 +26,7 @@ const albumSongs = getAlbumSongs(props.albumId);
 const { sortKey, order, sortedSongs } = useSongsSort(albumSongs);
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 
-const { selectedSongs, clearSelection, onSelectItem } = useMultiSelectableSongList(filteredSongs);
+const { selectedSongs, clearSelection, onClickItem } = useMultiSelectableSongList(filteredSongs);
 
 const { setQueue } = useAudioPlayer();
 const onDoubleClickRow = async (songId: string) => {
@@ -35,8 +35,8 @@ const onDoubleClickRow = async (songId: string) => {
   await setQueue(songIds, { firstSongIndex: theSongIndex });
 };
 
-const songContextMenu = useContextMenu('SONG');
-const songsContextMenu = useContextMenu('SONGS');
+const songContextMenu = useContextMenu('Song');
+const songsContextMenu = useContextMenu('Songs');
 const showContextMenu = (e: MouseEvent, song: Song) => {
   if (selectedSongs.value.size > 1) {
     songsContextMenu.show(e, { selectedSongs: selectedSongs.value });
@@ -67,7 +67,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
           </div>
           <div class="actions">
             <Button size="xs">
-              <span>Play</span>
+              Play
               <PlayIcon style="height: 1.25rem; width: 1.25rem; margin-left: 0.5rem" />
             </Button>
           </div>
@@ -101,7 +101,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
           <AlbumSong
             :song="item"
             :selected="selectedSongs.has(item.id)"
-            @click-row="onSelectItem(index, item.id)"
+            @click-row="onClickItem($event, index, item.id)"
             @double-click-row="onDoubleClickRow(item.id)"
             @contextmenu="showContextMenu($event, item)"
             @click-ellipsis-button="showContextMenu($event, item)"

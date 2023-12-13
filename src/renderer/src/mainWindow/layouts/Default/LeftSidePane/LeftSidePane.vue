@@ -6,7 +6,7 @@ import { useWindowStore } from '@mainWindow/stores/window';
 import { showSongDetailModalKey } from '@mainWindow/injectionKeys';
 import { Song } from '@shared/types';
 
-import { ChevronLeftIcon } from '@heroicons/vue/24/outline';
+import ChevronLeftIcon from '@renderer/assets/icons/chevron-left.svg?component';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import Links from './Links.vue';
 import SongDetailModal from './SongDetailModal.vue';

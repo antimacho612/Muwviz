@@ -2,12 +2,12 @@ import { readonly, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useToast } from 'vue-toastification';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
-import { useSongQueue } from './songQueue';
+import songQueue from './songQueue';
 import { PlayerState, RepeatState, Song } from '@shared/types';
 
 const toast = useToast();
 
-export const audioPlayer = () => {
+const audioPlayer = () => {
   const state = ref<PlayerState>('UnReady');
   const volume = ref(100);
   const isMuted = ref(false);
@@ -16,7 +16,7 @@ export const audioPlayer = () => {
   const currentTime = ref(0);
 
   const { songsMap } = storeToRefs(useEntitiesStore());
-  const songQueue = useSongQueue();
+  const queue = songQueue();
   const currentSong = ref<Song | undefined>();
 
   // Audio Elementの初期化
@@ -67,7 +67,7 @@ export const audioPlayer = () => {
     // repeat === 'Once'の場合はaudioにloop = trueが設定してあるため、自動でループ再生される
     if (repeat.value === 'Once') return;
 
-    if (repeat.value === 'All' || songQueue.hasNext()) {
+    if (repeat.value === 'All' || queue.hasNext()) {
       nextSong(true);
     } else {
       setCurrentTime(0);
@@ -91,7 +91,7 @@ export const audioPlayer = () => {
   const loadSong = async (autoPlay = true) => {
     resetAudio();
 
-    currentSong.value = songsMap.value.get(songQueue.currentItem.value.songId);
+    currentSong.value = songsMap.value.get(queue.currentItem.value.songId);
     if (!currentSong.value) {
       toast.error('曲が存在しません...😢');
       console.error('曲が存在しません...');
@@ -125,17 +125,17 @@ export const audioPlayer = () => {
   };
 
   const playSongInQueue = async (queueId: string) => {
-    songQueue.setCurrent(queueId);
+    queue.setCurrent(queueId);
     await loadSong();
   };
 
   const nextSong = async (autoPlay = false) => {
-    if (!songQueue.length.value) {
+    if (!queue.length.value) {
       return;
     }
 
-    if (songQueue.hasNext() || repeat.value === 'All') {
-      songQueue.next(true);
+    if (queue.hasNext() || repeat.value === 'All') {
+      queue.next(true);
       await loadSong(autoPlay);
     } else {
       toast.warning('キューに次の曲がありません。', { id: 'end-of-queue-warning' });
@@ -143,7 +143,7 @@ export const audioPlayer = () => {
   };
 
   const previousSong = async () => {
-    if (!songQueue.length.value) {
+    if (!queue.length.value) {
       setCurrentTime(0);
       return;
     }
@@ -154,8 +154,8 @@ export const audioPlayer = () => {
       return;
     }
 
-    if (songQueue.hasPrevious() || repeat.value === 'All') {
-      songQueue.previous(true);
+    if (queue.hasPrevious() || repeat.value === 'All') {
+      queue.previous(true);
       await loadSong(state.value === 'Playing');
     } else {
       toast.warning('キューに前の曲がありません。', { id: 'start-of-queue-warning' });
@@ -189,7 +189,7 @@ export const audioPlayer = () => {
   };
 
   const setQueue = async (
-    songIds: string[],
+    songIds: Readonly<string[]>,
     options?: {
       autoplay?: boolean;
       shuffle?: boolean;
@@ -204,7 +204,7 @@ export const audioPlayer = () => {
     const opts = { ...defaultOpts, ...options };
 
     state.value = 'Loading';
-    songQueue.setItems(songIds, opts.shuffle, opts.firstSongIndex);
+    queue.setItems(songIds, opts.shuffle, opts.firstSongIndex);
     state.value = 'StandBy';
 
     if (!opts.autoplay) {
@@ -219,17 +219,17 @@ export const audioPlayer = () => {
   };
 
   const removeSongsFromQueue = (...queueIds: string[]) => {
-    songQueue.removeItems(...queueIds);
+    queue.removeItems(...queueIds);
   };
 
   const clearQueue = () => {
-    if (songQueue.length.value <= 1) {
+    if (queue.length.value <= 1) {
       // 全削除
-      songQueue.clearItems(true);
+      queue.clearItems(true);
       resetAudio();
     } else {
       // 現在の曲以外を削除
-      songQueue.clearItems(false);
+      queue.clearItems(false);
     }
     toast.info('キューから曲を削除しました。');
   };
@@ -244,8 +244,8 @@ export const audioPlayer = () => {
     isMuted: readonly(isMuted),
     repeat: readonly(repeat),
 
-    queueItems: songQueue.allItems,
-    currentSongIndex: songQueue.currentIndex,
+    queueItems: queue.allItems,
+    currentSongIndex: queue.currentIndex,
     currentSong,
 
     play,
@@ -261,10 +261,11 @@ export const audioPlayer = () => {
 
     playSongInQueue,
     setQueue,
-    shuffleQueue: songQueue.shuffle,
+    shuffleQueue: queue.shuffle,
     clearQueue,
     removeSongsFromQueue,
   };
 };
 
 export type AudioPlayer = ReturnType<typeof audioPlayer>;
+export default audioPlayer;

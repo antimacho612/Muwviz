@@ -14,8 +14,8 @@ const props = defineProps<Props>();
 
 type Emits = {
   clickPlay: [e: MouseEvent];
-  clickSongRow: [index: number, songId: string];
-  doubleClickSongRow: [index: number, songId: string];
+  clickSongRow: [e: MouseEvent, index: number, songId: string];
+  doubleClickSongRow: [e: MouseEvent, index: number, songId: string];
   contextmenu: [e: MouseEvent, index: number, songId: string];
   clickOutsideOfList: [e: MouseEvent];
 };
@@ -47,8 +47,8 @@ const computedSelectedSongs = computed(() => props.selectedSongs);
         :key="song.id"
         :song="song"
         :selected="computedSelectedSongs.has(song.id)"
-        @click-row="emits('clickSongRow', index, song.id)"
-        @double-click-row="emits('doubleClickSongRow', index, song.id)"
+        @click-row="emits('clickSongRow', $event, index, song.id)"
+        @double-click-row="emits('doubleClickSongRow', $event, index, song.id)"
         @click-ellipsis-button="emits('contextmenu', $event, index, song.id)"
         @contextmenu="emits('contextmenu', $event, index, song.id)"
       />

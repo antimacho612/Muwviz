@@ -9,7 +9,7 @@ type SongQueueItem = {
 
 const toast = useToast();
 
-export const useSongQueue = () => {
+const songQueue = () => {
   const items = ref<SongQueueItem[]>([]);
   const currentIndex = ref(-1);
 
@@ -57,7 +57,13 @@ export const useSongQueue = () => {
     currentIndex.value = current === 0 ? len - 1 : current - 1;
   };
 
-  const setItems = (songIds: string[], shuffle: boolean, firstSongIndex: number) => {
+  /**
+   * キューを設定する
+   * @param songIds セットする曲のID
+   * @param shuffle シャッフルするかどうか
+   * @param firstSongIndex 最初に再生する曲のキュー内での位置
+   */
+  const setItems = (songIds: Readonly<string[]>, shuffle: boolean, firstSongIndex: number) => {
     clearItems(true);
 
     // QueueId用のタイムスタンプ
@@ -113,7 +119,7 @@ export const useSongQueue = () => {
       items.value = shuffleArray(items.value, currentIndex.value);
       currentIndex.value = 0;
 
-      toast.info('キューをシャッフルしました。');
+      toast.info('キューをシャッフルしました。', { id: 'info-shuffled-queue' });
     }
   };
 
@@ -137,3 +143,5 @@ export const useSongQueue = () => {
     shuffle,
   };
 };
+
+export default songQueue;

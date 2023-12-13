@@ -2,11 +2,11 @@
 import { inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import { ConstructorOptions } from 'audiomotion-analyzer';
 import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
-import { useVisualizer } from '@mainWindow/core/visualizer';
+import visualizer from '@mainWindow/core/visualizer';
 import { useWindowStore } from '@mainWindow/stores/window';
 import { sendMessageToSubWindowKey } from '@renderer/mainWindow/injectionKeys';
 
-import { WrenchIcon } from '@heroicons/vue/24/solid';
+import Settings2Icon from '@renderer/assets/icons/settings2.svg?component';
 
 const { audio } = useAudioPlayer();
 const { visualizers } = useWindowStore();
@@ -25,12 +25,10 @@ onMounted(async () => {
       connectSpeakers: isFirst,
       ...options[index],
     };
-    const visualizer = useVisualizer(containerEl, constructorOpts);
-    visualizers.set(index, visualizer);
+    const v = visualizer(containerEl, constructorOpts);
+    visualizers.set(index, v);
 
-    if (isFirst) {
-      source = visualizer.getConnectedSource();
-    }
+    if (isFirst) source = v.getConnectedSource();
   });
 });
 
@@ -55,7 +53,7 @@ const onClickOpenConfigWindowButton = async (index: number) => {
           class="open-config-window-button"
           @click="onClickOpenConfigWindowButton(n - 1)"
         >
-          <WrenchIcon style="width: 1.5rem; height: 1.5rem" />
+          <Settings2Icon style="width: 1.5rem; height: 1.5rem" />
         </button>
       </div>
     </template>

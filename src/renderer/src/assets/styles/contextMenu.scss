@@ -1,13 +1,14 @@
-@use '../global/index' as *;
+@use './global/index' as *;
 
-//CSS Vars
+@import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
+
 :root {
   --mx-menu-backgroud: var(--background-color);
   --mx-menu-hover-backgroud: rgba(var(--primary-color--lightest-rgb), 0.1);
   --mx-menu-active-backgroud: rgba(var(--primary-color--lightest-rgb), 0.4);
-  --mx-menu-open-backgroud: #f1f1f1;
-  --mx-menu-open-hover-backgroud: #f1f1f1;
-  --mx-menu-divider: #f0f0f0;
+  --mx-menu-open-backgroud: rgba(var(--primary-color--lightest-rgb), 0.4);
+  --mx-menu-open-hover-backgroud: rgba(var(--primary-color--lightest-rgb), 0.4);
+  --mx-menu-divider: var(--divider-color);
 
   --mx-menu-text: var(--primary-text-color);
   --mx-menu-hover-text: var(--primary-text-color);
@@ -26,6 +27,10 @@
 }
 
 .mx-context-menu-item {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.75rem;
   border-radius: $borderRadiusSm;
+}
+
+.mx-context-menu-item-sperator {
+  padding: 0.25rem 0.5rem;
 }

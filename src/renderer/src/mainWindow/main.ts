@@ -14,28 +14,30 @@ import 'animate.css';
 import 'primeflex/primeflex.min.css';
 
 import VWave from 'v-wave';
+
 import Toast from 'vue-toastification';
+import '@renderer/assets/styles/toastification.scss';
 
 import VueVirtualScroller from 'vue-virtual-scroller';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 import ContextMenu from '@imengyu/vue3-context-menu';
-import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
+import '@renderer/assets/styles/contextMenu.scss';
 
 import App from './App.vue';
 import router from '@renderer/mainWindow/router/index';
 
 import { audioPlayerKey, sendMessageToSubWindowKey } from './injectionKeys';
-import { audioPlayer } from './core/audioPlayer';
+import audioPlayer from './core/audioPlayer';
 
 import { connectMessagePort } from '@renderer/commonUtils/messagePort';
 import { handleOnReceiveMessageFromSub } from './messageHandler';
 
 import { useSettingsStore } from './stores/settings';
 import { useEntitiesStore } from './stores/entities';
+import { useWindowStore } from './stores/window';
 
 import '@renderer/assets/styles/style.scss';
-import { useWindowStore } from './stores/window';
 
 registerErrorHandler();
 

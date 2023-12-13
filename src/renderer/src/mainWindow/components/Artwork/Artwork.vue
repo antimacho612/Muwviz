@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import { MusicalNoteIcon, PlayIcon } from '@heroicons/vue/24/solid';
+import MusicalNoteIcon from '@renderer/assets/icons/musical-note.svg?component';
+import PlayIcon from '@renderer/assets/icons/play.svg?component';
 
 interface Props {
   src?: string;
