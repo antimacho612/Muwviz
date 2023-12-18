@@ -50,8 +50,9 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
     },
     {
       label: 'ライブラリから削除',
-      onClick: () => {
-        // TODO: 未実装
+      onClick: async () => {
+        if (confirm(`【${args.song.title}】をライブラリから削除しますか？`))
+          await window.electron.invoke.removeSongsFromLibrary([args.song.id]);
       },
       divided: true,
     },

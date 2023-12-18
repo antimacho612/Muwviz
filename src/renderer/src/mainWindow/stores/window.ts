@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import { useVisualizer } from '../core/visualizer';
+import visualizer from '../core/visualizer';
 
 type WindowStoreState = {
   isWindowMaximized: boolean;
   isLeftSidePaneCollapsed: boolean;
-  visualizers: Map<number, ReturnType<typeof useVisualizer>>;
+  visualizers: Map<number, ReturnType<typeof visualizer>>;
 };
 
 export const useWindowStore = defineStore('window', {

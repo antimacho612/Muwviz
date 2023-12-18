@@ -100,11 +100,6 @@ export type ElectronAPI = GetApiType<
     scanFolder: (folderPath: string, resortLibrary?: boolean) => Promise<void>;
 
     /**
-     * スキャンIDに紐づく楽曲、その他関連情報をライブラリから削除する
-     */
-    deleteEntitiesByScanId: (scanId: string) => Promise<void>;
-
-    /**
      * 全楽曲情報を取得する
      */
     getAllSongs: () => Promise<Song[]>;
@@ -113,6 +108,12 @@ export type ElectronAPI = GetApiType<
      * 楽曲情報のキャッシュ（メイン側で保持しているデータ）を削除する
      */
     clearSongsCache: () => Promise<void>;
+
+    /**
+     * ライブラリから楽曲を削除する
+     * @param songIds 削除する楽曲のID
+     */
+    removeSongsFromLibrary: (songIds: string[]) => Promise<void>;
 
     /**
      * 全アルバム情報を取得する
@@ -138,6 +139,18 @@ export type ElectronAPI = GetApiType<
      * 全歌詞情報を取得する
      */
     getAllLyrics: () => Promise<Lyrics>;
+
+    /**
+     * 波形データを取得する
+     * @param songId 対象の楽曲のID
+     */
+    getWaveformData: (songId: string) => Promise<DataView>;
+    /**
+     * 波形データを保存する
+     * @param songId 対象の楽曲のID
+     * @param waveformData 波形データ
+     */
+    saveWaveformData: (songId: string, waveformData: DataView) => Promise<void>;
 
     /**
      * 歌詞情報のキャッシュ（メイン側で保持しているデータ）を削除する
@@ -204,8 +217,8 @@ export const electronAPI: ElectronAPI = {
     getScannedFolders: async () => await ipcRenderer.invoke('getScannedFolders'),
     scanFolder: async (folderPath, resortLibrary) =>
       await ipcRenderer.invoke('scanFolder', folderPath, resortLibrary),
-    deleteEntitiesByScanId: async (scanId) =>
-      await ipcRenderer.invoke('deleteEntitiesByScanId', scanId),
+    removeSongsFromLibrary: async (songIds) =>
+      await ipcRenderer.invoke('removeSongsFromLibrary', songIds),
 
     getAllSongs: async () => await ipcRenderer.invoke('getAllSongs'),
     clearSongsCache: async () => await ipcRenderer.invoke('clearSongsCache'),
@@ -215,6 +228,10 @@ export const electronAPI: ElectronAPI = {
     clearArtistsCache: async () => await ipcRenderer.invoke('clearArtistsCache'),
     getAllLyrics: async () => await ipcRenderer.invoke('getAllLyrics'),
     clearLyricsCache: async () => await ipcRenderer.invoke('clearLyricsCache'),
+
+    getWaveformData: async (songId) => await ipcRenderer.invoke('getWaveformData', songId),
+    saveWaveformData: async (songId, waveformData) =>
+      await ipcRenderer.invoke('saveWaveformData', songId, waveformData),
 
     getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
     updateVisualizerConfig: async (index, options) =>

@@ -6,3 +6,9 @@ declare module 'genius-lyrics-api' {
     optimizeQuery: boolean,
   });
 }
+
+declare module 'waveform-data' {
+  export interface WaveformDataAudioBufferOptions extends WaveformDataAudioBufferOptions {
+    disable_worker?: boolean;
+  }
+}

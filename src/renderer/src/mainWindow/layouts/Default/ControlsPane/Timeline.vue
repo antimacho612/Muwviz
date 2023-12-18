@@ -1,31 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { formatTime } from '@renderer/commonUtils';
 
-import Slider from '@renderer/commonComponents/Slider/Slider.vue';
+import Waveform from './Waveform.vue';
 
-const { currentTime, duration, playerState, setCurrentTime } = useAudioPlayer();
-
-const currentTimeRef = computed({
-  get: () => currentTime.value,
-  set: (value: number) => {
-    setCurrentTime(value);
-  },
-});
+const { currentTime, duration } = useAudioPlayer();
 </script>
 
 <template>
   <div class="timeline">
     <span class="timeline-current-time">{{ formatTime(currentTime) }}</span>
-    <Slider
-      v-model="currentTimeRef"
-      :bar-width="0.75"
-      :max="duration"
-      :format="formatTime"
-      :disabled="playerState === 'UnReady' || playerState === 'Loading'"
-      class="timeline-slider"
-    />
+    <Waveform class="timeline-waveform" />
     <span class="timeline-duration">{{ formatTime(duration) }}</span>
   </div>
 </template>
@@ -35,10 +20,10 @@ const currentTimeRef = computed({
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
-.timeline-slider {
+.timeline-waveform {
   flex: 1 1 auto;
 }
 

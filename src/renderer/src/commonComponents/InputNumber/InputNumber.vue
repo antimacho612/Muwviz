@@ -31,7 +31,7 @@ const handleMinMax = (num: number) => {
 
 const inputText = ref(handleMinMax(props.modelValue ?? 0).toString());
 
-const updateValue = (value: string) => {
+const onUpdateModelValue = (value: string) => {
   let num = Number.parseFloat(value);
   if (num === null || Number.isNaN(num)) num = 0;
   const newValue = handleMinMax(num);
@@ -48,6 +48,6 @@ const updateValue = (value: string) => {
     type="number"
     :min="min"
     :max="max"
-    @update:model-value="updateValue"
+    @update:model-value="onUpdateModelValue"
   />
 </template>

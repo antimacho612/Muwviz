@@ -10,7 +10,6 @@ const { currentSong } = useAudioPlayer();
 <template>
   <div class="song-info">
     <Artwork :src="currentSong?.artworkPath" width="56px" height="56px" class="flex-shrink-0" />
-
     <div class="info">
       <div class="title">{{ toHyphenIfEmpty(currentSong?.title) }}</div>
       <div class="artist-and-album">

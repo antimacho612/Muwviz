@@ -1,36 +1,18 @@
-import { parseFile as parseMetadata, IPicture } from 'music-metadata';
-import { xxHash32 } from 'js-xxhash';
-import Jimp from 'jimp';
-import fs from 'fs';
+import { parseFile as parseMetadata } from 'music-metadata';
 import fsAsync from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
 import { Song } from '@shared/types';
 import { ensureDirectory } from '@main/utils';
-import { ARTWORK_DIR } from './paths';
+import { ARTWORKS_DIR, WAVEFORMS_DIR } from './paths';
+import { saveArtwork } from './artworkManager';
+import { saveWaveformData } from './waveformManager';
 
 export type ParsedSong = Omit<Song, 'artistId' | 'albumId' | 'scanId'> & { lyrics?: string };
 
-const storePicture = async (picture: IPicture) => {
-  const hashedFileName = xxHash32(picture.data).toString(16);
-
-  const filePath = path.join(ARTWORK_DIR, `${hashedFileName}.png`);
-  if (!fs.existsSync(filePath)) {
-    console.debug('Saving artwork...', filePath);
-    try {
-      const image = await Jimp.read(picture.data);
-      image.contain(256, 256);
-      await image.writeAsync(filePath);
-    } catch (e) {
-      console.error('Failed to save artwork', e);
-    }
-  }
-
-  return filePath;
-};
-
 export const parseSongFile = async (filePath: string) => {
-  await ensureDirectory(ARTWORK_DIR);
+  await ensureDirectory(ARTWORKS_DIR);
+  await ensureDirectory(WAVEFORMS_DIR);
 
   const metadata = await parseMetadata(filePath, {
     duration: true,
@@ -38,13 +20,17 @@ export const parseSongFile = async (filePath: string) => {
 
   let artworkPath: string | undefined;
   if (metadata.common.picture) {
-    artworkPath = await storePicture(metadata.common.picture[0]);
+    artworkPath = await saveArtwork(metadata.common.picture[0]);
   }
 
   const fileStat = await fsAsync.stat(filePath);
 
+  // 波形データ生成
+  const songId = crypto.randomUUID();
+  // saveWaveformData(songId, filePath);
+
   const song: ParsedSong = {
-    id: crypto.randomUUID(),
+    id: songId,
     filePath: filePath,
     title: metadata.common.title ?? path.parse(filePath).name,
     artist: metadata.common.artist ?? metadata.common.artists?.[0] ?? '',

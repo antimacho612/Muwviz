@@ -23,10 +23,6 @@ const inputEl = ref<HTMLInputElement>();
 const onInput = () => {
   if (!inputEl.value) return;
   emits('update:modelValue', inputEl.value.value);
-
-  if (inputEl.value.value !== props.modelValue) {
-    inputEl.value.value = props.modelValue;
-  }
 };
 
 const onFocus = () => {

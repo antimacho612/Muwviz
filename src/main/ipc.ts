@@ -11,7 +11,7 @@ import {
   songsStore,
   visualizerConfigStore,
 } from '.';
-import { ARTWORK_DIR } from './core/paths';
+import { ARTWORKS_DIR } from './core/paths';
 import { scanFolder } from './core/scanner';
 import {
   closeWindow,
@@ -24,7 +24,8 @@ import {
   openFileBrowser,
   setWindowAlwaysOnTop,
 } from './window';
-import { deleteEntitiesByScanId } from './core/libraryManager';
+import { removeSongsFromLibrary } from './core/libraryManager';
+import { getWaveformData, saveWaveformData } from './core/waveformManager';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
@@ -33,7 +34,7 @@ export const registerIpcChannels = () => {
   ipcMain.handle('getAppVersion', async () => app.getVersion());
 
   // アートワークの保存先を取得する
-  ipcMain.handle('getArtworkPath', async () => ARTWORK_DIR);
+  ipcMain.handle('getArtworkPath', async () => ARTWORKS_DIR);
 
   // ファイルブラウザを開く
   ipcMain.handle('openFileBrowser', async (_, isMainWindow, mode, filters) =>
@@ -84,10 +85,10 @@ export const registerIpcChannels = () => {
     'scanFolder',
     async (_, folderPath, resortLibrary) => await scanFolder(folderPath, resortLibrary)
   );
-  // スキャンIDに紐づく楽曲、その他関連情報をライブラリから削除する
+  // ライブラリから楽曲を削除する
   ipcMain.handle(
-    'deleteEntitiesByScanId',
-    async (_, scanId) => await deleteEntitiesByScanId(scanId)
+    'removeSongsFromLibrary',
+    async (_, songIds) => await removeSongsFromLibrary(songIds)
   );
 
   // 全楽曲情報を取得する
@@ -113,6 +114,13 @@ export const registerIpcChannels = () => {
   });
   // 歌詞情報のキャッシュ（メイン側で保持しているデータ）を削除する
   ipcMain.handle('clearLyricsCache', async () => lyricsStore.clearCache());
+
+  // 波形データを取得する
+  ipcMain.handle('getWaveformData', async (_, songId) => getWaveformData(songId));
+  // 波形データを保存する
+  ipcMain.handle('saveWaveformData', async (_, songId, waveformData) =>
+    saveWaveformData(songId, waveformData)
+  );
 
   // 全ビジュアライザーの設定情報を取得する
   ipcMain.handle('getAllVisualizerConfig', async () => visualizerConfigStore.getVisualizerConfig());

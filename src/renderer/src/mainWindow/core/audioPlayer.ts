@@ -235,7 +235,7 @@ const audioPlayer = () => {
   };
 
   return {
-    audio,
+    htmlAudioElement: audio,
 
     playerState: readonly(state),
     duration: readonly(duration),

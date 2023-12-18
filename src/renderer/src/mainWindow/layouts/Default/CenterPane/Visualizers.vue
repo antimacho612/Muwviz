@@ -8,13 +8,13 @@ import { sendMessageToSubWindowKey } from '@renderer/mainWindow/injectionKeys';
 
 import Settings2Icon from '@renderer/assets/icons/settings2.svg?component';
 
-const { audio } = useAudioPlayer();
+const { htmlAudioElement } = useAudioPlayer();
 const { visualizers } = useWindowStore();
 const containerEls = ref<HTMLDivElement[]>();
 
 onMounted(async () => {
   const options = await window.electron.invoke.getAllVisualizerConfig();
-  let source: HTMLMediaElement | AudioNode = audio;
+  let source: HTMLMediaElement | AudioNode = htmlAudioElement;
   containerEls.value?.forEach((containerEl, index) => {
     const isFirst = index === 0;
     const constructorOpts: ConstructorOptions = {

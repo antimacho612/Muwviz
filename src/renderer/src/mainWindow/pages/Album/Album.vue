@@ -26,7 +26,8 @@ const albumSongs = getAlbumSongs(props.albumId);
 const { sortKey, order, sortedSongs } = useSongsSort(albumSongs);
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 
-const { selectedSongs, clearSelection, onClickItem } = useMultiSelectableSongList(filteredSongs);
+const { selectedSongs, getOrderedSelectedSongIds, clearSelection, onClickItem } =
+  useMultiSelectableSongList(filteredSongs);
 
 const { setQueue } = useAudioPlayer();
 const onDoubleClickRow = async (songId: string) => {
@@ -39,7 +40,7 @@ const songContextMenu = useContextMenu('Song');
 const songsContextMenu = useContextMenu('Songs');
 const showContextMenu = (e: MouseEvent, song: Song) => {
   if (selectedSongs.value.size > 1) {
-    songsContextMenu.show(e, { selectedSongs: selectedSongs.value });
+    songsContextMenu.show(e, { selectedSongs: getOrderedSelectedSongIds() });
   } else {
     songContextMenu.show(e, { song });
   }
@@ -100,7 +101,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
         <template #default="{ item, index }">
           <AlbumSong
             :song="item"
-            :selected="selectedSongs.has(item.id)"
+            :selected="selectedSongs.has(index)"
             @click-row="onClickItem($event, index, item.id)"
             @double-click-row="onDoubleClickRow(item.id)"
             @contextmenu="showContextMenu($event, item)"

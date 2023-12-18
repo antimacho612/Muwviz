@@ -1,7 +1,7 @@
-import fs from 'fs';
 import crypto from 'crypto';
 import { albumsStore, artistsStore, lyricsStore, scannedFoldersStore, songsStore } from '..';
 import { ParsedSong } from './songFileParser';
+import { deleteAllArtworks, deleteArtworksIfNoReferred } from './artworkManager';
 
 export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) => {
   if (parsedSong.lyrics) {
@@ -66,28 +66,81 @@ export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) =
   });
 };
 
-const deleteArtworksIfNoReferred = (artworkPaths: Set<string>) => {
-  const songs = songsStore.getData();
-  const albums = albumsStore.getData();
+/**
+ * ライブラリから指定された楽曲を削除する
+ * @param songIds 削除する楽曲のID
+ */
+export const removeSongsFromLibrary = async (songIds: string[]) => {
+  // 削除候補となるアートワークのパス
+  const artworkPaths = new Set<string>();
 
-  for (const artworkPath of artworkPaths) {
-    if (
-      songs?.some((song) => song.artworkPath === artworkPath) ||
-      albums?.some((album) => album.artworkPath === artworkPath)
-    ) {
-      // まだ使用されているため削除しない
-      return;
-    }
+  for (const songId of songIds) {
+    const song = songsStore.findById(songId);
+    if (!song) continue;
 
-    try {
-      if (fs.existsSync(artworkPath)) {
-        fs.unlinkSync(artworkPath);
+    if (song.artworkPath) artworkPaths.add(song.artworkPath);
+
+    // アルバムの曲数をデクリメント
+    const album = albumsStore.findById(song.albumId);
+    if (album) {
+      if (album.songCount <= 1) {
+        // アルバムの曲数が0になる場合はアルバム情報自体を削除
+        albumsStore.delete(album.id);
+        if (album.artworkPath) artworkPaths.add(album.artworkPath);
+      } else {
+        album.songCount--;
+
+        // アルバム内に同一アーティストの曲が複数存在しない場合は、アルバムのアーティストから該当のアーティストを削除
+        if (
+          !songsStore.some(
+            (s) => s.id !== song.id && s.albumId === album.id && s.artistId === song.artistId
+          )
+        ) {
+          album.artists = album.artists.filter((artist) => artist.id !== song.artistId);
+        }
       }
-    } catch (e) {
-      console.error('Failed to delete artwork', artworkPath, e);
     }
+
+    // アーティストの曲数をデクリメント
+    const artist = artistsStore.findById(song.artistId);
+    if (artist) {
+      if (artist.songCount <= 1) {
+        artistsStore.delete(artist.id);
+      } else {
+        artist.songCount--;
+      }
+    }
+
+    // 歌詞情報を削除
+    lyricsStore.delete(song.id);
+
+    // 楽曲情報を削除
+    songsStore.delete(song.id);
   }
+
+  // 参照されなくなったアートワークを削除
+  if (artworkPaths.size) deleteArtworksIfNoReferred(artworkPaths);
+
+  await Promise.allSettled([
+    songsStore.save(),
+    albumsStore.save(),
+    artistsStore.save(),
+    lyricsStore.save(),
+    scannedFoldersStore.save(),
+  ]);
 };
+
+/**
+ * ライブラリをクリアする
+ */
+export const clearLibrary = async () =>
+  await Promise.allSettled([
+    songsStore.save([]),
+    albumsStore.save([]),
+    artistsStore.save([]),
+    lyricsStore.save({}),
+    deleteAllArtworks(),
+  ]);
 
 export const deleteEntitiesByScanId = async (scanId: string) => {
   const targetSongs = songsStore.getData()?.filter((song) => song.scanId === scanId);

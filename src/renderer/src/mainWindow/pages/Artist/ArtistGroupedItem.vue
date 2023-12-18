@@ -8,7 +8,7 @@ import ArtistAlbumSong from './ArtistAlbumSong.vue';
 
 interface Props {
   groupedItem: GroupedItem;
-  selectedSongs: Set<string>;
+  selectedSongs: Map<number, string>;
 }
 const props = defineProps<Props>();
 
@@ -46,7 +46,7 @@ const computedSelectedSongs = computed(() => props.selectedSongs);
         v-for="(song, index) in groupedItem.songs"
         :key="song.id"
         :song="song"
-        :selected="computedSelectedSongs.has(song.id)"
+        :selected="computedSelectedSongs.has(groupedItem.baseIndex + index)"
         @click-row="emits('clickSongRow', $event, index, song.id)"
         @double-click-row="emits('doubleClickSongRow', $event, index, song.id)"
         @click-ellipsis-button="emits('contextmenu', $event, index, song.id)"
