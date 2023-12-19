@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { useSongsSort } from '@mainWindow/composables/useSort';
@@ -16,8 +17,8 @@ import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSea
 import SongListItem from './SongListItem.vue';
 
 const { setQueue } = useAudioPlayer();
-const { songList } = useEntitiesStore();
 
+const { songList } = storeToRefs(useEntitiesStore());
 const { sortedSongs, sortKey, order } = useSongsSort(songList);
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
 const { selectedSongs, getOrderedSelectedSongIds, clearSelection, onClickItem } =

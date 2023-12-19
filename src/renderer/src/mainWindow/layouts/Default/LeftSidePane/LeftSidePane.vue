@@ -55,7 +55,7 @@ provide(showSongDetailModalKey, showSongDetailModal);
           enter-active-class="page-fade-in"
           leave-active-class="page-fade-out"
         >
-          <component :is="Component"></component>
+          <component :is="Component" />
         </Transition>
       </RouterView>
     </div>

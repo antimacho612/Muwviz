@@ -37,6 +37,7 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
     <div :inert="isLibraryEditModalOpen">
       <SettingsModal v-model:is-open="isSettingModalOpen"></SettingsModal>
     </div>
+
     <LibraryEditModal v-model:is-open="isLibraryEditModalOpen"></LibraryEditModal>
   </div>
 </template>

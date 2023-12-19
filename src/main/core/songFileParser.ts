@@ -6,7 +6,6 @@ import { Song } from '@shared/types';
 import { ensureDirectory } from '@main/utils';
 import { ARTWORKS_DIR, WAVEFORMS_DIR } from './paths';
 import { saveArtwork } from './artworkManager';
-import { saveWaveformData } from './waveformManager';
 
 export type ParsedSong = Omit<Song, 'artistId' | 'albumId' | 'scanId'> & { lyrics?: string };
 
@@ -25,12 +24,8 @@ export const parseSongFile = async (filePath: string) => {
 
   const fileStat = await fsAsync.stat(filePath);
 
-  // 波形データ生成
-  const songId = crypto.randomUUID();
-  // saveWaveformData(songId, filePath);
-
   const song: ParsedSong = {
-    id: songId,
+    id: crypto.randomUUID(),
     filePath: filePath,
     title: metadata.common.title ?? path.parse(filePath).name,
     artist: metadata.common.artist ?? metadata.common.artists?.[0] ?? '',

@@ -1,7 +1,9 @@
-import { inject, onMounted } from 'vue';
+import { inject } from 'vue';
 import ContextMenu, { MenuItem } from '@imengyu/vue3-context-menu';
+import { useToast } from 'vue-toastification';
 import { showSongDetailModalKey } from '@mainWindow/injectionKeys';
 import { useAudioPlayer } from './useAudioPlayer';
+import { useLibraryManager } from '../core/libraryManager';
 import { Song } from '@shared/types';
 
 export type ContextMenuType = 'Song' | 'Songs';
@@ -14,15 +16,12 @@ export type ContextMenuArgs<T extends ContextMenuType> = T extends 'Song'
       selectedSongs: ReadonlyArray<string>;
     };
 
+const toast = useToast();
+
 export const useContextMenu = <T extends ContextMenuType>(type: T) => {
   const { setQueue } = useAudioPlayer();
-  let showSongDetailModal: ((song: Song) => void) | undefined;
-
-  onMounted(() => {
-    if (type === 'Song') {
-      showSongDetailModal = inject(showSongDetailModalKey);
-    }
-  });
+  const showSongDetailModal = inject(showSongDetailModalKey);
+  const { removeSongsFromLibrary } = useLibraryManager();
 
   const getSongContextMenuItems = (args: ContextMenuArgs<'Song'>) => [
     {
@@ -51,8 +50,10 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
     {
       label: 'ライブラリから削除',
       onClick: async () => {
-        if (confirm(`【${args.song.title}】をライブラリから削除しますか？`))
-          await window.electron.invoke.removeSongsFromLibrary([args.song.id]);
+        if (confirm(`【${args.song.title}】をライブラリから削除しますか？`)) {
+          await removeSongsFromLibrary([args.song.id]);
+          toast.info('ライブラリから楽曲を削除しました。');
+        }
       },
       divided: true,
     },
@@ -134,8 +135,11 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
     },
     {
       label: 'ライブラリから削除',
-      onClick: () => {
-        // TODO: 未実装
+      onClick: async () => {
+        if (confirm(`選択中の${args.selectedSongs.length}曲をライブラリから削除しますか？`)) {
+          await removeSongsFromLibrary([...args.selectedSongs]);
+          toast.info('ライブラリから楽曲を削除しました。');
+        }
       },
     },
   ];

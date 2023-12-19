@@ -50,9 +50,11 @@ const current = computed(() => props.song.id === currentSong.value?.id);
         class="playing-animation"
       />
     </div>
-    <RouterLink :to="`/artists/${song.artistId}`" class="artist">
-      {{ formatArtistName(song.artist) }}
-    </RouterLink>
+    <div class="artist">
+      <RouterLink :to="`/artists/${song.artistId}`">
+        {{ formatArtistName(song.artist) }}
+      </RouterLink>
+    </div>
     <div class="duration">{{ formatTime(song.duration) }}</div>
     <Button
       :icon="EllipsisIcon"

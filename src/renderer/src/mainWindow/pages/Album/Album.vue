@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { useSongsSort } from '@mainWindow/composables/useSort';
@@ -19,13 +21,12 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 
 const props = defineProps<{ albumId: string }>();
 
-const { getAlbumById, getAlbumSongs } = useEntitiesStore();
-const album = getAlbumById(props.albumId);
-const albumSongs = getAlbumSongs(props.albumId);
+const { albumsMap, songList } = storeToRefs(useEntitiesStore());
+const album = computed(() => albumsMap.value.get(props.albumId));
+const albumSongs = computed(() => songList.value.filter((song) => song.albumId === props.albumId));
 
 const { sortKey, order, sortedSongs } = useSongsSort(albumSongs);
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
-
 const { selectedSongs, getOrderedSelectedSongIds, clearSelection, onClickItem } =
   useMultiSelectableSongList(filteredSongs);
 

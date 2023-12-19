@@ -52,14 +52,6 @@ export const useEntitiesStore = defineStore('entities', {
       results.filter(isRejected).forEach((result) => console.error(result.reason.toString()));
     },
 
-    getAlbumById(albumId: string) {
-      return this.albumsMap.get(albumId);
-    },
-
-    getArtistById(artistId: string) {
-      return this.artistsMap.get(artistId);
-    },
-
     getAlbumSongs(albumId: string) {
       return this.songList.filter((song) => song.albumId === albumId);
     },

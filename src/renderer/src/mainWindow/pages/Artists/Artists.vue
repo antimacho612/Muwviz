@@ -10,9 +10,9 @@ import SortWidget from '@renderer/mainWindow/components/SortWidget/SortWidget.vu
 import QuickSearchWidget from '@renderer/mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import ArtistGridItem from './ArtistGridItem.vue';
+import { storeToRefs } from 'pinia';
 
-const { artistList, getArtistSongs } = useEntitiesStore();
-
+const { artistList } = storeToRefs(useEntitiesStore());
 const { sortedArtists, sortKey, order } = useArtistsSort(artistList);
 const { searchText, filteredArtists } = useArtistsQuickSearch(sortedArtists);
 
@@ -20,6 +20,7 @@ const router = useRouter();
 const onClickItem = (artistId: string) => router.push(`artists/${artistId}`);
 
 const { setQueue } = useAudioPlayer();
+const { getArtistSongs } = useEntitiesStore();
 const onClickPlayButton = async (artistId: string) => {
   const albumSongs = getArtistSongs(artistId);
   const songIds = albumSongs.map((song) => song.id);

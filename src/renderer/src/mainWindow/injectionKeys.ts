@@ -1,7 +1,7 @@
 import { InjectionKey } from 'vue';
 import { AudioPlayer } from './core/audioPlayer';
-import { Song } from '@shared/types';
 import { MainToSubMessage } from '@renderer/commonUtils/messagePort';
+import { Song } from '@shared/types';
 
 export const audioPlayerKey: InjectionKey<AudioPlayer> = Symbol('AudioPlayer');
 

@@ -91,7 +91,9 @@ const audioPlayer = () => {
   const loadSong = async (autoPlay = true) => {
     resetAudio();
 
-    currentSong.value = songsMap.value.get(queue.currentItem.value.songId);
+    currentSong.value = queue.currentItem.value
+      ? songsMap.value.get(queue.currentItem.value.songId)
+      : undefined;
     if (!currentSong.value) {
       toast.error('曲が存在しません...😢');
       console.error('曲が存在しません...');
@@ -188,11 +190,19 @@ const audioPlayer = () => {
     repeat.value = payload;
   };
 
+  /**
+   * 新しいキューをセットする
+   * @param songIds キューにセットする楽曲ID
+   * @param options オプション
+   */
   const setQueue = async (
     songIds: Readonly<string[]>,
     options?: {
+      /** キューセット後に自動再生するか（default: true） */
       autoplay?: boolean;
+      /** 楽曲をシャッフルするか（default: false） */
       shuffle?: boolean;
+      /** 最初に再生する楽曲のインデックス（default: 0） */
       firstSongIndex?: number;
     }
   ) => {
@@ -218,10 +228,24 @@ const audioPlayer = () => {
     // TODO: 未実装
   };
 
-  const removeSongsFromQueue = (...queueIds: string[]) => {
+  /**
+   * キューから楽曲を削除する
+   * @param queueIds 削除対象の楽曲に振られているキューID
+   */
+  const removeSongsFromQueue = async (...queueIds: string[]) => {
+    if (queue.currentItem.value && queueIds.includes(queue.currentItem.value.queueId)) {
+      resetAudio();
+    }
     queue.removeItems(...queueIds);
+
+    if (queue.currentItem.value) {
+      await loadSong(false);
+    }
   };
 
+  /**
+   * キューをクリアする
+   */
   const clearQueue = () => {
     if (queue.length.value <= 1) {
       // 全削除

@@ -36,6 +36,12 @@ const toggleRepeatButtonAttrs = computed(() => ({
       ? '1曲ループON'
       : 'ループOFF',
 }));
+
+const onClickPrevButton = async () => await previousSong();
+const onClickPlayPauseButton = async () => await togglePlay();
+const onClickNextButton = async () => await nextSong(playerState.value === 'Playing');
+const onClickRepeatButton = () =>
+  setRepeat(repeat.value === 'Off' ? 'All' : repeat.value === 'All' ? 'Once' : 'Off');
 </script>
 
 <template>
@@ -49,12 +55,12 @@ const toggleRepeatButtonAttrs = computed(() => ({
       </div>
       <div class="bottom-center">
         <div class="flex align-items-center column-gap-5">
-          <Button text :icon="BackwardIcon" :disabled="playerDisabled" @click="previousSong" />
+          <Button text :icon="BackwardIcon" :disabled="playerDisabled" @click="onClickPrevButton" />
           <Button
             size="lg"
             :title="playPauseButtonAttrs.title"
             :disabled="playPauseButtonAttrs.disabled"
-            @click="togglePlay()"
+            @click="onClickPlayPauseButton"
           >
             <PauseIcon v-if="playerState === 'Playing'" style="height: 2rem" />
             <LoadingAnimation
@@ -64,7 +70,7 @@ const toggleRepeatButtonAttrs = computed(() => ({
             />
             <PlayIcon v-else style="height: 2rem" />
           </Button>
-          <Button :icon="ForwardIcon" text :disabled="playerDisabled" @click="nextSong" />
+          <Button :icon="ForwardIcon" text :disabled="playerDisabled" @click="onClickNextButton" />
         </div>
         <div class="flex align-items-center column-gap-2">
           <Button
@@ -72,7 +78,7 @@ const toggleRepeatButtonAttrs = computed(() => ({
             :icon="toggleRepeatButtonAttrs.icon"
             :title="toggleRepeatButtonAttrs.title"
             :class="{ 'repeat-on': repeat !== 'Off' }"
-            @click="setRepeat(repeat === 'Off' ? 'All' : repeat === 'All' ? 'Once' : 'Off')"
+            @click="onClickRepeatButton"
           />
         </div>
       </div>

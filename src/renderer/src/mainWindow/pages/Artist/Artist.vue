@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { groupSongs } from './grouping';
@@ -18,9 +19,12 @@ import ArtistGroupedItem from './ArtistGroupedItem.vue';
 
 const props = defineProps<{ artistId: string }>();
 
-const { getArtistById, getArtistSongs } = useEntitiesStore();
-const artist = getArtistById(props.artistId);
-const artistSongs = getArtistSongs(props.artistId);
+const { artistsMap, songList } = storeToRefs(useEntitiesStore());
+
+const artist = computed(() => artistsMap.value.get(props.artistId));
+const artistSongs = computed(() =>
+  songList.value.filter((song) => song.artistId === props.artistId)
+);
 
 // ソート、クイックサーチ
 const { sortKey, order, sortedSongs } = useSongsSort(artistSongs, {

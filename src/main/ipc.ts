@@ -11,7 +11,7 @@ import {
   songsStore,
   visualizerConfigStore,
 } from '.';
-import { ARTWORKS_DIR } from './core/paths';
+import { ARTWORKS_DIR, WAVEFORMS_DIR } from './core/paths';
 import { scanFolder } from './core/scanner';
 import {
   closeWindow,
@@ -35,6 +35,8 @@ export const registerIpcChannels = () => {
 
   // アートワークの保存先を取得する
   ipcMain.handle('getArtworkPath', async () => ARTWORKS_DIR);
+  // 波形データの保存先を取得する
+  ipcMain.handle('getWaveformPath', async () => WAVEFORMS_DIR);
 
   // ファイルブラウザを開く
   ipcMain.handle('openFileBrowser', async (_, isMainWindow, mode, filters) =>

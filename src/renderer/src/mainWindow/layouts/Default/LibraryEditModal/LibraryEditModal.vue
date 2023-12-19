@@ -9,11 +9,13 @@ import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
 import ProgressBar from '@renderer/commonComponents/ProgressBar/ProgressBar.vue';
+import { useEntitiesStore } from '@renderer/mainWindow/stores/entities';
 
 type ScanStatus = {
   path: string;
   status: string;
   isScanning: boolean;
+  needReFetch: boolean;
 };
 
 const props = defineProps<{ isOpen: boolean }>();
@@ -25,9 +27,10 @@ const opened = computed({
 });
 
 const toast = useToast();
+const { fetch: fetchEntities } = useEntitiesStore();
 
 const foldersToScan = ref<ScanStatus[]>([]);
-const status = ref<'WAITING' | 'SCANNING' | 'DONE'>('WAITING');
+const status = ref<'Waiting' | 'Scanning' | 'Done'>('Waiting');
 
 const alreadyAdded = (path: string) =>
   foldersToScan.value.some(
@@ -46,7 +49,12 @@ const onClickAddFolderButton = async () => {
       continue;
     }
 
-    foldersToScan.value.push({ path, status: 'スキャン待ち', isScanning: false });
+    foldersToScan.value.push({
+      path,
+      status: 'スキャン待ち',
+      isScanning: false,
+      needReFetch: false,
+    });
   }
 };
 
@@ -55,7 +63,7 @@ const onClickDeleteButton = (index: number) => {
 };
 
 const onClickScanButton = async () => {
-  status.value = 'SCANNING';
+  status.value = 'Scanning';
 
   for (const folder of foldersToScan.value) {
     folder.isScanning = true;
@@ -70,7 +78,8 @@ const onClickScanButton = async () => {
     }
   }
 
-  status.value = 'DONE';
+  if (foldersToScan.value.some((folder) => folder.needReFetch)) await fetchEntities();
+  status.value = 'Done';
 };
 
 const progressBarValue = ref(0);
@@ -79,6 +88,10 @@ window.electron.on.updateScanProgress(async (_, progress) => {
   if (!target) return;
 
   const { done, scannedFilesCount, currentIndex, skippedFilesCount, totalFilesCount } = progress;
+
+  // スキャン後にrenderer側のストアの更新が必要か
+  if (!target.needReFetch && scannedFilesCount > 0) target.needReFetch = true;
+
   if (done) {
     target.status = `スキャン終了\n(スキャン: ${scannedFilesCount}曲, スキップ: ${skippedFilesCount}曲)`;
   } else {
@@ -92,7 +105,7 @@ watch(
   () => {
     if (!props.isOpen) return;
     foldersToScan.value = [];
-    status.value = 'WAITING';
+    status.value = 'Waiting';
   },
   { immediate: true }
 );
@@ -108,7 +121,7 @@ watch(
     <div class="library-edit-modal">
       <div class="header">
         <div class="title">スキャン対象のフォルダ</div>
-        <Button v-if="status === 'WAITING'" size="sm" text @click="onClickAddFolderButton">
+        <Button v-if="status === 'Waiting'" size="sm" text @click="onClickAddFolderButton">
           <AddFolderIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
           フォルダを追加...
         </Button>
@@ -127,7 +140,7 @@ watch(
             <tr v-for="(folder, index) in foldersToScan" :key="folder.path">
               <td class="text-center">
                 <Button
-                  v-if="status === 'WAITING'"
+                  v-if="status === 'Waiting'"
                   :icon="DeleteIcon"
                   size="sm"
                   text
@@ -145,11 +158,11 @@ watch(
 
       <div class="footer">
         <div class="progress-bar-container">
-          <ProgressBar v-if="status === 'SCANNING'" :value="progressBarValue" />
+          <ProgressBar v-if="status === 'Scanning'" :value="progressBarValue" />
         </div>
 
         <Button
-          v-if="status === 'WAITING'"
+          v-if="status === 'Waiting'"
           size="sm"
           :disabled="!foldersToScan.length"
           @click="onClickScanButton"
@@ -160,7 +173,7 @@ watch(
         <Button
           size="sm"
           text
-          :disabled="status === 'SCANNING'"
+          :disabled="status === 'Scanning'"
           @click="emits('update:isOpen', false)"
         >
           閉じる

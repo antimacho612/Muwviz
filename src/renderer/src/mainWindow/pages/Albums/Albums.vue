@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
@@ -11,8 +12,7 @@ import QuickSearchWidget from '@renderer/mainWindow/components/QuickSearchWidget
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import AlbumGridItem from './AlbumGridItem.vue';
 
-const { albumList, getAlbumSongs } = useEntitiesStore();
-
+const { albumList } = storeToRefs(useEntitiesStore());
 const { sortedAlbums, sortKey, order } = useAlbumsSort(albumList);
 const { searchText, filteredAlbums } = useAlbumsQuickSearch(sortedAlbums);
 
@@ -24,6 +24,7 @@ const router = useRouter();
 const onClickItem = (albumId: string) => router.push(`albums/${albumId}`);
 
 const { setQueue } = useAudioPlayer();
+const { getAlbumSongs } = useEntitiesStore();
 const onClickPlayButton = async (albumId: string) => {
   const albumSongs = getAlbumSongs(albumId);
   const songIds = albumSongs.map((song) => song.id);

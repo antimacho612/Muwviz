@@ -13,8 +13,8 @@ const songQueue = () => {
   const items = ref<SongQueueItem[]>([]);
   const currentIndex = ref(-1);
 
-  const length = computed(() => items.value.length);
-  const currentItem = computed(() => items.value[currentIndex.value]);
+  const length = computed<number>(() => items.value.length);
+  const currentItem = computed<SongQueueItem | undefined>(() => items.value[currentIndex.value]);
 
   const setCurrent = (queueId: string) => {
     currentIndex.value = items.value.findIndex((item) => item.queueId === queueId);
@@ -87,7 +87,7 @@ const songQueue = () => {
    * @param all 全要素削除するかどうか。falseを指定すると現在の曲は削除対象から除外する。
    */
   const clearItems = (all = true) => {
-    if (!all && currentIndex.value >= 0) {
+    if (!all && currentItem.value) {
       items.value = [currentItem.value];
       currentIndex.value = 0;
     } else if (currentIndex.value >= 0) {
@@ -96,6 +96,10 @@ const songQueue = () => {
     }
   };
 
+  /**
+   * キューから指定したIDの要素を削除する
+   * @param queueIds 削除する要素のID
+   */
   const removeItems = (...queueIds: string[]) => {
     let decrement = 0;
 

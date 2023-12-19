@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { albumsStore, artistsStore, lyricsStore, scannedFoldersStore, songsStore } from '..';
 import { ParsedSong } from './songFileParser';
 import { deleteAllArtworks, deleteArtworksIfNoReferred } from './artworkManager';
+import { deleteAllWaveformData, deleteWaveformData } from './waveformManager';
 
 export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) => {
   if (parsedSong.lyrics) {
@@ -111,6 +112,9 @@ export const removeSongsFromLibrary = async (songIds: string[]) => {
       }
     }
 
+    // 波形データを削除
+    deleteWaveformData(song.id);
+
     // 歌詞情報を削除
     lyricsStore.delete(song.id);
 
@@ -140,55 +144,5 @@ export const clearLibrary = async () =>
     artistsStore.save([]),
     lyricsStore.save({}),
     deleteAllArtworks(),
+    deleteAllWaveformData(),
   ]);
-
-export const deleteEntitiesByScanId = async (scanId: string) => {
-  const targetSongs = songsStore.getData()?.filter((song) => song.scanId === scanId);
-  if (!targetSongs?.length) {
-    scannedFoldersStore.delete(scanId);
-    await scannedFoldersStore.save();
-    return;
-  }
-
-  const artworkPaths = new Set<string>();
-
-  for (const song of targetSongs) {
-    if (song.artworkPath) artworkPaths.add(song.artworkPath);
-
-    const album = albumsStore.findById(song.albumId);
-    if (album) {
-      if (album.songCount <= 1) {
-        albumsStore.delete(album.id);
-      } else {
-        album.songCount--;
-      }
-
-      if (album.artworkPath) artworkPaths.add(album.artworkPath);
-    }
-
-    const artist = artistsStore.findById(song.artistId);
-    if (artist) {
-      if (artist.songCount <= 1) {
-        artistsStore.delete(artist.id);
-      } else {
-        artist.songCount--;
-      }
-    }
-
-    lyricsStore.delete(song.id);
-    songsStore.delete(song.id);
-  }
-
-  // 参照されなくなったアートワークを削除
-  if (artworkPaths.size) deleteArtworksIfNoReferred(artworkPaths);
-
-  scannedFoldersStore.delete(scanId);
-
-  await Promise.allSettled([
-    songsStore.save(),
-    albumsStore.save(),
-    artistsStore.save(),
-    lyricsStore.save(),
-    scannedFoldersStore.save(),
-  ]);
-};

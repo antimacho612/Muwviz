@@ -7,11 +7,20 @@ import { useSettingsStore } from '@renderer/mainWindow/stores/settings';
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
+import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 
-const { scannedFolders, artworkPath } = storeToRefs(useSettingsStore());
+const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeToRefs(
+  useSettingsStore()
+);
 
 const openSettingsModal = inject(openLibraryEditModalKey);
-const openArtworkDir = async () => await window.electron.invoke.openPath(artworkPath.value);
+
+const onClickOpenArtworkDirButton = async () => {
+  await window.electron.invoke.openPath(artworkPath.value);
+};
+const onClickOpenWaveformDirButton = async () => {
+  await window.electron.invoke.openPath(waveformPath.value);
+};
 </script>
 
 <template>
@@ -44,7 +53,25 @@ const openArtworkDir = async () => await window.electron.invoke.openPath(artwork
     <BaseSettingsItem title="アートワークの保存場所">
       <div class="flex align-items-center justify-content-between column-gap-1">
         <span class="artwork-dir">{{ artworkPath }}</span>
-        <Button size="sm" class="flex-shrink-0" @click="openArtworkDir">フォルダを開く</Button>
+        <Button size="sm" class="flex-shrink-0" @click="onClickOpenArtworkDirButton">
+          フォルダを開く
+        </Button>
+      </div>
+    </BaseSettingsItem>
+
+    <BaseSettingsItem title="波形データのキャッシュ">
+      <div class="flex align-items-center column-gap-3">
+        <Switch v-model="cacheWaveformData" />
+        <span>{{ cacheWaveformData ? 'ON' : 'OFF' }}</span>
+      </div>
+    </BaseSettingsItem>
+
+    <BaseSettingsItem title="波形データの保存場所">
+      <div class="flex align-items-center justify-content-between column-gap-1">
+        <span class="waveform-dir">{{ waveformPath }}</span>
+        <Button size="sm" class="flex-shrink-0" @click="onClickOpenWaveformDirButton">
+          フォルダを開く
+        </Button>
       </div>
     </BaseSettingsItem>
   </BaseSettingsTabPanel>
@@ -77,8 +104,8 @@ const openArtworkDir = async () => await window.electron.invoke.openPath(artwork
   margin: 2rem auto 0;
 }
 
-.artwork-dir {
+.artwork-dir,
+.waveform-dir {
   @include singleLineClamp;
 }
 </style>
-@renderer/mainWindow/stores/settings @renderer/mainWindow/utils/injectionKeys

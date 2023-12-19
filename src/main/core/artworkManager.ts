@@ -29,9 +29,9 @@ export const deleteAllArtworks = async () => {
   const contents = await fsAsync.readdir(ARTWORKS_DIR);
   contents
     .filter((content) => content.endsWith('.png'))
-    .forEach((artworkPath) => {
+    .forEach(async (artworkPath) => {
       try {
-        fsAsync.unlink(artworkPath);
+        await fsAsync.unlink(artworkPath);
       } catch (e) {
         console.error('Failed to delete artwork', artworkPath, e);
       }

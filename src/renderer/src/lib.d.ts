@@ -8,7 +8,14 @@ declare module 'genius-lyrics-api' {
 }
 
 declare module 'waveform-data' {
-  export interface WaveformDataAudioBufferOptions extends WaveformDataAudioBufferOptions {
+  export * from 'waveform-data';
+
+  export interface WaveformDataAudioBufferOptions
+    extends WaveformData.WaveformDataAudioBufferOptions {
+    /**
+     * Set to true to disable use of a Web Worker
+     * @note ライブラリの型定義ファイルに定義がないため追加
+     */
     disable_worker?: boolean;
   }
 }

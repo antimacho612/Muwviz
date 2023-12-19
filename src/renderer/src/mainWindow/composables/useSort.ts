@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import {
   getAlbumsSortOptions,
   getArtistsSortOptions,
@@ -16,10 +16,10 @@ import {
 } from '@shared/types';
 
 export const useSongsSort = (
-  songs: Song[],
+  songs: Ref<Song[]>,
   defaultSort?: { sortKey: SongsSortKey; order: Order }
 ) => {
-  const sortedSongs = ref<Song[]>([...songs]);
+  const sortedSongs = ref<Song[]>([...songs.value]);
   const sortKey = ref<SongsSortKey>('Artist');
   const order = ref<Order>('Asc');
 
@@ -29,16 +29,16 @@ export const useSongsSort = (
 
     if (sortKey.value !== 'Artist' || order.value !== 'Asc') {
       const sortOptions = getSongsSortOptions(sortKey.value, order.value);
-      sortedSongs.value = sortArrayOfObjects([...songs], sortOptions);
+      sortedSongs.value = sortArrayOfObjects([...songs.value], sortOptions);
     }
   }
 
-  watch([sortKey, order], () => {
+  watch([songs, sortKey, order], () => {
     if (sortKey.value === 'Artist' && order.value === 'Asc') {
-      sortedSongs.value = [...songs];
+      sortedSongs.value = [...songs.value];
     } else {
       const sortOptions = getSongsSortOptions(sortKey.value, order.value);
-      sortedSongs.value = sortArrayOfObjects([...songs], sortOptions);
+      sortedSongs.value = sortArrayOfObjects([...songs.value], sortOptions);
     }
   });
 
@@ -49,17 +49,17 @@ export const useSongsSort = (
   };
 };
 
-export const useAlbumsSort = (albums: Album[]) => {
-  const sortedAlbums = ref<Album[]>([...albums]);
+export const useAlbumsSort = (albums: Ref<Album[]>) => {
+  const sortedAlbums = ref<Album[]>([...albums.value]);
   const sortKey = ref<AlbumsSortKey>('Name');
   const order = ref<Order>('Asc');
 
-  watch([sortKey, order], () => {
+  watch([albums, sortKey, order], () => {
     if (sortKey.value === 'Name' && order.value === 'Asc') {
-      sortedAlbums.value = [...albums];
+      sortedAlbums.value = [...albums.value];
     } else {
       const sortOptions = getAlbumsSortOptions(sortKey.value, order.value);
-      sortedAlbums.value = sortArrayOfObjects([...albums], sortOptions);
+      sortedAlbums.value = sortArrayOfObjects([...albums.value], sortOptions);
     }
   });
 
@@ -70,17 +70,17 @@ export const useAlbumsSort = (albums: Album[]) => {
   };
 };
 
-export const useArtistsSort = (artists: Artist[]) => {
-  const sortedArtists = ref<Artist[]>([...artists]);
+export const useArtistsSort = (artists: Ref<Artist[]>) => {
+  const sortedArtists = ref<Artist[]>([...artists.value]);
   const sortKey = ref<ArtistsSortKey>('Name');
   const order = ref<Order>('Asc');
 
-  watch([sortKey, order], () => {
+  watch([artists, sortKey, order], () => {
     if (sortKey.value === 'Name' && order.value === 'Asc') {
-      sortedArtists.value = [...artists];
+      sortedArtists.value = [...artists.value];
     } else {
       const sortOptions = getArtistsSortOptions(sortKey.value, order.value);
-      sortedArtists.value = sortArrayOfObjects([...artists], sortOptions);
+      sortedArtists.value = sortArrayOfObjects([...artists.value], sortOptions);
     }
   });
 

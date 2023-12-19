@@ -11,6 +11,8 @@ import AudioMotionAnalyzer from 'audiomotion-analyzer';
 export type SettingsStoreState = {
   scannedFolders: ScannedFolder[];
   artworkPath: string;
+  waveformPath: string;
+  cacheWaveformData: boolean;
   appVersion: string;
   audioMotionAnalyzerVersion: string;
 } & AppearanceSettings;
@@ -20,6 +22,8 @@ export const useSettingsStore = defineStore('settings', {
     return {
       scannedFolders: [],
       artworkPath: '',
+      waveformPath: '',
+      cacheWaveformData: DEFAULT_SETTINGS.cacheWaveformData,
       fontFamily: DEFAULT_SETTINGS.fontFamily,
       theme: DEFAULT_SETTINGS.theme,
       primaryColor: DEFAULT_SETTINGS.primaryColor,
@@ -32,8 +36,9 @@ export const useSettingsStore = defineStore('settings', {
     async fetch() {
       console.debug('Fetching settings...');
 
-      const [artworkPath, scannedFolders, settings, appVersion] = await Promise.all([
+      const [artworkPath, waveformPath, scannedFolders, settings, appVersion] = await Promise.all([
         window.electron.invoke.getArtworkPath(),
+        window.electron.invoke.getWaveformPath(),
         window.electron.invoke.getScannedFolders(),
         window.electron.invoke.getSettings(),
         window.electron.invoke.getAppVersion(),
@@ -41,6 +46,8 @@ export const useSettingsStore = defineStore('settings', {
 
       this.scannedFolders = scannedFolders ?? [];
       this.artworkPath = artworkPath;
+      this.waveformPath = waveformPath;
+      this.cacheWaveformData = settings.cacheWaveformData;
       this.fontFamily = settings.fontFamily;
       this.theme = settings.theme;
       this.primaryColor = settings.primaryColor;

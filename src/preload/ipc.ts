@@ -23,6 +23,10 @@ export type ElectronAPI = GetApiType<
      * アートワークの保存先を取得する
      */
     getArtworkPath: () => Promise<string>;
+    /**
+     * 波形データの保存先を取得する
+     */
+    getWaveformPath: () => Promise<string>;
 
     /**
      * ファイルブラウザを開く
@@ -144,7 +148,7 @@ export type ElectronAPI = GetApiType<
      * 波形データを取得する
      * @param songId 対象の楽曲のID
      */
-    getWaveformData: (songId: string) => Promise<DataView>;
+    getWaveformData: (songId: string) => Promise<DataView | undefined>;
     /**
      * 波形データを保存する
      * @param songId 対象の楽曲のID
@@ -191,6 +195,7 @@ export const electronAPI: ElectronAPI = {
   invoke: {
     getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
     getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
+    getWaveformPath: async () => await ipcRenderer.invoke('getWaveformPath'),
 
     openFileBrowser: async (isMainWindow, mode, filters) =>
       await ipcRenderer.invoke('openFileBrowser', isMainWindow, mode, filters),

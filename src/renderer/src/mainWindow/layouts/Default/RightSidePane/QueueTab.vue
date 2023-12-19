@@ -26,7 +26,7 @@ const scrollToCurrentSong = () => {
   }
 };
 
-const onClickDeleteButton = (queueId: string) => removeSongsFromQueue(queueId);
+const onClickDeleteButton = async (queueId: string) => await removeSongsFromQueue(queueId);
 const onDoubleClickRow = async (queueId: string) => await playSongInQueue(queueId);
 const showContextMenu = (_: MouseEvent) => {
   // TODO: コンテキストメニュー表示
