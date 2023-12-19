@@ -26,6 +26,7 @@ import {
 } from './window';
 import { removeSongsFromLibrary } from './core/libraryManager';
 import { getWaveformData, saveWaveformData } from './core/waveformManager';
+import { showNotification } from './utils';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
@@ -131,6 +132,14 @@ export const registerIpcChannels = () => {
   ipcMain.handle('updateVisualizerConfig', async (_, index, options) =>
     visualizerConfigStore.setVisualizerConfig(index, options)
   );
+
+  // デスクトップ通知を表示する
+  ipcMain.handle('showDesktopNotification', async (_, title, body, imagePath) => {
+    const window = getWindow();
+    if (window && window.isMinimized() && settingsStore.getData()?.showDesktopNotification) {
+      showNotification(title, body, imagePath);
+    }
+  });
 };
 
 /**
@@ -150,6 +159,38 @@ export const sendWindowMaximized = (isMainWindow: boolean, isMaximized: boolean)
 export const sendScanProgressToMain = (progress: ScanProgress) => {
   const window = getWindow();
   window && ipcMain.send(window, 'updateScanProgress', progress);
+};
+
+/**
+ * 楽曲の再生命令をメインウィンドウに通知する
+ */
+export const sendPlayCommandToMain = () => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'sendPlaySongCommand');
+};
+
+/**
+ * 楽曲の再生一時停止命令をメインウィンドウに通知する
+ */
+export const sendPauseCommandToMain = () => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'sendPauseSongCommand');
+};
+
+/**
+ * 前の楽曲再生命令をメインウィンドウに通知する
+ */
+export const sendPrevSongCommandToMain = () => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'sendPrevSongCommand');
+};
+
+/**
+ * 次の楽曲再生命令をメインウィンドウに通知する
+ */
+export const sendNextSongCommandToMain = () => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'sendNextSongCommand');
 };
 
 /**

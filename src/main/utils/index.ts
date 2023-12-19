@@ -1,6 +1,8 @@
+import { Notification } from 'electron';
 import fsAsync from 'fs/promises';
 import fs from 'fs';
 import path from 'path';
+import { getWindow } from '@main/window';
 
 export const ensureDirectory = async (path: string) =>
   await fsAsync.mkdir(path, { recursive: true });
@@ -27,5 +29,18 @@ export const deleteOldLog = (dir: string, days = 3) => {
         }
       }
     }
+  });
+};
+
+export const showNotification = (title: string, body: string, imagePath?: string) => {
+  const notification = new Notification({
+    title,
+    body,
+    icon: imagePath,
+  });
+  notification.show();
+  notification.on('click', () => {
+    const window = getWindow();
+    window && window.show();
   });
 };

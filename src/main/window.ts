@@ -10,7 +10,13 @@ import {
 import { is } from '@electron-toolkit/utils';
 import path from 'path';
 import { settingsStore, visualizerConfigStore } from '.';
-import { sendWindowMaximized } from './ipc';
+import {
+  sendNextSongCommandToMain,
+  sendPauseCommandToMain,
+  sendPlayCommandToMain,
+  sendPrevSongCommandToMain,
+  sendWindowMaximized,
+} from './ipc';
 import icon from '../../resources/icon.png?asset';
 import prevIcon from '../../resources/prev-icon.png?asset';
 import playIcon from '../../resources/play-icon.png?asset';
@@ -87,26 +93,22 @@ const createThumbarButtons = (window: BrowserWindow) => {
   window.setThumbarButtons([
     {
       icon: nativeImage.createFromPath(prevIcon),
-      click: () => console.log('clicked'),
+      click: () => sendPrevSongCommandToMain(),
       tooltip: '前へ',
     },
     {
       icon: nativeImage.createFromPath(playIcon),
-      click: () => {
-        console.log('click');
-      },
+      click: () => sendPlayCommandToMain(),
       tooltip: '再生',
     },
     {
       icon: nativeImage.createFromPath(pauseIcon),
-      click: () => {
-        console.log('click');
-      },
+      click: () => sendPauseCommandToMain(),
       tooltip: '停止',
     },
     {
       icon: nativeImage.createFromPath(nextIcon),
-      click: () => console.log('clicked'),
+      click: () => sendNextSongCommandToMain(),
       tooltip: '次へ',
     },
   ]);

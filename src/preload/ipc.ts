@@ -149,6 +149,7 @@ export type ElectronAPI = GetApiType<
      * @param songId 対象の楽曲のID
      */
     getWaveformData: (songId: string) => Promise<DataView | undefined>;
+
     /**
      * 波形データを保存する
      * @param songId 対象の楽曲のID
@@ -172,6 +173,14 @@ export type ElectronAPI = GetApiType<
      * @param options 更新内容
      */
     updateVisualizerConfig: (index: number, options: Partial<VisualizerConfig>) => Promise<void>;
+
+    /**
+     * デスクトップ通知を表示する
+     * @param title タイトル
+     * @param body 本文
+     * @param imagePath イメージのパス
+     */
+    showDesktopNotification: (title: string, body: string, imagePath?: string) => Promise<void>;
   },
   {
     /**
@@ -183,6 +192,26 @@ export type ElectronAPI = GetApiType<
      * スキャンの進捗状況送信時
      */
     updateScanProgress: (progress: ScanProgress) => Promise<void>;
+
+    /**
+     * 楽曲の再生命令送信時
+     */
+    sendPlaySongCommand: () => Promise<void>;
+
+    /**
+     * 楽曲の再生一時停止命令送信時
+     */
+    sendPauseSongCommand: () => Promise<void>;
+
+    /**
+     * 前の楽曲再生命令送信時
+     */
+    sendPrevSongCommand: () => Promise<void>;
+
+    /**
+     * 次の楽曲の再生命令送信時
+     */
+    sendNextSongCommand: () => Promise<void>;
 
     /**
      * スキャン済みフォルダの情報変更時
@@ -241,9 +270,18 @@ export const electronAPI: ElectronAPI = {
     getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
     updateVisualizerConfig: async (index, options) =>
       await ipcRenderer.invoke('updateVisualizerConfig', index, options),
+
+    showDesktopNotification: async (title, body, imagePath) =>
+      await ipcRenderer.invoke('showDesktopNotification', title, body, imagePath),
   },
   on: {
     resizeWindow: (listener) => ipcRenderer.on('resizeWindow', listener),
+
+    sendPlaySongCommand: (listener) => ipcRenderer.on('sendPlaySongCommand', listener),
+    sendPauseSongCommand: (listener) => ipcRenderer.on('sendPauseSongCommand', listener),
+    sendPrevSongCommand: (listener) => ipcRenderer.on('sendPrevSongCommand', listener),
+    sendNextSongCommand: (listener) => ipcRenderer.on('sendNextSongCommand', listener),
+
     updateScanProgress: (listener) => ipcRenderer.on('updateScanProgress', listener),
     updateScannedFolders: (listener) => ipcRenderer.on('updateScannedFolders', listener),
   },

@@ -110,10 +110,19 @@ const audioPlayer = () => {
   };
 
   const play = async () => {
-    if (currentSong.value) await audio.play();
+    if (!currentSong.value) return;
+
+    await audio.play();
 
     // MEMO: main側に再生状態を伝える ← 必要だったら
     // MEMO: 再生回数増やす ← 必要だったら
+
+    // デスクトップ通知
+    await window.electron.invoke.showDesktopNotification(
+      currentSong.value.title,
+      `${currentSong.value.artist}／${currentSong.value.album}`,
+      currentSong.value.artworkPath
+    );
   };
 
   const pause = () => audio.pause();
@@ -257,6 +266,16 @@ const audioPlayer = () => {
     }
     toast.info('キューから曲を削除しました。');
   };
+
+  // メインプロセスのイベントハンドリング
+  // 再生
+  window.electron.on.sendPlaySongCommand(async () => await play());
+  // 停止
+  window.electron.on.sendPauseSongCommand(() => pause());
+  // 前へ
+  window.electron.on.sendPrevSongCommand(async () => await previousSong());
+  // 次へ
+  window.electron.on.sendNextSongCommand(async () => await nextSong(state.value === 'Playing'));
 
   return {
     htmlAudioElement: audio,
