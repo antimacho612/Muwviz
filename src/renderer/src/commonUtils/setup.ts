@@ -1,5 +1,4 @@
 import log from 'electron-log/renderer';
-import deepEqual from 'fast-deep-equal';
 import { POSITION, PluginOptions } from 'vue-toastification';
 
 export const registerErrorHandler = () => {

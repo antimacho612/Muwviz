@@ -22,7 +22,7 @@ const artistName = computed(() => {
   return (props.album.artists[0].name || '不明なアーティスト') + ' 他';
 });
 
-const albumName = computed(() => formatAlbumTitle(props.album.name));
+const albumName = computed(() => formatAlbumTitle(props.album.title));
 </script>
 
 <template>

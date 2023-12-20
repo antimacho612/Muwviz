@@ -14,7 +14,7 @@ import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import BackButton from '@mainWindow/components/BackButton/BackButton.vue';
 import ArtistImage from '@mainWindow/components/ArtistImage/ArtistImage.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
+import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import ArtistGroupedItem from './ArtistGroupedItem.vue';
 
 const props = defineProps<{ artistId: string }>();
@@ -72,7 +72,7 @@ const onDoubleClickSongRow = async (songs: Song[], index: number) => {
           { key: 'Title', label: 'タイトル' },
         ]"
       />
-      <QuickSearchWidget v-model="searchText" />
+      <QuickSearchInput v-model="searchText" />
     </div>
 
     <DynamicScroller

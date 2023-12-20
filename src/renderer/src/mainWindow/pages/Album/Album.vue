@@ -15,7 +15,7 @@ import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import BackButton from '@mainWindow/components/BackButton/BackButton.vue';
 import AlbumSong from './AlbumSong.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
+import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 
@@ -58,10 +58,10 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
       <Artwork :src="album?.artworkPath" width="6.5rem" class="artwork" />
 
       <div class="header-main">
-        <div class="title">{{ formatAlbumTitle(album?.name) }}</div>
+        <div class="title">{{ formatAlbumTitle(album?.title) }}</div>
         <div class="bottom">
           <div class="artists">
-            <template v-if="album?.name">
+            <template v-if="album?.title">
               <span v-for="artist in album?.artists" :key="artist.id">
                 {{ artist.name }}
               </span>
@@ -87,17 +87,17 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
           { key: 'TrackNo', label: 'ディスク-トラックNo' },
         ]"
       />
-      <QuickSearchWidget v-model="searchText" />
+      <QuickSearchInput v-model="searchText" />
     </div>
 
     <div class="album-songs">
       <RecycleScroller
         v-click-outside="clearSelection"
-        class="album-songs-scroller"
         :items="filteredSongs"
         :item-size="41"
         key-field="id"
         direction="vertical"
+        class="album-songs-scroller"
       >
         <template #default="{ item, index }">
           <AlbumSong

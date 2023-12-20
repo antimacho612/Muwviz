@@ -11,8 +11,8 @@ export default class SongsStore extends BaseJSONStore<Song[]> {
     return this.cachedData ?? [];
   }
 
-  public findById(songId: string) {
-    return this.cachedData?.find((song) => song.id === songId);
+  public findById(id: string) {
+    return this.cachedData?.find((song) => song.id === id);
   }
 
   public some(cb: (song: Song) => boolean) {
@@ -27,8 +27,8 @@ export default class SongsStore extends BaseJSONStore<Song[]> {
     }
   }
 
-  public delete(songId: string) {
-    const index = this.cachedData?.findIndex((song) => song.id === songId) ?? -1;
+  public delete(id: string) {
+    const index = this.cachedData?.findIndex((song) => song.id === id) ?? -1;
     if (index >= 0) this.cachedData?.splice(index, 1);
   }
 

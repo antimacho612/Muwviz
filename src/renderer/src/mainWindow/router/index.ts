@@ -7,7 +7,6 @@ import Album from '@mainWindow/pages/Album/Album.vue';
 import Albums from '@mainWindow/pages/Albums/Albums.vue';
 import Artist from '@mainWindow/pages/Artist/Artist.vue';
 import Artists from '@mainWindow/pages/Artists/Artists.vue';
-import PLayLists from '@mainWindow/pages/Playlists.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -51,11 +50,6 @@ const routes: RouteRecordRaw[] = [
             props: true,
           },
         ],
-      },
-      {
-        path: 'playlists',
-        name: 'playlists',
-        component: PLayLists,
       },
     ],
   },

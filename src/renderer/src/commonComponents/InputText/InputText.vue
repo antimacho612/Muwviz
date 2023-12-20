@@ -13,8 +13,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 type Emits = {
-  focus: [e: FocusEvent];
   'update:modelValue': [value: string];
+  focus: [e: FocusEvent];
+  blur: [e: FocusEvent];
 };
 const emits = defineEmits<Emits>();
 
@@ -25,10 +26,11 @@ const onInput = () => {
   emits('update:modelValue', inputEl.value.value);
 };
 
-const onFocus = () => {
+const onFocus = (e: FocusEvent) => {
   if (inputEl.value && props.selectAllOnFocus) {
     inputEl.value.select();
   }
+  emits('focus', e);
 };
 </script>
 
@@ -45,6 +47,7 @@ const onFocus = () => {
     :value="modelValue"
     @input="onInput"
     @focus="onFocus"
+    @blur="emits('blur', $event)"
   />
 </template>
 

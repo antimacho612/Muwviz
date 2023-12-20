@@ -11,8 +11,8 @@ export default class ArtistsStore extends BaseJSONStore<Artist[]> {
     return this.cachedData ?? [];
   }
 
-  public findById(artistId: string) {
-    return this.cachedData?.find((artist) => artist.id === artistId);
+  public findById(id: string) {
+    return this.cachedData?.find((artist) => artist.id === id);
   }
 
   public findByName(name: string) {
@@ -27,8 +27,8 @@ export default class ArtistsStore extends BaseJSONStore<Artist[]> {
     }
   }
 
-  public delete(artistId: string) {
-    const index = this.cachedData?.findIndex((artist) => artist.id === artistId) ?? -1;
+  public delete(id: string) {
+    const index = this.cachedData?.findIndex((artist) => artist.id === id) ?? -1;
     if (index >= 0) this.cachedData?.splice(index, 1);
   }
 

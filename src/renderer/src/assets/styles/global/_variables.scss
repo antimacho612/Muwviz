@@ -1,14 +1,25 @@
 $titleBarHeight: 2rem;
-$bottomHeight: 8rem;
 
-// Left Sidebar
-$sidebarCollapsedWidth: 6rem;
-$sidebarPaddingX: 0.5rem;
-$sidebarExpandedWidth: 65rem;
-$sidebarLinksWidth: $sidebarCollapsedWidth - ($sidebarPaddingX * 2);
-$sidebarLinkSize: 4.375rem;
-$sidebarLinkIconSize: 2.25rem;
-$sidebarLinksGap: 0.5rem;
+$paneGap: 0.5rem;
+
+// Left Side Pane
+$sideNavCollapsedWidth: 6rem;
+$sideNavExpandedWidth: 65rem;
+$sideNavPaddingX: 0.5rem;
+$leftSidePaneWidth: $sideNavCollapsedWidth + ($sideNavPaddingX * 2);
+$sideNavLinksWidth: $sideNavCollapsedWidth - ($sideNavPaddingX * 2);
+$sideNavLinkSize: 4.375rem;
+$sideNavLinkIconSize: 2.25rem;
+$sideNavLinksGap: 0.5rem;
+
+// Right Side Pane
+$rightSidePaneWidth: 20rem;
+
+// Center Pane
+$centerPaneHeaderHeight: 3.5rem;
+
+// Bottom Pane
+$bottomPaneHeight: 8rem;
 
 // Font Sizes
 $fontSizes: (

@@ -7,7 +7,7 @@ import { useArtistsQuickSearch } from '@renderer/mainWindow/composables/useQuick
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import SortWidget from '@renderer/mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchWidget from '@renderer/mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
+import QuickSearchInput from '@renderer/mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import ArtistGridItem from './ArtistGridItem.vue';
 import { storeToRefs } from 'pinia';
@@ -48,7 +48,7 @@ const showContextMenu = (_e: MouseEvent, _artistId: string) => {
           { key: 'SongCount', label: '曲数' },
         ]"
       />
-      <QuickSearchWidget v-model="searchText" />
+      <QuickSearchInput v-model="searchText" />
     </div>
 
     <RecycleGridScroller

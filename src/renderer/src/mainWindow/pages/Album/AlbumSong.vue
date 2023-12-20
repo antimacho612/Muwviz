@@ -51,7 +51,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
       />
     </div>
     <div class="artist">
-      <RouterLink :to="`/artists/${song.artistId}`">
+      <RouterLink :to="`/artists/${song.artistId}`" @pointerdown.stop>
         {{ formatArtistName(song.artist) }}
       </RouterLink>
     </div>

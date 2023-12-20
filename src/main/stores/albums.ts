@@ -11,12 +11,12 @@ export default class AlbumsStore extends BaseJSONStore<Album[]> {
     return this.cachedData ?? [];
   }
 
-  public findById(albumId: string) {
-    return this.cachedData?.find((album) => album.id === albumId);
+  public findById(id: string) {
+    return this.cachedData?.find((album) => album.id === id);
   }
 
-  public findByName(albumName: string) {
-    return this.cachedData?.find((album) => album.name === albumName);
+  public findByTitle(title: string) {
+    return this.cachedData?.find((album) => album.title === title);
   }
 
   public add(album: Album) {
@@ -27,8 +27,8 @@ export default class AlbumsStore extends BaseJSONStore<Album[]> {
     }
   }
 
-  public delete(albumId: string) {
-    const index = this.cachedData?.findIndex((album) => album.id === albumId) ?? -1;
+  public delete(id: string) {
+    const index = this.cachedData?.findIndex((album) => album.id === id) ?? -1;
     if (index >= 0) this.cachedData?.splice(index, 1);
   }
 

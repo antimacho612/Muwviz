@@ -102,7 +102,7 @@ export const getSongsSortOptions = (key: SongsSortKey, order: Order): SortOption
 };
 
 export const getAlbumsSortOptions = (key: AlbumsSortKey, order: Order): SortOption<Album>[] =>
-  key === 'Name' ? [{ key: 'name', order }] : [{ key: 'songCount', order }, { key: 'name' }];
+  key === 'Title' ? [{ key: 'title', order }] : [{ key: 'songCount', order }, { key: 'title' }];
 
 export const getArtistsSortOptions = (key: ArtistsSortKey, order: Order): SortOption<Artist>[] =>
   key === 'Name' ? [{ key: 'name', order }] : [{ key: 'songCount', order }, { key: 'name' }];

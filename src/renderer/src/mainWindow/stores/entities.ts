@@ -59,5 +59,23 @@ export const useEntitiesStore = defineStore('entities', {
     getArtistSongs(artistId: string) {
       return this.songList.filter((song) => song.artistId === artistId);
     },
+
+    searchSongsByTitle(query: string) {
+      return this.songList.filter((song) =>
+        song.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+      );
+    },
+
+    searchAlbumsByTitle(query: string) {
+      return this.albumList.filter((album) =>
+        album.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+      );
+    },
+
+    searchArtistsByName(query: string) {
+      return this.artistList.filter((artist) =>
+        artist.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+      );
+    },
   },
 });

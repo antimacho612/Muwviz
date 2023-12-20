@@ -24,13 +24,13 @@ export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) =
   }
 
   let albumId: string;
-  const album = albumsStore.findByName(parsedSong.album);
+  const album = albumsStore.findByTitle(parsedSong.album);
   if (album) {
     albumId = album.id;
-    if (album.name !== '' && album.artists.every((artist) => artist.id !== artistId)) {
+    if (album.title !== '' && album.artists.every((artist) => artist.id !== artistId)) {
       album.artists.push({ id: artistId, name: parsedSong.artist });
     }
-    if (album.name !== '' && !album.artworkPath && parsedSong.artworkPath) {
+    if (album.title !== '' && !album.artworkPath && parsedSong.artworkPath) {
       album.artworkPath = parsedSong.artworkPath;
     }
     album.songCount++;
@@ -39,7 +39,7 @@ export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) =
     albumsStore.add({
       id: albumId,
       artists: [{ id: artistId, name: parsedSong.artist }],
-      name: parsedSong.album,
+      title: parsedSong.album,
       artworkPath: parsedSong.artworkPath,
       songCount: 1,
     });

@@ -8,7 +8,7 @@ import { useAlbumsQuickSearch } from '@renderer/mainWindow/composables/useQuickS
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import SortWidget from '@renderer/mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchWidget from '@renderer/mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
+import QuickSearchInput from '@renderer/mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import AlbumGridItem from './AlbumGridItem.vue';
 
@@ -48,7 +48,7 @@ const onClickPlayButton = async (albumId: string) => {
           { key: 'SongCount', label: '曲数' },
         ]"
       />
-      <QuickSearchWidget v-model="searchText" />
+      <QuickSearchInput v-model="searchText" />
     </div>
 
     <RecycleGridScroller

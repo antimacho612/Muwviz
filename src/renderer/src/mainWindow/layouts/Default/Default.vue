@@ -48,8 +48,8 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
   display: grid;
   grid-template:
     'left   center right ' 1fr
-    'bottom bottom bottom' $bottomHeight
-    / #{$sidebarCollapsedWidth + 1rem} 1fr 320px;
+    'bottom bottom bottom' #{$bottomPaneHeight}
+    / #{$leftSidePaneWidth} 1fr #{$rightSidePaneWidth};
   height: 100%;
   max-height: 100%;
   width: 100%;
@@ -60,29 +60,29 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
 .layout-left {
   grid-area: left;
   position: relative;
-  height: calc(100vh - $titleBarHeight - $bottomHeight);
-  padding: 0.5rem;
+  height: calc(100vh - $titleBarHeight - $bottomPaneHeight);
+  padding: $paneGap;
   z-index: 1;
 }
 
 .layout-center {
   grid-area: center;
   position: relative;
-  padding: 0.5rem;
+  padding: $paneGap 0;
   overflow: hidden;
 }
 
 .layout-bottom {
   grid-area: bottom;
   position: relative;
-  padding: 0 0.5rem 0.5rem;
+  padding: 0 $paneGap $paneGap;
   z-index: 2;
 }
 
 .layout-right {
   grid-area: right;
   position: relative;
-  padding: 0.5rem;
+  padding: $paneGap;
   overflow: hidden;
 }
 </style>

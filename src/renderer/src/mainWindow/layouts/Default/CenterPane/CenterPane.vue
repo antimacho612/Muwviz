@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { inject } from 'vue';
-import { openSettingsModalKey } from '@renderer/mainWindow/injectionKeys';
+import { openSettingsModalKey } from '@mainWindow/injectionKeys';
 
 import SettingsIcon from '@renderer/assets/icons/settings.svg?component';
 import Visualizers from './Visualizers.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
+import EntitiesSearchWidget from './EntitiesSearchWidget/EntitiesSearchWidget.vue';
 
 const openSettingsModal = inject(openSettingsModalKey);
+const onClickOpenSettingsButton = () => openSettingsModal?.();
 </script>
 
 <template>
   <div class="center-pane">
     <div class="head">
-      <Button text :icon="SettingsIcon" title="設定" @click="openSettingsModal?.()" />
+      <EntitiesSearchWidget />
+      <Button text :icon="SettingsIcon" title="設定" @click="onClickOpenSettingsButton" />
     </div>
     <div class="main">
       <Visualizers />
@@ -28,7 +31,7 @@ const openSettingsModal = inject(openSettingsModalKey);
 }
 
 .head {
-  height: 3.5rem;
+  height: $centerPaneHeaderHeight;
   width: 100%;
   display: flex;
   align-items: center;
@@ -37,7 +40,7 @@ const openSettingsModal = inject(openSettingsModalKey);
 
 .main {
   width: 100%;
-  height: calc(100% - 3.5rem);
+  height: calc(100% - $centerPaneHeaderHeight);
   border-radius: $borderRadiusLg;
 }
 </style>

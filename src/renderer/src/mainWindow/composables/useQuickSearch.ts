@@ -40,7 +40,7 @@ export const useSongsQuickSearch = (songs: Ref<Song[]>) => {
 
 export const useAlbumsQuickSearch = (albums: Ref<Album[]>) => {
   const filterCb = (album: Album, searchStr: string) =>
-    album.name.toLocaleLowerCase().includes(searchStr);
+    album.title.toLocaleLowerCase().includes(searchStr);
   const { searchText, filteredItems } = useQuickSearch<Album>(albums, filterCb);
 
   return {

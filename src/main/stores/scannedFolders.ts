@@ -10,8 +10,8 @@ export default class ScannedFoldersStore extends BaseJSONStore<ScannedFolder[]> 
     return this.cachedData ?? [];
   }
 
-  public findById(scanId: string) {
-    return this.cachedData?.find((folder) => folder.id === scanId);
+  public findById(id: string) {
+    return this.cachedData?.find((folder) => folder.id === id);
   }
 
   public findByPath(path: string) {
@@ -33,8 +33,8 @@ export default class ScannedFoldersStore extends BaseJSONStore<ScannedFolder[]> 
     }
   }
 
-  public delete(scanId: string) {
-    const index = this.cachedData?.findIndex((scannedFolder) => scannedFolder.id === scanId) ?? -1;
+  public delete(id: string) {
+    const index = this.cachedData?.findIndex((scannedFolder) => scannedFolder.id === id) ?? -1;
     if (index >= 0) this.cachedData?.splice(index, 1);
   }
 }

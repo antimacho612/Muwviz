@@ -46,7 +46,7 @@ const emits = defineEmits<{ click: [e: MouseEvent] }>();
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $sidebarLinksGap;
+  gap: $sideNavLinksGap;
 }
 
 .link {
@@ -55,8 +55,8 @@ const emits = defineEmits<{ click: [e: MouseEvent] }>();
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  height: $sidebarLinkSize;
-  width: $sidebarLinkSize;
+  height: $sideNavLinkSize;
+  width: $sideNavLinkSize;
   color: var(--secondary-text-color);
   border-radius: $borderRadiusLg;
   transition: color $transitionDuration;
@@ -77,8 +77,8 @@ const emits = defineEmits<{ click: [e: MouseEvent] }>();
 
 .link-icon {
   flex-shrink: 0;
-  width: $sidebarLinkIconSize;
-  height: $sidebarLinkIconSize;
+  width: $sideNavLinkIconSize;
+  height: $sideNavLinkIconSize;
   margin-bottom: 0.25rem;
 }
 
@@ -90,8 +90,8 @@ const emits = defineEmits<{ click: [e: MouseEvent] }>();
 
 .active-link-color {
   position: absolute;
-  height: $sidebarLinkSize;
-  width: $sidebarLinkSize;
+  height: $sideNavLinkSize;
+  width: $sideNavLinkSize;
   border-radius: $borderRadiusLg;
   box-shadow: $innerShadow;
   transition: transform $transitionDuration cubic-bezier(0.66, -0.3, 0.33, 1.4);
@@ -101,7 +101,7 @@ const emits = defineEmits<{ click: [e: MouseEvent] }>();
 @for $i from 1 through 5 {
   .link:nth-child(#{$i}).router-link-active ~ .active-link-color {
     $idx: $i - 1;
-    $y: ($sidebarLinkSize + $sidebarLinksGap) * $idx;
+    $y: ($sideNavLinkSize + $sideNavLinksGap) * $idx;
     transform: translateY($y);
   }
 }

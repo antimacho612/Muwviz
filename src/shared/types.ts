@@ -28,7 +28,7 @@ export type Song = {
 
 export type Album = {
   id: string;
-  name: string;
+  title: string;
   artists: {
     id: string;
     name: string;
@@ -58,7 +58,7 @@ export type SortOption<T> = {
 };
 
 export type SongsSortKey = 'Artist' | 'Album' | 'Title' | 'TrackNo';
-export type AlbumsSortKey = 'Name' | 'SongCount';
+export type AlbumsSortKey = 'Title' | 'SongCount';
 export type ArtistsSortKey = 'Name' | 'SongCount';
 
 export type ScannedFolder = {

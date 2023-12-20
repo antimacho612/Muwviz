@@ -54,7 +54,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
       <div class="title-and-artist">
         <span class="title">{{ song.title }}</span>
         <div class="artist">
-          <RouterLink :to="`/artists/${song.artistId}`">
+          <RouterLink :to="`/artists/${song.artistId}`" @pointerdown.stop>
             {{ formatArtistName(song.artist) }}
           </RouterLink>
         </div>
@@ -71,7 +71,7 @@ const current = computed(() => props.song.id === currentSong.value?.id);
     </div>
 
     <div class="trailing-area">
-      <RouterLink :to="`/albums/${song.albumId}`" class="album">
+      <RouterLink :to="`/albums/${song.albumId}`" class="album" @pointerdown.stop>
         {{ formatAlbumTitle(song.album) }}
       </RouterLink>
       <span class="duration">{{ formatTime(song.duration) }}</span>

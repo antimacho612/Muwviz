@@ -13,7 +13,7 @@ import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchWidget from '@mainWindow/components/QuickSearchWidget/QuickSearchWidget.vue';
+import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import SongListItem from './SongListItem.vue';
 
 const { setQueue } = useAudioPlayer();
@@ -67,7 +67,7 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
           { key: 'Title', label: 'タイトル' },
         ]"
       />
-      <QuickSearchWidget v-model="searchText" />
+      <QuickSearchInput v-model="searchText" />
     </div>
 
     <div class="song-list">

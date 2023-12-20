@@ -71,9 +71,9 @@ provide(showSongDetailModalKey, showSongDetailModal);
   flex-wrap: nowrap;
   gap: 1.5rem;
   height: 100%;
-  width: $sidebarExpandedWidth;
+  width: $sideNavExpandedWidth;
   max-width: 100vw;
-  padding: 1rem $sidebarPaddingX;
+  padding: 1rem $sideNavPaddingX;
   border-radius: $borderRadiusXl;
   transition: width $transitionDuration cubic-bezier(0.18, 0.89, 0.32, 1.1);
   background: var(--background-color);
@@ -81,7 +81,7 @@ provide(showSongDetailModalKey, showSongDetailModal);
   overflow: hidden;
 
   &.is-collapsed {
-    width: $sidebarCollapsedWidth;
+    width: $sideNavCollapsedWidth;
   }
 }
 
@@ -93,7 +93,7 @@ provide(showSongDetailModalKey, showSongDetailModal);
 }
 
 .sidenav {
-  flex: 0 0 $sidebarLinksWidth;
+  flex: 0 0 $sideNavLinksWidth;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
