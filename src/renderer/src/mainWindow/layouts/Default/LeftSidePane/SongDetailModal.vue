@@ -52,54 +52,54 @@ const opened = computed({
         />
         <div class="info">
           <div class="row">
-            <div class="prop-name" style="width: 20%">アーティスト</div>
-            <div class="prop-value" style="width: 80%">{{ formatArtistName(song?.artist) }}</div>
+            <div class="prop-name">アーティスト</div>
+            <div class="prop-value">{{ formatArtistName(song?.artist) }}</div>
           </div>
           <div class="row">
-            <div class="prop-name" style="width: 20%">アルバム</div>
-            <div class="prop-value" style="width: 80%">{{ formatAlbumTitle(song?.album) }}</div>
+            <div class="prop-name">アルバム</div>
+            <div class="prop-value">{{ formatAlbumTitle(song?.album) }}</div>
+          </div>
+          <div class="row two-columns">
+            <div class="prop-name">ディスク</div>
+            <div class="prop-value">{{ toHyphenIfEmpty(song?.diskNo) }}</div>
+            <div class="prop-name">トラック</div>
+            <div class="prop-value">{{ toHyphenIfEmpty(song?.trackNo) }}</div>
+          </div>
+          <div class="row two-columns">
+            <div class="prop-name">年</div>
+            <div class="prop-value">{{ toHyphenIfEmpty(song?.year) }}</div>
+            <div class="prop-name">長さ</div>
+            <div class="prop-value">{{ formatTime(song?.duration) }}</div>
           </div>
           <div class="row">
-            <div class="prop-name" style="width: 20%">ディスク</div>
-            <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.diskNo) }}</div>
-            <div class="prop-name" style="width: 20%">トラック</div>
-            <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.trackNo) }}</div>
+            <div class="prop-name">ジャンル</div>
+            <div class="prop-value">{{ toHyphenIfEmpty(song?.genres?.join(', ')) }}</div>
           </div>
-          <div class="row">
-            <div class="prop-name" style="width: 20%">年</div>
-            <div class="prop-value" style="width: 30%">{{ toHyphenIfEmpty(song?.year) }}</div>
-            <div class="prop-name" style="width: 20%">長さ</div>
-            <div class="prop-value" style="width: 30%">{{ formatTime(song?.duration) }}</div>
-          </div>
-          <div class="row">
-            <div class="prop-name" style="width: 20%">ジャンル</div>
-            <div class="prop-value" style="width: 80%">
-              {{ toHyphenIfEmpty(song?.genres?.join(', ')) }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="prop-name" style="width: 20%">ビットレート</div>
-            <div class="prop-value" style="width: 30%">
+          <div class="row two-columns">
+            <div class="prop-name">ビットレート</div>
+            <div class="prop-value">
               {{ song?.bitrate ? `${(song.bitrate / 1000).toFixed(2)} kbps` : '-' }}
             </div>
-            <div class="prop-name" style="width: 20%">サンプルレート</div>
-            <div class="prop-value" style="width: 30%">
+            <div class="prop-name">サンプルレート</div>
+            <div class="prop-value">
               {{ song?.sampleRate ? `${song.sampleRate / 1000} kHz` : '-' }}
             </div>
           </div>
           <div class="row">
-            <div class="prop-name" style="width: 20%">ファイルパス</div>
-            <div class="prop-value" style="width: 80%">{{ toHyphenIfEmpty(song?.filePath) }}</div>
+            <div class="prop-name">ファイルパス</div>
+            <div class="prop-value">{{ toHyphenIfEmpty(song?.filePath) }}</div>
           </div>
-          <div class="row">
-            <div class="prop-name" style="width: 20%">サイズ</div>
-            <div class="prop-value" style="width: 30%">
-              {{ song?.size ? formatBytes(song.size) : '-' }}
-            </div>
-            <div class="prop-name" style="width: 20%">作成日</div>
-            <div class="prop-value" style="width: 30%">
+          <div class="row two-columns">
+            <div class="prop-name">サイズ</div>
+            <div class="prop-value">{{ song?.size ? formatBytes(song.size) : '-' }}</div>
+            <div class="prop-name">作成日</div>
+            <div class="prop-value">
               {{ song ? new Date(song.createdAt).toLocaleDateString('ja') : '-' }}
             </div>
+          </div>
+          <div class="row">
+            <div class="prop-name">システムID</div>
+            <div class="prop-value">{{ song?.id }}</div>
           </div>
         </div>
       </div>
@@ -170,15 +170,23 @@ const opened = computed({
       display: inline-flex;
       flex-shrink: 0;
       font-weight: 500;
+      width: 20%;
     }
 
     .prop-value {
       flex: 0 0 auto;
       text-wrap: wrap;
       overflow-wrap: break-word;
+      width: 80%;
 
       user-select: text;
       cursor: text;
+    }
+
+    &.two-columns {
+      .prop-value {
+        width: 30%;
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
-import { VisualizerConfig } from '@shared/visualizerTypes';
 import { defineStore } from 'pinia';
+import { VisualizerConfig } from '@shared/visualizerTypes';
 
 type VisualizerConfigStoreState = {
   visualizerConfig: VisualizerConfig[];

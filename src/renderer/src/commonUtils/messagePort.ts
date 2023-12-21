@@ -1,5 +1,5 @@
 import { useEventListener } from '@vueuse/core';
-import { VisualizerConfig } from '@shared/visualizerTypes';
+import { VisualizerOptions } from '@shared/visualizerTypes';
 import { AppearanceSettings, KeyValue } from '@shared/types';
 
 export type ChangeAppearancePayload = KeyValue<AppearanceSettings>;
@@ -13,14 +13,23 @@ export type MainToSubMessage =
       payload: { index: number };
     }
   | {
+      channel: 'changeVisualizerState';
+      payload: { index: number; isOn: boolean };
+    }
+  | {
       channel: 'closeWindow';
     };
 
-export type ChangeVisualizerConfigPayload = { index: number } & KeyValue<VisualizerConfig>;
-export type SubToMainMessage = {
-  channel: 'changeVisualizerConfig';
-  payload: ChangeVisualizerConfigPayload;
-};
+export type ChangeVisualizerOptionPayload = { index: number } & KeyValue<VisualizerOptions>;
+export type SubToMainMessage =
+  | {
+      channel: 'changeVisualizerOption';
+      payload: ChangeVisualizerOptionPayload;
+    }
+  | {
+      channel: 'changeVisualizerState';
+      payload: { index: number; isOn: boolean };
+    };
 
 export const connectMessagePort = <T extends 'Main' | 'Sub'>(
   listener: (message: T extends 'Main' ? SubToMainMessage : MainToSubMessage) => void

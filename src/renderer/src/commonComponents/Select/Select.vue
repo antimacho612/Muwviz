@@ -51,7 +51,7 @@ const selectedValue = computed({
   line-height: normal;
   color: var(--primary-text-color);
   background: var(--background-color);
-  padding: 0.5rem 0.75rem;
+  padding: 0 0.75rem;
   height: 3rem;
   border-radius: $borderRadiusFull;
   box-shadow: $innerShadow;
@@ -78,7 +78,6 @@ const selectedValue = computed({
   }
 
   &.c-select-xs {
-    padding: 0.25rem 0.75rem;
     height: 2rem;
   }
 

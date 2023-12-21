@@ -79,6 +79,10 @@ const { currentSong } = useAudioPlayer();
             {{ new Date(currentSong.createdAt).toLocaleDateString('ja') }}
           </div>
         </div>
+        <div class="row">
+          <div class="prop-name">システムID</div>
+          <div class="prop-value">{{ currentSong.id }}</div>
+        </div>
       </div>
     </template>
   </div>

@@ -8,11 +8,10 @@ const visualizer = (containerEl: HTMLDivElement, constructorOptions: Constructor
   const getConnectedSource = () => analyzer.connectedSources[0];
 
   const isOn = () => analyzer.isOn;
-  const start = () => {
-    !analyzer.isDestroyed && analyzer.start();
-  };
-  const stop = () => {
-    !analyzer.isDestroyed && analyzer.stop();
+
+  const toggle = (isOn?: boolean) => {
+    if (analyzer.isDestroyed) throw new Error(`Analyzer has already been destroyed.`);
+    analyzer.toggleAnalyzer(isOn);
   };
 
   const isDestroyed = () => !analyzer.isDestroyed;
@@ -28,8 +27,7 @@ const visualizer = (containerEl: HTMLDivElement, constructorOptions: Constructor
   return {
     getConnectedSource,
     isOn,
-    start,
-    stop,
+    toggle,
     isDestroyed,
     destroy,
     changeProperty,

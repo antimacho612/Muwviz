@@ -129,9 +129,13 @@ export const registerIpcChannels = () => {
   ipcMain.handle('getAllVisualizerConfig', async () => visualizerConfigStore.getVisualizerConfig());
 
   // ビジュアライザーの設定を更新する
-  ipcMain.handle('updateVisualizerConfig', async (_, index, options) =>
-    visualizerConfigStore.setVisualizerConfig(index, options)
-  );
+  ipcMain.handle('updateVisualizerConfig', async (_, index, options, isMainWindow = false) => {
+    visualizerConfigStore.setVisualizerConfig(index, options);
+
+    // メインウィンドウからの更新時は、更新内容を設定ファイルに即時保存する
+    // ※メインウィンドウを閉じた際はビジュアライザー設定ファイルへの保存を行わないため
+    if (isMainWindow) visualizerConfigStore.save();
+  });
 
   // デスクトップ通知を表示する
   ipcMain.handle('showDesktopNotification', async (_, title, body, imagePath) => {

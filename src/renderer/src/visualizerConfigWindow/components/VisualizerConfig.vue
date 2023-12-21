@@ -32,7 +32,7 @@ const props = defineProps<{ currentVisualizerIndex: number }>();
 const currentIndex = computed(() => props.currentVisualizerIndex);
 
 const { visualizerConfig } = useVisualizerConfigStore();
-const currentVisualizerOptions = computed(() => visualizerConfig[currentIndex.value]);
+const currentVisualizerConfig = computed(() => visualizerConfig[currentIndex.value]);
 
 const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
 
@@ -41,23 +41,30 @@ const onChangeValue = async (keyValue: KeyValue<VisualizerConfig>) => {
     [keyValue.key]: keyValue.value,
   });
 
-  if (sendMessageToMainWindow) {
+  if (!sendMessageToMainWindow) return;
+
+  if (keyValue.key === 'isOn') {
     sendMessageToMainWindow({
-      channel: 'changeVisualizerConfig',
+      channel: 'changeVisualizerState',
+      payload: { index: currentIndex.value, isOn: keyValue.value },
+    });
+  } else {
+    sendMessageToMainWindow({
+      channel: 'changeVisualizerOption',
       payload: { index: currentIndex.value, ...keyValue },
     });
   }
 };
 
-const fixedBarSpace = ref(currentVisualizerOptions.value.barSpace >= 1);
+const fixedBarSpace = ref(currentVisualizerConfig.value.barSpace >= 1);
 const onChangeFixedBarSwitch = async () => {
-  currentVisualizerOptions.value.barSpace = fixedBarSpace.value ? 1 : 0.1;
-  await onChangeValue({ key: 'barSpace', value: currentVisualizerOptions.value.barSpace });
+  currentVisualizerConfig.value.barSpace = fixedBarSpace.value ? 1 : 0.1;
+  await onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.value.barSpace });
 };
 
 const scaleXLabel = ref<ScaleXLabel>(
-  currentVisualizerOptions.value.showScaleX
-    ? currentVisualizerOptions.value.noteLabels
+  currentVisualizerConfig.value.showScaleX
+    ? currentVisualizerConfig.value.noteLabels
       ? 'Musical Notes'
       : 'Frequencies'
     : 'None'
@@ -72,30 +79,44 @@ const onChangeScaleXLabel = async () => {
   <div class="visualizer-configs">
     <ConfigGroup title="Core">
       <ConfigRow>
+        <ConfigItem item-name="Off / On">
+          <Switch
+            v-model="currentVisualizerConfig.isOn"
+            @change="
+              onChangeValue({
+                key: 'isOn',
+                value: currentVisualizerConfig.isOn,
+              })
+            "
+          ></Switch>
+        </ConfigItem>
+      </ConfigRow>
+
+      <ConfigRow>
         <ConfigItem item-name="Mode">
           <Select
-            v-model="currentVisualizerOptions.mode"
+            v-model="currentVisualizerConfig.mode"
             size="sm"
             :options="
               Array.from(VISUALIZATION_MODE_MAP).map(([value, label]) => ({ label, value }))
             "
             @update:model-value="
-              onChangeValue({ key: 'mode', value: currentVisualizerOptions.mode })
+              onChangeValue({ key: 'mode', value: currentVisualizerConfig.mode })
             "
           >
           </Select>
         </ConfigItem>
       </ConfigRow>
 
-      <div class="config-row column-gap-4">
+      <ConfigRow>
         <ConfigItem item-name="FFT Size" class="w-7rem">
           <Select
-            v-model="currentVisualizerOptions.fftSize"
+            v-model="currentVisualizerConfig.fftSize"
             size="sm"
             :options="FFT_SIZES.map((fftSize) => ({ label: fftSize.toString(), value: fftSize }))"
             class="text-right"
             @update:model-value="
-              onChangeValue({ key: 'fftSize', value: currentVisualizerOptions.fftSize })
+              onChangeValue({ key: 'fftSize', value: currentVisualizerConfig.fftSize })
             "
           >
           </Select>
@@ -103,23 +124,23 @@ const onChangeScaleXLabel = async () => {
         <ConfigItem item-name="FFT Size Smoothing Time Constant" style="width: 18rem">
           <div class="flex align-items-center" style="height: 2.5rem">
             <Slider
-              v-model="currentVisualizerOptions.smoothing"
+              v-model="currentVisualizerConfig.smoothing"
               :min="0"
               :max="0.95"
               :step="0.05"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'smoothing', value: currentVisualizerOptions.smoothing })
+                onChangeValue({ key: 'smoothing', value: currentVisualizerConfig.smoothing })
               "
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <ConfigRow>
         <ConfigItem item-name="Min Frequency" class="w-7rem">
           <Select
-            v-model="currentVisualizerOptions.minFreq"
+            v-model="currentVisualizerConfig.minFreq"
             size="sm"
             :options="
               MIN_FREQUENCIES.map((minFreq) => ({
@@ -129,14 +150,14 @@ const onChangeScaleXLabel = async () => {
             "
             class="text-right"
             @update:model-value="
-              onChangeValue({ key: 'minFreq', value: currentVisualizerOptions.minFreq })
+              onChangeValue({ key: 'minFreq', value: currentVisualizerConfig.minFreq })
             "
           >
           </Select>
         </ConfigItem>
         <ConfigItem item-name="Max Frequency" class="w-7rem">
           <Select
-            v-model="currentVisualizerOptions.maxFreq"
+            v-model="currentVisualizerConfig.maxFreq"
             size="sm"
             :options="
               MAX_FREQUENCIES.map((maxFreq) => ({
@@ -146,7 +167,7 @@ const onChangeScaleXLabel = async () => {
             "
             class="text-right"
             @update:model-value="
-              onChangeValue({ key: 'maxFreq', value: currentVisualizerOptions.maxFreq })
+              onChangeValue({ key: 'maxFreq', value: currentVisualizerConfig.maxFreq })
             "
           >
           </Select>
@@ -156,7 +177,7 @@ const onChangeScaleXLabel = async () => {
             <Radio
               v-for="freqScale in FREQUENCY_SCALES"
               :key="freqScale"
-              v-model="currentVisualizerOptions.frequencyScale"
+              v-model="currentVisualizerConfig.frequencyScale"
               name="frequency-scales"
               size="sm"
               :value="freqScale"
@@ -165,7 +186,7 @@ const onChangeScaleXLabel = async () => {
               @change="
                 onChangeValue({
                   key: 'frequencyScale',
-                  value: currentVisualizerOptions.frequencyScale,
+                  value: currentVisualizerConfig.frequencyScale,
                 })
               "
             />
@@ -179,7 +200,7 @@ const onChangeScaleXLabel = async () => {
             <Radio
               v-for="[weightingFilter, label] of WEIGHTING_FILTER_MAP"
               :key="weightingFilter"
-              v-model="currentVisualizerOptions.weightingFilter"
+              v-model="currentVisualizerConfig.weightingFilter"
               name="weighting-filter"
               size="sm"
               :value="weightingFilter"
@@ -188,24 +209,25 @@ const onChangeScaleXLabel = async () => {
               @change="
                 onChangeValue({
                   key: 'weightingFilter',
-                  value: currentVisualizerOptions.weightingFilter,
+                  value: currentVisualizerConfig.weightingFilter,
                 })
               "
             />
           </div>
         </ConfigItem>
       </ConfigRow>
-      <div class="config-row w-full">
+
+      <ConfigRow>
         <ConfigItem item-name="Min Decibels" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.minDecibels"
+              v-model="currentVisualizerConfig.minDecibels"
               :min="-120"
               :max="-60"
               :step="5"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'minDecibels', value: currentVisualizerOptions.minDecibels })
+                onChangeValue({ key: 'minDecibels', value: currentVisualizerConfig.minDecibels })
               "
             />
           </div>
@@ -213,46 +235,46 @@ const onChangeScaleXLabel = async () => {
         <ConfigItem item-name="Max Decibels" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.maxDecibels"
+              v-model="currentVisualizerConfig.maxDecibels"
               :min="-40"
               :max="0"
               :step="5"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'maxDecibels', value: currentVisualizerOptions.maxDecibels })
+                onChangeValue({ key: 'maxDecibels', value: currentVisualizerConfig.maxDecibels })
               "
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <ConfigRow>
         <ConfigItem item-name="Linear Amplitude">
           <Switch
-            v-model="currentVisualizerOptions.linearAmplitude"
+            v-model="currentVisualizerConfig.linearAmplitude"
             size="sm"
             @change="
               onChangeValue({
                 key: 'linearAmplitude',
-                value: currentVisualizerOptions.linearAmplitude,
+                value: currentVisualizerConfig.linearAmplitude,
               })
             "
           />
         </ConfigItem>
         <ConfigItem
-          v-if="currentVisualizerOptions.linearAmplitude"
+          v-if="currentVisualizerConfig.linearAmplitude"
           item-name="Linear Boost"
           style="flex-grow: 1; max-width: 18rem"
         >
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.linearBoost"
+              v-model="currentVisualizerConfig.linearBoost"
               :min="1"
               :max="4"
               :step="0.1"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'linearBoost', value: currentVisualizerOptions.linearBoost })
+                onChangeValue({ key: 'linearBoost', value: currentVisualizerConfig.linearBoost })
               "
             />
           </div>
@@ -267,7 +289,7 @@ const onChangeScaleXLabel = async () => {
             <Radio
               v-for="[channelLayout, label] of CHANNEL_LAYOUT_MAP"
               :key="channelLayout"
-              v-model="currentVisualizerOptions.channelLayout"
+              v-model="currentVisualizerConfig.channelLayout"
               name="channel-layout"
               size="sm"
               :label="label"
@@ -276,7 +298,7 @@ const onChangeScaleXLabel = async () => {
               @change="
                 onChangeValue({
                   key: 'channelLayout',
-                  value: currentVisualizerOptions.channelLayout,
+                  value: currentVisualizerConfig.channelLayout,
                 })
               "
             />
@@ -284,22 +306,22 @@ const onChangeScaleXLabel = async () => {
         </ConfigItem>
       </ConfigRow>
 
-      <div v-if="currentVisualizerOptions.channelLayout !== 'single'" class="config-row">
+      <ConfigRow v-if="currentVisualizerConfig.channelLayout !== 'single'">
         <ConfigItem item-name="Mirror">
           <div class="flex flex-wrap column-gap-4 row-gap-2">
             <Radio
               v-for="[mirror, label] of MIRROR_MAP"
               :key="mirror"
-              v-model="currentVisualizerOptions.mirror"
+              v-model="currentVisualizerConfig.mirror"
               name="mirror"
               size="sm"
               :value="mirror"
               :label="label"
-              @change="onChangeValue({ key: 'mirror', value: currentVisualizerOptions.mirror })"
+              @change="onChangeValue({ key: 'mirror', value: currentVisualizerConfig.mirror })"
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <ConfigRow>
         <ConfigItem item-name="Color Mode">
@@ -307,13 +329,13 @@ const onChangeScaleXLabel = async () => {
             <Radio
               v-for="[colorMode, label] of COLOR_MODE_MAP"
               :key="colorMode"
-              v-model="currentVisualizerOptions.colorMode"
+              v-model="currentVisualizerConfig.colorMode"
               name="color-mode"
               size="sm"
               :value="colorMode"
               :label="label"
               @change="
-                onChangeValue({ key: 'colorMode', value: currentVisualizerOptions.colorMode })
+                onChangeValue({ key: 'colorMode', value: currentVisualizerConfig.colorMode })
               "
             />
           </div>
@@ -323,42 +345,42 @@ const onChangeScaleXLabel = async () => {
       <ConfigRow>
         <ConfigItem item-name="Gradient (Channel 1)" style="min-width: 10rem">
           <Select
-            v-model="currentVisualizerOptions.gradientLeft"
+            v-model="currentVisualizerConfig.gradientLeft"
             size="sm"
             :options="Array.from(BUILT_IN_GRADIENT_MAP).map(([value, label]) => ({ label, value }))"
             @update:model-value="
-              onChangeValue({ key: 'gradientLeft', value: currentVisualizerOptions.gradientLeft })
+              onChangeValue({ key: 'gradientLeft', value: currentVisualizerConfig.gradientLeft })
             "
           >
           </Select>
         </ConfigItem>
         <ConfigItem
-          v-if="currentVisualizerOptions.channelLayout !== 'single'"
+          v-if="currentVisualizerConfig.channelLayout !== 'single'"
           item-name="Gradient (Channel 2)"
           style="min-width: 10rem"
         >
           <Select
-            v-model="currentVisualizerOptions.gradientRight"
+            v-model="currentVisualizerConfig.gradientRight"
             size="sm"
             :options="Array.from(BUILT_IN_GRADIENT_MAP).map(([value, label]) => ({ label, value }))"
             @update:model-value="
-              onChangeValue({ key: 'gradientRight', value: currentVisualizerOptions.gradientRight })
+              onChangeValue({ key: 'gradientRight', value: currentVisualizerConfig.gradientRight })
             "
           >
           </Select>
         </ConfigItem>
         <ConfigItem
-          v-if="currentVisualizerOptions.channelLayout !== 'single'"
+          v-if="currentVisualizerConfig.channelLayout !== 'single'"
           item-name="Split Gradient"
         >
           <div class="flex align-items-center" style="height: 2.5rem">
             <Switch
-              v-model="currentVisualizerOptions.splitGradient"
+              v-model="currentVisualizerConfig.splitGradient"
               size="sm"
               @change="
                 onChangeValue({
                   key: 'splitGradient',
-                  value: currentVisualizerOptions.splitGradient,
+                  value: currentVisualizerConfig.splitGradient,
                 })
               "
             />
@@ -369,25 +391,25 @@ const onChangeScaleXLabel = async () => {
       <ConfigRow>
         <ConfigItem item-name="Radial">
           <Switch
-            v-model="currentVisualizerOptions.radial"
+            v-model="currentVisualizerConfig.radial"
             size="sm"
-            @change="onChangeValue({ key: 'radial', value: currentVisualizerOptions.radial })"
+            @change="onChangeValue({ key: 'radial', value: currentVisualizerConfig.radial })"
           />
         </ConfigItem>
         <ConfigItem
-          v-if="currentVisualizerOptions.radial"
+          v-if="currentVisualizerConfig.radial"
           item-name="Spin Speed"
           class="flex-grow-1"
           style="max-width: 18rem"
         >
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.spinSpeed"
+              v-model="currentVisualizerConfig.spinSpeed"
               :min="-20"
               :max="20"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'spinSpeed', value: currentVisualizerOptions.spinSpeed })
+                onChangeValue({ key: 'spinSpeed', value: currentVisualizerConfig.spinSpeed })
               "
             />
           </div>
@@ -397,52 +419,52 @@ const onChangeScaleXLabel = async () => {
       <ConfigRow>
         <ConfigItem item-name="Alpha Bars" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.alphaBars"
+            v-model="currentVisualizerConfig.alphaBars"
             size="sm"
-            @change="onChangeValue({ key: 'alphaBars', value: currentVisualizerOptions.alphaBars })"
+            @change="onChangeValue({ key: 'alphaBars', value: currentVisualizerConfig.alphaBars })"
           />
         </ConfigItem>
         <ConfigItem item-name="Ansi Bands" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.ansiBands"
+            v-model="currentVisualizerConfig.ansiBands"
             size="sm"
-            @change="onChangeValue({ key: 'ansiBands', value: currentVisualizerOptions.ansiBands })"
+            @change="onChangeValue({ key: 'ansiBands', value: currentVisualizerConfig.ansiBands })"
           />
         </ConfigItem>
         <ConfigItem item-name="LED Bars" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.ledBars"
+            v-model="currentVisualizerConfig.ledBars"
             size="sm"
-            @change="onChangeValue({ key: 'ledBars', value: currentVisualizerOptions.ledBars })"
+            @change="onChangeValue({ key: 'ledBars', value: currentVisualizerConfig.ledBars })"
           />
         </ConfigItem>
         <ConfigItem item-name="True LED" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.trueLeds"
+            v-model="currentVisualizerConfig.trueLeds"
             size="sm"
-            @change="onChangeValue({ key: 'trueLeds', value: currentVisualizerOptions.trueLeds })"
+            @change="onChangeValue({ key: 'trueLeds', value: currentVisualizerConfig.trueLeds })"
           />
         </ConfigItem>
         <ConfigItem item-name="Round Bars" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.roundBars"
+            v-model="currentVisualizerConfig.roundBars"
             size="sm"
-            @change="onChangeValue({ key: 'roundBars', value: currentVisualizerOptions.roundBars })"
+            @change="onChangeValue({ key: 'roundBars', value: currentVisualizerConfig.roundBars })"
           />
         </ConfigItem>
         <ConfigItem item-name="Lumi Bars" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.lumiBars"
+            v-model="currentVisualizerConfig.lumiBars"
             size="sm"
-            @change="onChangeValue({ key: 'lumiBars', value: currentVisualizerOptions.lumiBars })"
+            @change="onChangeValue({ key: 'lumiBars', value: currentVisualizerConfig.lumiBars })"
           />
         </ConfigItem>
         <ConfigItem item-name="Outline Bars" style="min-width: 5rem">
           <Switch
-            v-model="currentVisualizerOptions.outlineBars"
+            v-model="currentVisualizerConfig.outlineBars"
             size="sm"
             @change="
-              onChangeValue({ key: 'outlineBars', value: currentVisualizerOptions.outlineBars })
+              onChangeValue({ key: 'outlineBars', value: currentVisualizerConfig.outlineBars })
             "
           />
         </ConfigItem>
@@ -458,28 +480,28 @@ const onChangeScaleXLabel = async () => {
         <ConfigItem item-name="Bar Space" class="flex-grow-1" style="max-width: 18rem">
           <div v-if="fixedBarSpace">
             <InputNumber
-              v-model="currentVisualizerOptions.barSpace"
+              v-model="currentVisualizerConfig.barSpace"
               size="sm"
               :min="1"
               select-all-on-focus
               class="text-right"
               style="max-width: 8rem"
               @update:model-value="
-                onChangeValue({ key: 'barSpace', value: currentVisualizerOptions.barSpace })
+                onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.barSpace })
               "
             />
             px
           </div>
           <div v-else class="flex align-items-center" style="height: 2.5rem">
             <Slider
-              v-model="currentVisualizerOptions.barSpace"
+              v-model="currentVisualizerConfig.barSpace"
               :min="0"
               :max="0.95"
               :step="0.05"
               :format="(val) => `${Number.parseFloat((val * 100).toFixed(10))}%`"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'barSpace', value: currentVisualizerOptions.barSpace })
+                onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.barSpace })
               "
             />
           </div>
@@ -488,21 +510,21 @@ const onChangeScaleXLabel = async () => {
 
       <ConfigRow>
         <ConfigItem
-          v-if="currentVisualizerOptions.mode === 10"
+          v-if="currentVisualizerConfig.mode === 10"
           item-name="Line Width"
           class="flex-grow-1"
           style="max-width: 18rem"
         >
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.lineWidth"
+              v-model="currentVisualizerConfig.lineWidth"
               :min="0"
               :max="5"
               :step="0.1"
               :bar-width="0.75"
               :format="(val) => `${val}px`"
               @update:model-value="
-                onChangeValue({ key: 'lineWidth', value: currentVisualizerOptions.lineWidth })
+                onChangeValue({ key: 'lineWidth', value: currentVisualizerConfig.lineWidth })
               "
             />
           </div>
@@ -510,14 +532,14 @@ const onChangeScaleXLabel = async () => {
         <ConfigItem item-name="Fill Alpha" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.fillAlpha"
+              v-model="currentVisualizerConfig.fillAlpha"
               :min="0"
               :max="1"
               :step="0.01"
               :bar-width="0.75"
               :format="(val) => `${Number.parseFloat((val * 100).toFixed(10))}%`"
               @update:model-value="
-                onChangeValue({ key: 'fillAlpha', value: currentVisualizerOptions.fillAlpha })
+                onChangeValue({ key: 'fillAlpha', value: currentVisualizerConfig.fillAlpha })
               "
             />
           </div>
@@ -528,37 +550,37 @@ const onChangeScaleXLabel = async () => {
         <ConfigItem item-name="Reflex Ratio" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.reflexRatio"
+              v-model="currentVisualizerConfig.reflexRatio"
               :min="0"
               :max="0.7"
               :step="0.01"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'reflexRatio', value: currentVisualizerOptions.reflexRatio })
+                onChangeValue({ key: 'reflexRatio', value: currentVisualizerConfig.reflexRatio })
               "
             />
           </div>
         </ConfigItem>
-        <ConfigItem v-if="currentVisualizerOptions.reflexRatio > 0" item-name="Relex Fit">
+        <ConfigItem v-if="currentVisualizerConfig.reflexRatio > 0" item-name="Relex Fit">
           <Switch
-            v-model="currentVisualizerOptions.reflexFit"
+            v-model="currentVisualizerConfig.reflexFit"
             size="sm"
-            @change="onChangeValue({ key: 'reflexFit', value: currentVisualizerOptions.reflexFit })"
+            @change="onChangeValue({ key: 'reflexFit', value: currentVisualizerConfig.reflexFit })"
           />
         </ConfigItem>
       </ConfigRow>
 
-      <div v-if="currentVisualizerOptions.reflexRatio > 0" class="config-row">
+      <ConfigRow v-if="currentVisualizerConfig.reflexRatio > 0">
         <ConfigItem item-name="Reflex Alpha" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.reflexAlpha"
+              v-model="currentVisualizerConfig.reflexAlpha"
               :min="0"
               :max="1"
               :step="0.05"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'reflexAlpha', value: currentVisualizerOptions.reflexAlpha })
+                onChangeValue({ key: 'reflexAlpha', value: currentVisualizerConfig.reflexAlpha })
               "
             />
           </div>
@@ -566,33 +588,33 @@ const onChangeScaleXLabel = async () => {
         <ConfigItem item-name="Reflex Bright" class="flex-grow-1" style="max-width: 18rem">
           <div class="flex align-items-center" style="height: 1.75rem">
             <Slider
-              v-model="currentVisualizerOptions.reflexBright"
+              v-model="currentVisualizerConfig.reflexBright"
               :min="0"
               :max="2.5"
               :step="0.1"
               :bar-width="0.75"
               @update:model-value="
-                onChangeValue({ key: 'reflexBright', value: currentVisualizerOptions.reflexBright })
+                onChangeValue({ key: 'reflexBright', value: currentVisualizerConfig.reflexBright })
               "
             />
           </div>
         </ConfigItem>
-      </div>
+      </ConfigRow>
 
       <ConfigRow>
         <ConfigItem item-name="Show Peaks">
           <Switch
-            v-model="currentVisualizerOptions.showPeaks"
+            v-model="currentVisualizerConfig.showPeaks"
             size="sm"
-            @change="onChangeValue({ key: 'showPeaks', value: currentVisualizerOptions.showPeaks })"
+            @change="onChangeValue({ key: 'showPeaks', value: currentVisualizerConfig.showPeaks })"
           />
         </ConfigItem>
 
-        <ConfigItem v-if="currentVisualizerOptions.showPeaks" item-name="Show Peak Line">
+        <ConfigItem v-if="currentVisualizerConfig.showPeaks" item-name="Show Peak Line">
           <Switch
-            v-model="currentVisualizerOptions.peakLine"
+            v-model="currentVisualizerConfig.peakLine"
             size="sm"
-            @change="onChangeValue({ key: 'peakLine', value: currentVisualizerOptions.peakLine })"
+            @change="onChangeValue({ key: 'peakLine', value: currentVisualizerConfig.peakLine })"
           />
         </ConfigItem>
       </ConfigRow>
@@ -619,10 +641,10 @@ const onChangeScaleXLabel = async () => {
       <ConfigRow>
         <ConfigItem item-name="Show Scale Y Label">
           <Switch
-            v-model="currentVisualizerOptions.showScaleY"
+            v-model="currentVisualizerConfig.showScaleY"
             size="sm"
             @change="
-              onChangeValue({ key: 'showScaleY', value: currentVisualizerOptions.showScaleY })
+              onChangeValue({ key: 'showScaleY', value: currentVisualizerConfig.showScaleY })
             "
           />
         </ConfigItem>

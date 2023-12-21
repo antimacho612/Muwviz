@@ -1,8 +1,7 @@
+import { storeToRefs } from 'pinia';
 import { useWindowStore } from './stores/window';
+import { useVisualizerConfigStore } from './stores/visualizerConfig';
 import { ChangeAppearancePayload, MainToSubMessage } from '@renderer/commonUtils/messagePort';
-
-const handleOnChangeVisualizerSelection = (payload: { index: number }) =>
-  (useWindowStore().currentVisualizerIndex = payload.index);
 
 const handleOnChangeAppearance = (payload: ChangeAppearancePayload) => {
   const windowStore = useWindowStore();
@@ -20,6 +19,16 @@ const handleOnChangeAppearance = (payload: ChangeAppearancePayload) => {
   }
 };
 
+const handleOnChangeVisualizerSelection = (payload: { index: number }) => {
+  const { currentVisualizerIndex } = storeToRefs(useWindowStore());
+  currentVisualizerIndex.value = payload.index;
+};
+
+const handleOnChangeVisualizerState = (payload: { index: number; isOn: boolean }) => {
+  const { visualizerConfig } = storeToRefs(useVisualizerConfigStore());
+  visualizerConfig.value[payload.index].isOn = payload.isOn;
+};
+
 const handleOnCloseMainWindow = async () => await window.electron.invoke.closeWindow(false);
 
 export const handleOnReceiveMessageFromMain = (message: MainToSubMessage) => {
@@ -29,6 +38,9 @@ export const handleOnReceiveMessageFromMain = (message: MainToSubMessage) => {
       break;
     case 'changeVisualizerSelection':
       handleOnChangeVisualizerSelection(message.payload);
+      break;
+    case 'changeVisualizerState':
+      handleOnChangeVisualizerState(message.payload);
       break;
     case 'closeWindow':
       handleOnCloseMainWindow();

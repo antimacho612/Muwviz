@@ -65,7 +65,7 @@ export const MIRROR_MAP: ReadonlyMap<Mirror, string> = new Map([
 export const SCALE_X_LABELS = ['None', 'Frequencies', 'Musical Notes'] as const;
 export type ScaleXLabel = (typeof SCALE_X_LABELS)[number];
 
-export type VisualizerConfig = {
+export type VisualizerOptions = {
   mode: VisualizationModes;
   channelLayout: ChannelLayout;
   fftSize: FFTSize;
@@ -126,7 +126,7 @@ export type VisualizerConfig = {
   showScaleY: boolean;
 };
 
-export const getDefaultConfig = (): VisualizerConfig => ({
+const VISUALIZER_DEFAULT_OPTIONS: VisualizerOptions = {
   mode: 0,
   channelLayout: 'single',
   fftSize: 8192,
@@ -165,4 +165,13 @@ export const getDefaultConfig = (): VisualizerConfig => ({
   showScaleX: true,
   noteLabels: false,
   showScaleY: false,
+};
+
+export type VisualizerConfig = {
+  isOn: boolean;
+} & VisualizerOptions;
+
+export const getDefaultConfig = (): VisualizerConfig => ({
+  isOn: true,
+  ...VISUALIZER_DEFAULT_OPTIONS,
 });

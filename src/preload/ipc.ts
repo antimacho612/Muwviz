@@ -171,8 +171,13 @@ export type ElectronAPI = GetApiType<
      * ビジュアライザーの設定を更新する
      * @param index 更新対象のビジュアライザーのインデックス
      * @param options 更新内容
+     * @param isMainWindow メインウィンドウからの更新かどうか
      */
-    updateVisualizerConfig: (index: number, options: Partial<VisualizerConfig>) => Promise<void>;
+    updateVisualizerConfig: (
+      index: number,
+      options: Partial<VisualizerConfig>,
+      isMainWindow?: boolean
+    ) => Promise<void>;
 
     /**
      * デスクトップ通知を表示する
@@ -268,8 +273,8 @@ export const electronAPI: ElectronAPI = {
       await ipcRenderer.invoke('saveWaveformData', songId, waveformData),
 
     getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
-    updateVisualizerConfig: async (index, options) =>
-      await ipcRenderer.invoke('updateVisualizerConfig', index, options),
+    updateVisualizerConfig: async (index, options, isMainWindow = false) =>
+      await ipcRenderer.invoke('updateVisualizerConfig', index, options, isMainWindow),
 
     showDesktopNotification: async (title, body, imagePath) =>
       await ipcRenderer.invoke('showDesktopNotification', title, body, imagePath),
