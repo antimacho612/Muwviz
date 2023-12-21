@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { provide, ref } from 'vue';
+import { openPresetModalKey } from './injectionKeys';
 import { storeToRefs } from 'pinia';
 import { useWindowStore } from '@visualizerConfigWindow/stores/window';
 import { useAppearance } from '@renderer/commonComposables/useAppearance';
@@ -7,6 +9,7 @@ import { useIpcEventHandler } from '@visualizerConfigWindow/composables/useIpcEv
 import TabMenu from '@renderer/commonComponents/TabMenu/TabMenu.vue';
 import Titlebar from '@renderer/commonComponents/Titlebar/Titlebar.vue';
 import VisualizerConfig from '@visualizerConfigWindow/components/VisualizerConfig.vue';
+import PresetModal from '@visualizerConfigWindow/components/PresetModal.vue';
 
 const { isAlwaysOnTop, currentVisualizerIndex, fontFamily, theme, primaryColor } = storeToRefs(
   useWindowStore()
@@ -22,6 +25,9 @@ const onClickPinButton = async () => {
 };
 
 useIpcEventHandler();
+
+const isPresetModalOpen = ref(false);
+provide(openPresetModalKey, () => (isPresetModalOpen.value = true));
 </script>
 
 <template>
@@ -33,18 +39,22 @@ useIpcEventHandler();
     @click-minimize-button="onClickMinimizeButton"
     @click-close-button="onClickCloseButton"
     @click-pin-button="onClickPinButton"
-  ></Titlebar>
+  />
   <div class="main">
     <h2 class="text-lg ml-1">ビジュアライザー</h2>
-    <TabMenu
-      v-model:active-menu-index="currentVisualizerIndex"
-      :tabs="[{ title: 'No.1 (左)' }, { title: 'No.2 (右上)' }, { title: 'No.3 (右下)' }]"
-      direction="horizontal"
-      tab-button-class="tab-menu-button"
-    />
-    <div class="tab-panel">
+    <div :inert="isPresetModalOpen">
+      <TabMenu
+        v-model:active-menu-index="currentVisualizerIndex"
+        :tabs="[{ title: 'No.1 (左)' }, { title: 'No.2 (右上)' }, { title: 'No.3 (右下)' }]"
+        direction="horizontal"
+        tab-button-class="tab-menu-button"
+      />
+    </div>
+    <div :inert="isPresetModalOpen" class="tab-panel">
       <VisualizerConfig :current-visualizer-index="currentVisualizerIndex" />
     </div>
+
+    <PresetModal v-model:is-open="isPresetModalOpen" />
   </div>
 </template>
 

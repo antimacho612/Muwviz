@@ -29,6 +29,10 @@ export type SubToMainMessage =
   | {
       channel: 'changeVisualizerState';
       payload: { index: number; isOn: boolean };
+    }
+  | {
+      channel: 'changeVisualizerBackgroundColor';
+      payload: { index: number; color: string };
     };
 
 export const connectMessagePort = <T extends 'Main' | 'Sub'>(

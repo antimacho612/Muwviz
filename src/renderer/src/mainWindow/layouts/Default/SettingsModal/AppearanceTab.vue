@@ -9,6 +9,7 @@ import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
 import InputText from '@renderer/commonComponents/InputText/InputText.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
+import ColorPicker from '@renderer/commonComponents/ColorPicker/ColorPicker.vue';
 
 const settings = useSettingsStore();
 const { fontFamily, theme, primaryColor } = storeToRefs(settings);
@@ -59,11 +60,10 @@ const onChangeInputValue = async <K extends keyof AppearanceSettings>(
 
     <BaseSettingsItem title="プライマリーカラー">
       <div class="flex align-items-center" style="gap: 3rem">
-        <input
+        <ColorPicker
           v-model="primaryColor"
-          type="color"
           class="primary-color-picker"
-          @change="onChangeInputValue('primaryColor', primaryColor)"
+          @update:model-value="onChangeInputValue('primaryColor', primaryColor)"
         />
 
         <div

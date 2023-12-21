@@ -22,7 +22,7 @@ import { handleOnReceiveMessageFromMain } from './messageHandler';
 registerErrorHandler();
 
 const app = createApp(App);
-app.config.errorHandler = (err) => console.log(err);
+app.config.errorHandler = (err) => console.error(err);
 
 // Store
 app.use(createPinia());

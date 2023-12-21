@@ -1,7 +1,6 @@
-import { ElectronAPI } from '@preload/ipc';
-import { KeyValue, ScanProgress, Settings } from '@shared/types';
 import { app, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
+import { ElectronAPI } from '@preload/ipc';
 import {
   albumsStore,
   artistsStore,
@@ -10,6 +9,7 @@ import {
   settingsStore,
   songsStore,
   visualizerConfigStore,
+  visualizerPresetsStore,
 } from '.';
 import { ARTWORKS_DIR, WAVEFORMS_DIR } from './core/paths';
 import { scanFolder } from './core/scanner';
@@ -27,6 +27,7 @@ import {
 import { removeSongsFromLibrary } from './core/libraryManager';
 import { getWaveformData, saveWaveformData } from './core/waveformManager';
 import { showNotification } from './utils';
+import { KeyValue, ScanProgress, Settings } from '@shared/types';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
@@ -82,7 +83,7 @@ export const registerIpcChannels = () => {
   );
 
   // スキャン済みフォルダ情報を取得する
-  ipcMain.handle('getScannedFolders', async () => scannedFoldersStore.getData());
+  ipcMain.handle('getScannedFolders', async () => scannedFoldersStore.getAll());
   // フォルダをスキャンし楽曲ライブラリを構築する
   ipcMain.handle(
     'scanFolder',
@@ -95,23 +96,23 @@ export const registerIpcChannels = () => {
   );
 
   // 全楽曲情報を取得する
-  ipcMain.handle('getAllSongs', async () => songsStore.getData());
+  ipcMain.handle('getAllSongs', async () => songsStore.getAll());
   // 楽曲情報のキャッシュ（メイン側で保持しているデータ）を削除する
   ipcMain.handle('clearSongsCache', async () => songsStore.clearCache());
 
   // 全アルバム情報を取得する
-  ipcMain.handle('getAllAlbums', async () => albumsStore.getData());
+  ipcMain.handle('getAllAlbums', async () => albumsStore.getAll());
   // アルバム情報のキャッシュ（メイン側で保持しているデータ）を削除する
   ipcMain.handle('clearAlbumsCache', async () => albumsStore.clearCache());
 
   // 全アーティスト情報を取得する
-  ipcMain.handle('getAllArtists', async () => artistsStore.getData());
+  ipcMain.handle('getAllArtists', async () => artistsStore.getAll());
   // アーティスト情報のキャッシュ（メイン側で保持しているデータ）を削除する
   ipcMain.handle('clearArtistsCache', async () => artistsStore.clearCache());
 
   // 全歌詞情報を取得する
   ipcMain.handle('getAllLyrics', async () => {
-    const lyrics = lyricsStore.getData();
+    const lyrics = lyricsStore.getAll();
     lyricsStore.clearCache();
     return lyrics;
   });
@@ -136,6 +137,11 @@ export const registerIpcChannels = () => {
     // ※メインウィンドウを閉じた際はビジュアライザー設定ファイルへの保存を行わないため
     if (isMainWindow) visualizerConfigStore.save();
   });
+
+  // ビジュアライザーの全設定プリセットを取得する
+  ipcMain.handle('getAllVisualizerPresets', async () => visualizerPresetsStore.getAll());
+  // ビジュアライザープリセットを追加する
+  ipcMain.handle('addVisualizerPreset', async (_, preset) => visualizerPresetsStore.add(preset));
 
   // デスクトップ通知を表示する
   ipcMain.handle('showDesktopNotification', async (_, title, body, imagePath) => {

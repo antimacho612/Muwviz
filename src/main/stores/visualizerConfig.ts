@@ -1,12 +1,30 @@
-import { VisualizerConfig, getDefaultConfig } from '@shared/visualizerTypes';
 import BaseJSONStore from './baseJsonStore';
+import {
+  VisualizerConfig,
+  VISUALIZER_DEFAULT_PRESET1,
+  VISUALIZER_DEFAULT_PRESET2,
+  VISUALIZER_DEFAULT_PRESET3,
+} from '@shared/visualizerTypes';
 
 export default class VisualizerConfigStore extends BaseJSONStore<VisualizerConfig[]> {
   constructor(jsonPath: string) {
     super(jsonPath);
 
     if (!this.cachedData) {
-      this.save([getDefaultConfig(), getDefaultConfig(), getDefaultConfig()]);
+      this.save([
+        {
+          isOn: true,
+          ...VISUALIZER_DEFAULT_PRESET1,
+        },
+        {
+          isOn: true,
+          ...VISUALIZER_DEFAULT_PRESET2,
+        },
+        {
+          isOn: true,
+          ...VISUALIZER_DEFAULT_PRESET3,
+        },
+      ]);
     }
   }
 

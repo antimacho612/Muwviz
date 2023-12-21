@@ -30,10 +30,6 @@ export default abstract class BaseJSONStore<T> {
     this._cachedData = data;
   }
 
-  public getData(): T | undefined {
-    return structuredClone(this.cachedData);
-  }
-
   private readJson() {
     this._caching = true;
 

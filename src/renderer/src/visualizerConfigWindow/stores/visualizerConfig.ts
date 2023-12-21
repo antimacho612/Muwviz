@@ -6,15 +6,13 @@ type VisualizerConfigStoreState = {
 };
 
 export const useVisualizerConfigStore = defineStore('visualizerConfig', {
-  state: (): VisualizerConfigStoreState => {
-    return {
-      visualizerConfig: [],
-    };
-  },
+  state: (): VisualizerConfigStoreState => ({
+    visualizerConfig: [],
+  }),
 
   actions: {
     async fetch() {
-      console.log('Fetching visualizer config...');
+      console.info('Fetching visualizer config...');
       this.visualizerConfig = await window.electron.invoke.getAllVisualizerConfig();
     },
   },

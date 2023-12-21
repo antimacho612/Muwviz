@@ -4,15 +4,16 @@ import log from 'electron-log/main';
 import path from 'path';
 import { STORES_DIR } from './core/paths';
 import { registerIpcChannels } from './ipc';
+import SongsStore from './stores/songs';
 import AlbumsStore from './stores/albums';
 import ArtistsStore from './stores/artists';
 import LyricsStore from './stores/lyrics';
-import ScannedFoldersStore from './stores/scannedFolders';
 import SettingsStore from './stores/settings';
-import SongsStore from './stores/songs';
+import ScannedFoldersStore from './stores/scannedFolders';
+import VisualizerConfigStore from './stores/visualizerConfig';
+import VisualizerPresetsStore from './stores/visualizerPresets';
 import { deleteOldLog } from './utils';
 import { createMainWindow } from './window';
-import VisualizerConfigStore from './stores/visualizerConfig';
 
 export let songsStore: SongsStore;
 export let albumsStore: AlbumsStore;
@@ -21,6 +22,7 @@ export let lyricsStore: LyricsStore;
 export let settingsStore: SettingsStore;
 export let scannedFoldersStore: ScannedFoldersStore;
 export let visualizerConfigStore: VisualizerConfigStore;
+export let visualizerPresetsStore: VisualizerPresetsStore;
 
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -90,13 +92,8 @@ function initializeLogger() {
 
   // Consoleをオーバーライド
   Object.assign(console, log.functions);
-
-  process.on('uncaughtException', (err) => {
-    console.error(err);
-  });
-  process.on('unhandledRejection', (err) => {
-    console.error(err);
-  });
+  process.on('uncaughtException', (err) => console.error(err));
+  process.on('unhandledRejection', (err) => console.error(err));
 
   deleteOldLog(log.variables.electronDefaultDir ?? app.getPath('logs'));
 }
@@ -110,6 +107,9 @@ function initializeStore() {
   scannedFoldersStore = new ScannedFoldersStore(path.join(STORES_DIR, 'scanned-folders.json'));
   visualizerConfigStore = new VisualizerConfigStore(
     path.join(STORES_DIR, 'visualizer-config.json')
+  );
+  visualizerPresetsStore = new VisualizerPresetsStore(
+    path.join(STORES_DIR, 'visualizer-presets.json')
   );
 }
 

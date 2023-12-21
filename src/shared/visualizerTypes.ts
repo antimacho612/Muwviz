@@ -126,7 +126,20 @@ export type VisualizerOptions = {
   showScaleY: boolean;
 };
 
-const VISUALIZER_DEFAULT_OPTIONS: VisualizerOptions = {
+export type VisualizerConfig = {
+  isOn: boolean;
+  backgroundColor: string;
+} & VisualizerOptions;
+
+export type VisualizerPresetConfig = Omit<VisualizerConfig, 'isOn'>;
+export type VisualizerPreset = {
+  name: string;
+  canDelete: boolean;
+  config: VisualizerPresetConfig;
+};
+
+const VISUALIZER_DEFAULT_PRESET: VisualizerPresetConfig = {
+  backgroundColor: '#1f1f1f',
   mode: 0,
   channelLayout: 'single',
   fftSize: 8192,
@@ -165,13 +178,153 @@ const VISUALIZER_DEFAULT_OPTIONS: VisualizerOptions = {
   showScaleX: true,
   noteLabels: false,
   showScaleY: false,
-};
+} as const;
 
-export type VisualizerConfig = {
-  isOn: boolean;
-} & VisualizerOptions;
+export const VISUALIZER_DEFAULT_PRESET1: VisualizerPresetConfig = {
+  backgroundColor: '#1f1f1f',
+  mode: 5,
+  channelLayout: 'single',
+  fftSize: 8192,
+  smoothing: 0.5,
+  minFreq: 30,
+  maxFreq: 16000,
+  frequencyScale: 'bark',
+  weightingFilter: 'D',
+  minDecibels: -85,
+  maxDecibels: -25,
+  linearAmplitude: true,
+  linearBoost: 2.5,
+  colorMode: 'gradient',
+  gradientLeft: 'rainbow',
+  gradientRight: 'steelblue',
+  splitGradient: false,
+  barSpace: 0.3,
+  alphaBars: false,
+  ansiBands: false,
+  ledBars: true,
+  trueLeds: true,
+  roundBars: false,
+  lumiBars: false,
+  outlineBars: false,
+  lineWidth: 0,
+  fillAlpha: 0,
+  radial: false,
+  spinSpeed: 0,
+  reflexRatio: 0.1,
+  reflexAlpha: 0.25,
+  reflexBright: 1,
+  reflexFit: true,
+  mirror: 0,
+  showPeaks: true,
+  peakLine: false,
+  showScaleY: false,
+  showScaleX: true,
+  noteLabels: false,
+} as const;
 
-export const getDefaultConfig = (): VisualizerConfig => ({
-  isOn: true,
-  ...VISUALIZER_DEFAULT_OPTIONS,
-});
+export const VISUALIZER_DEFAULT_PRESET2: VisualizerPresetConfig = {
+  backgroundColor: '#1f1f1f',
+  mode: 10,
+  channelLayout: 'dual-combined',
+  fftSize: 8192,
+  smoothing: 0.5,
+  minFreq: 30,
+  maxFreq: 16000,
+  frequencyScale: 'log',
+  weightingFilter: 'D',
+  minDecibels: -85,
+  maxDecibels: -25,
+  linearAmplitude: true,
+  linearBoost: 2,
+  colorMode: 'gradient',
+  gradientLeft: 'steelblue',
+  gradientRight: 'orangered',
+  splitGradient: false,
+  barSpace: 0.1,
+  alphaBars: false,
+  ansiBands: false,
+  ledBars: false,
+  trueLeds: false,
+  roundBars: false,
+  lumiBars: false,
+  outlineBars: false,
+  lineWidth: 0,
+  fillAlpha: 0.2,
+  radial: false,
+  spinSpeed: 0,
+  reflexRatio: 0,
+  reflexAlpha: 0.15,
+  reflexBright: 1,
+  reflexFit: true,
+  mirror: 0,
+  showPeaks: true,
+  peakLine: true,
+  showScaleY: false,
+  showScaleX: false,
+  noteLabels: false,
+} as const;
+
+export const VISUALIZER_DEFAULT_PRESET3: VisualizerPresetConfig = {
+  backgroundColor: '#1f1f1f',
+  mode: 10,
+  channelLayout: 'dual-vertical',
+  fftSize: 8192,
+  smoothing: 0.65,
+  minFreq: 30,
+  maxFreq: 16000,
+  frequencyScale: 'log',
+  weightingFilter: 'D',
+  minDecibels: -85,
+  maxDecibels: -25,
+  linearAmplitude: true,
+  linearBoost: 1.8,
+  colorMode: 'bar-index',
+  gradientLeft: 'rainbow',
+  gradientRight: 'rainbow',
+  splitGradient: false,
+  barSpace: 1,
+  alphaBars: false,
+  ansiBands: false,
+  ledBars: false,
+  trueLeds: false,
+  roundBars: false,
+  lumiBars: false,
+  outlineBars: true,
+  lineWidth: 2,
+  fillAlpha: 0,
+  radial: true,
+  spinSpeed: 1,
+  reflexRatio: 0,
+  reflexAlpha: 0.15,
+  reflexBright: 1,
+  reflexFit: true,
+  mirror: 0,
+  showPeaks: false,
+  peakLine: false,
+  showScaleY: false,
+  showScaleX: false,
+  noteLabels: false,
+} as const;
+
+export const VISUALIZER_DEFAULT_PRESETS: VisualizerPreset[] = [
+  {
+    name: 'Default',
+    canDelete: false,
+    config: VISUALIZER_DEFAULT_PRESET,
+  },
+  {
+    name: 'Default1（LED Bars）',
+    canDelete: false,
+    config: VISUALIZER_DEFAULT_PRESET1,
+  },
+  {
+    name: 'Default2（Dual Lines）',
+    canDelete: false,
+    config: VISUALIZER_DEFAULT_PRESET2,
+  },
+  {
+    name: 'Default3（Circle Lines）',
+    canDelete: false,
+    config: VISUALIZER_DEFAULT_PRESET3,
+  },
+] as const;

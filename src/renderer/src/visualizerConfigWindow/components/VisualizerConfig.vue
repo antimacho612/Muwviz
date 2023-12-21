@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
-import { sendMessageToMainWindowKey } from '../injectionKeys';
+import { openPresetModalKey, sendMessageToMainWindowKey } from '../injectionKeys';
 import { useVisualizerConfigStore } from '../stores/visualizerConfig';
 import {
   VISUALIZATION_MODE_MAP,
@@ -22,14 +22,19 @@ import { KeyValue } from '@shared/types';
 import ConfigGroup from './ConfigGroup.vue';
 import ConfigRow from './ConfigRow.vue';
 import ConfigItem from './ConfigItem.vue';
+import Button from '@renderer/commonComponents/Button/Button.vue';
 import Select from '@renderer/commonComponents/Select/Select.vue';
 import Slider from '@renderer/commonComponents/Slider/Slider.vue';
 import InputNumber from '@renderer/commonComponents/InputNumber/InputNumber.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import Radio from '@renderer/commonComponents/Radio/Radio.vue';
+import ColorPicker from '@renderer/commonComponents/ColorPicker/ColorPicker.vue';
 
 const props = defineProps<{ currentVisualizerIndex: number }>();
 const currentIndex = computed(() => props.currentVisualizerIndex);
+
+const openPresetModal = inject(openPresetModalKey);
+const onClickOpenPresetMenu = () => openPresetModal?.();
 
 const { visualizerConfig } = useVisualizerConfigStore();
 const currentVisualizerConfig = computed(() => visualizerConfig[currentIndex.value]);
@@ -47,6 +52,11 @@ const onChangeValue = async (keyValue: KeyValue<VisualizerConfig>) => {
     sendMessageToMainWindow({
       channel: 'changeVisualizerState',
       payload: { index: currentIndex.value, isOn: keyValue.value },
+    });
+  } else if (keyValue.key === 'backgroundColor') {
+    sendMessageToMainWindow({
+      channel: 'changeVisualizerBackgroundColor',
+      payload: { index: currentIndex.value, color: keyValue.value },
     });
   } else {
     sendMessageToMainWindow({
@@ -79,7 +89,7 @@ const onChangeScaleXLabel = async () => {
   <div class="visualizer-configs">
     <ConfigGroup title="Core">
       <ConfigRow>
-        <ConfigItem item-name="Off / On">
+        <ConfigItem item-name="Off / On" class="w-6rem">
           <Switch
             v-model="currentVisualizerConfig.isOn"
             @change="
@@ -88,8 +98,11 @@ const onChangeScaleXLabel = async () => {
                 value: currentVisualizerConfig.isOn,
               })
             "
-          ></Switch>
+          />
         </ConfigItem>
+        <Button size="xs" class="mt-auto" @click="onClickOpenPresetMenu">
+          プリセットメニュー...
+        </Button>
       </ConfigRow>
 
       <ConfigRow>
@@ -283,6 +296,25 @@ const onChangeScaleXLabel = async () => {
     </ConfigGroup>
 
     <ConfigGroup title="Appearance">
+      <ConfigRow>
+        <ConfigItem item-name="背景色">
+          <div class="flex align-items-center column-gap-2">
+            <ColorPicker
+              v-model="currentVisualizerConfig.backgroundColor"
+              size="sm"
+              class="background-color-picker"
+              @update:model-value="
+                onChangeValue({
+                  key: 'backgroundColor',
+                  value: currentVisualizerConfig.backgroundColor,
+                })
+              "
+            />
+            {{ currentVisualizerConfig.backgroundColor }}
+          </div>
+        </ConfigItem>
+      </ConfigRow>
+
       <ConfigRow>
         <ConfigItem item-name="Channel Layout" class="row-gap-2">
           <div class="flex flex-wrap column-gap-4 row-gap-2">

@@ -2,7 +2,6 @@
 
 // CSS Variables
 $themeVariables: (
-  color-scheme: light dark,
   primary-text-color: #596377 #adadad,
   secondary-text-color: #6b7280 #777e8b,
   disabled-text-color: #71717a #838383,
@@ -37,6 +36,7 @@ $themeVariables: (
 );
 
 :root {
+  color-scheme: light;
   --font-family: system-ui;
 
   --primary-color: #7c3aed;
@@ -52,6 +52,7 @@ $themeVariables: (
   }
 
   &.dark {
+    color-scheme: dark;
     @each $key, $values in $themeVariables {
       --#{$key}: #{list.nth($values, 2)};
     }

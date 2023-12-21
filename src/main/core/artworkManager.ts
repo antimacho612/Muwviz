@@ -39,8 +39,8 @@ export const deleteAllArtworks = async () => {
 };
 
 export const deleteArtworksIfNoReferred = async (artworkPaths: ReadonlySet<string>) => {
-  const songs = songsStore.getData();
-  const albums = albumsStore.getData();
+  const songs = songsStore.getAll();
+  const albums = albumsStore.getAll();
 
   for (const artworkPath of artworkPaths) {
     if (

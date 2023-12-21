@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useToast } from 'vue-toastification';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import songQueue from './songQueue';
+import { formatAlbumTitle, formatArtistName } from '@renderer/commonUtils';
 import { PlayerState, RepeatState, Song } from '@shared/types';
 
 const toast = useToast();
@@ -78,7 +79,6 @@ const audioPlayer = () => {
 
   document.addEventListener('keydown', (event) => {
     // TODO: bind event
-    // console.log(event.code);
   });
 
   const resetAudio = () => {
@@ -120,7 +120,7 @@ const audioPlayer = () => {
     // デスクトップ通知
     await window.electron.invoke.showDesktopNotification(
       currentSong.value.title,
-      `${currentSong.value.artist}／${currentSong.value.album}`,
+      `${formatArtistName(currentSong.value.artist)}／${formatAlbumTitle(currentSong.value.album)}`,
       currentSong.value.artworkPath
     );
   };

@@ -45,7 +45,7 @@ export const scanFolder = async (folderPath: string, resortLibrary = true) => {
 
   let hasAnySongsScanned = false;
   const scanningFolder = getScanningFolder(folderPath);
-  const alreadyParsedFiles = songsStore.getData()?.map((song) => song.filePath) ?? [];
+  const alreadyParsedFiles = songsStore.getAll()?.map((song) => song.filePath) ?? [];
 
   for (const songFile of songFiles) {
     if (alreadyParsedFiles.includes(songFile)) {
@@ -77,7 +77,7 @@ export const scanFolder = async (folderPath: string, resortLibrary = true) => {
     console.debug('Resorting library...');
 
     songsStore.sort(getSongsSortOptions('Artist', 'Asc'));
-    albumsStore.sort(getAlbumsSortOptions('Name', 'Asc'));
+    albumsStore.sort(getAlbumsSortOptions('Title', 'Asc'));
     artistsStore.sort(getArtistsSortOptions('Name', 'Asc'));
   }
 

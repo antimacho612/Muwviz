@@ -10,7 +10,7 @@ import {
   Settings,
   Song,
 } from '@shared/types';
-import { VisualizerConfig } from '@shared/visualizerTypes';
+import { VisualizerConfig, VisualizerPreset } from '@shared/visualizerTypes';
 
 export type ElectronAPI = GetApiType<
   {
@@ -180,6 +180,17 @@ export type ElectronAPI = GetApiType<
     ) => Promise<void>;
 
     /**
+     * ビジュアライザーの全設定プリセットを取得する
+     */
+    getAllVisualizerPresets: () => Promise<VisualizerPreset[]>;
+
+    /**
+     * ビジュアライザープリセットを追加する
+     * @param preset 追加するプリセット
+     */
+    addVisualizerPreset: (preset: VisualizerPreset) => Promise<void>;
+
+    /**
      * デスクトップ通知を表示する
      * @param title タイトル
      * @param body 本文
@@ -275,6 +286,9 @@ export const electronAPI: ElectronAPI = {
     getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
     updateVisualizerConfig: async (index, options, isMainWindow = false) =>
       await ipcRenderer.invoke('updateVisualizerConfig', index, options, isMainWindow),
+
+    getAllVisualizerPresets: async () => await ipcRenderer.invoke('getAllVisualizerPresets'),
+    addVisualizerPreset: async (preset) => await ipcRenderer.invoke('addVisualizerPreset', preset),
 
     showDesktopNotification: async (title, body, imagePath) =>
       await ipcRenderer.invoke('showDesktopNotification', title, body, imagePath),

@@ -19,7 +19,7 @@ export const useWindowStore = defineStore('window', {
 
   actions: {
     async fetch() {
-      console.log('Fetching settings...');
+      console.info('Fetching settings...');
 
       const [isAlwaysOnTop, settings] = await Promise.all([
         window.electron.invoke.isWindowAlwaysOnTop(false),

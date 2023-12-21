@@ -1,29 +1,27 @@
 <script setup lang="ts">
 import { inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import { ConstructorOptions } from 'audiomotion-analyzer';
-import { storeToRefs } from 'pinia';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import visualizer from '@mainWindow/core/visualizer';
-import { useWindowStore } from '@mainWindow/stores/window';
+import { useVisualizersStore } from '@renderer/mainWindow/stores/visualizers';
 import { sendMessageToSubWindowKey } from '@mainWindow/injectionKeys';
 
 import PowerIcon from '@renderer/assets/icons/power.svg?component';
 import Settings2Icon from '@renderer/assets/icons/settings2.svg?component';
 
-const { htmlAudioElement } = useAudioPlayer();
-const { visualizers, toggleVisualizer } = useWindowStore();
-const { visualizersIsOn } = storeToRefs(useWindowStore());
+const visualizersStore = useVisualizersStore();
 const containerEls = ref<HTMLDivElement[]>();
+
+const { htmlAudioElement } = useAudioPlayer();
 
 onMounted(async () => {
   const configs = await window.electron.invoke.getAllVisualizerConfig();
 
   let source: HTMLMediaElement | AudioNode = htmlAudioElement;
   containerEls.value?.forEach((containerEl, index) => {
-    const { isOn, ...options } = configs[index];
-    visualizersIsOn.value[index] = isOn;
-
     const isFirst = index === 0;
+
+    const { isOn, backgroundColor, ...options } = configs[index];
     const constructorOpts: ConstructorOptions = {
       source,
       start: isOn,
@@ -33,22 +31,29 @@ onMounted(async () => {
       connectSpeakers: isFirst,
       ...options,
     };
-    const v = visualizer(containerEl, constructorOpts);
-    visualizers.set(index, v);
+    const instance = visualizer(containerEl, constructorOpts);
 
-    if (isFirst) source = v.getConnectedSource();
+    // ストアにセット
+    visualizersStore.visualizers[index] = {
+      instance,
+      isOn,
+      backgroundColor,
+    };
+
+    if (isFirst) source = instance.getConnectedSource();
   });
 });
 
 onBeforeUnmount(() => {
-  visualizers.forEach((visualizer) => visualizer.destroy());
+  visualizersStore.visualizers.forEach((visualizer) => visualizer.instance?.destroy());
 });
 
 const onClickToggleButton = async (index: number) => {
-  const newState = !visualizersIsOn.value[index];
+  const target = visualizersStore.visualizers[index];
+  const newState = !target.isOn;
 
   // ビジュアライザーOn / Off切り替え
-  toggleVisualizer(index, newState);
+  visualizersStore.toggleVisualizer(index, newState);
 
   // 設定ファイルに保存
   await window.electron.invoke.updateVisualizerConfig(index, { isOn: newState }, true);
@@ -75,8 +80,11 @@ const onClickOpenConfigWindowButton = async (index: number) => {
       <div
         ref="containerEls"
         class="visualizer"
-        :class="{ 'is-on': visualizersIsOn[n - 1] }"
-        :style="{ gridArea: `visualizer${n}` }"
+        :class="{ 'is-on': visualizersStore.visualizers[n - 1].isOn }"
+        :style="{
+          gridArea: `visualizer${n}`,
+          background: visualizersStore.visualizers[n - 1].backgroundColor,
+        }"
       >
         <button type="button" class="icon-button toggle-button" @click="onClickToggleButton(n - 1)">
           <PowerIcon style="width: 1.5rem; height: 1.5rem" />
@@ -110,7 +118,6 @@ const onClickOpenConfigWindowButton = async (index: number) => {
   position: relative;
   width: 100%;
   height: 100%;
-  background: rgb(0, 0, 0);
   overflow: hidden;
   border-radius: $borderRadiusLg;
 }

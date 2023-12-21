@@ -9,7 +9,7 @@ import {
 } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import path from 'path';
-import { settingsStore, visualizerConfigStore } from '.';
+import { settingsStore, visualizerConfigStore, visualizerPresetsStore } from '.';
 import {
   sendNextSongCommandToMain,
   sendPauseCommandToMain,
@@ -38,6 +38,7 @@ const onCloseWindow = async (_event: Event, window: BrowserWindow, isMainWindow 
       ...window.getBounds(),
     });
     await visualizerConfigStore.save();
+    await visualizerPresetsStore.save();
   }
 };
 
@@ -184,7 +185,7 @@ export const createSubWindow = async () => {
       ...windowState,
       minWidth: 320,
       maxWidth: 700,
-      minHeight: 320,
+      minHeight: 456,
       show: false,
       autoHideMenuBar: true,
       icon,
