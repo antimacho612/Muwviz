@@ -332,4 +332,4 @@ export const VISUALIZER_DEFAULT_PRESETS: VisualizerPreset[] = [
     canDelete: false,
     config: VISUALIZER_DEFAULT_PRESET3,
   },
-] as const;
+];

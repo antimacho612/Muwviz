@@ -56,9 +56,7 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: import.meta.env.IS_ELECTRON
-    ? createWebHashHistory(import.meta.env.BASE_URL)
-    : createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 });
 

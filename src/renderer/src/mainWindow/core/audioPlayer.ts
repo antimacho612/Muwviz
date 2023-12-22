@@ -20,6 +20,9 @@ const audioPlayer = () => {
   const queue = songQueue();
   const currentSong = ref<Song | undefined>();
 
+  // メディアセッション
+  const mediaSession = window.navigator.mediaSession;
+
   // Audio Elementの初期化
   const audio = new Audio();
   audio.preload = 'auto';
@@ -46,11 +49,13 @@ const audioPlayer = () => {
   // 再生開始時
   audio.onplaying = () => {
     state.value = 'Playing';
+    mediaSession.playbackState = 'playing';
   };
 
   // ポーズ時
   audio.onpause = () => {
     state.value = 'StandBy';
+    mediaSession.playbackState = 'paused';
   };
 
   // 曲の長さ変更時
@@ -77,19 +82,22 @@ const audioPlayer = () => {
     }
   };
 
-  document.addEventListener('keydown', (event) => {
+  const deactivateAudio = () => {
+    audio.removeAttribute('src');
+    audio.srcObject = null;
+    currentSong.value = undefined;
+    state.value = 'UnReady';
+    mediaSession.metadata = null;
+    mediaSession.playbackState = 'none';
+  };
+
+  document.addEventListener('keydown', (_event) => {
     // TODO: bind event
   });
 
-  const resetAudio = () => {
+  const loadSong = async (autoPlay = true) => {
     audio.removeAttribute('src');
     audio.srcObject = null;
-    state.value = 'UnReady';
-    currentSong.value = undefined;
-  };
-
-  const loadSong = async (autoPlay = true) => {
-    resetAudio();
 
     currentSong.value = queue.currentItem.value
       ? songsMap.value.get(queue.currentItem.value.songId)
@@ -104,9 +112,7 @@ const audioPlayer = () => {
     audio.src = `media://${currentSong.value.filePath}`;
     state.value = 'StandBy';
 
-    if (autoPlay) {
-      await play();
-    }
+    if (autoPlay) await play();
   };
 
   const play = async () => {
@@ -116,6 +122,13 @@ const audioPlayer = () => {
 
     // MEMO: main側に再生状態を伝える ← 必要だったら
     // MEMO: 再生回数増やす ← 必要だったら
+
+    // メディアセッションに再生中の曲の情報をセット
+    mediaSession.metadata = new MediaMetadata({
+      title: currentSong.value.title,
+      artist: formatArtistName(currentSong.value.artist),
+      album: formatAlbumTitle(currentSong.value.album),
+    });
 
     // デスクトップ通知
     await window.electron.invoke.showDesktopNotification(
@@ -128,11 +141,8 @@ const audioPlayer = () => {
   const pause = () => audio.pause();
 
   const togglePlay = async () => {
-    if (state.value === 'StandBy') {
-      await play();
-    } else if (state.value === 'Playing') {
-      audio.pause();
-    }
+    if (state.value === 'StandBy') await play();
+    else if (state.value === 'Playing') pause();
   };
 
   const playSongInQueue = async (queueId: string) => {
@@ -141,9 +151,7 @@ const audioPlayer = () => {
   };
 
   const nextSong = async (autoPlay = false) => {
-    if (!queue.length.value) {
-      return;
-    }
+    if (!queue.length.value) return;
 
     if (queue.hasNext() || repeat.value === 'All') {
       queue.next(true);
@@ -185,9 +193,7 @@ const audioPlayer = () => {
     audio.muted = !audio.muted;
     isMuted.value = audio.muted;
 
-    if (!isMuted.value && volume.value < 10) {
-      setVolume(10);
-    }
+    if (!isMuted.value && volume.value < 10) setVolume(10);
   };
 
   const setCurrentTime = (currentTime: number) => {
@@ -226,16 +232,14 @@ const audioPlayer = () => {
     queue.setItems(songIds, opts.shuffle, opts.firstSongIndex);
     state.value = 'StandBy';
 
-    if (!opts.autoplay) {
-      return;
-    }
+    if (!opts.autoplay) return;
 
     await loadSong();
   };
 
-  const addSongsToQueue = (songIds: string[]) => {
-    // TODO: 未実装
-  };
+  // const addSongsToQueue = (songIds: string[]) => {
+  //   // TODO: 未実装
+  // };
 
   /**
    * キューから楽曲を削除する
@@ -243,13 +247,11 @@ const audioPlayer = () => {
    */
   const removeSongsFromQueue = async (...queueIds: string[]) => {
     if (queue.currentItem.value && queueIds.includes(queue.currentItem.value.queueId)) {
-      resetAudio();
+      deactivateAudio();
     }
     queue.removeItems(...queueIds);
 
-    if (queue.currentItem.value) {
-      await loadSong(false);
-    }
+    if (queue.currentItem.value) await loadSong(false);
   };
 
   /**
@@ -259,22 +261,25 @@ const audioPlayer = () => {
     if (queue.length.value <= 1) {
       // 全削除
       queue.clearItems(true);
-      resetAudio();
+      deactivateAudio();
     } else {
       // 現在の曲以外を削除
       queue.clearItems(false);
     }
+
     toast.info('キューから曲を削除しました。');
   };
 
+  // メディアセッションのイベントハンドリング
+  mediaSession.setActionHandler('play', async () => await play());
+  mediaSession.setActionHandler('pause', () => pause());
+  mediaSession.setActionHandler('previoustrack', async () => await previousSong());
+  mediaSession.setActionHandler('nexttrack', async () => await nextSong(state.value === 'Playing'));
+
   // メインプロセスのイベントハンドリング
-  // 再生
   window.electron.on.sendPlaySongCommand(async () => await play());
-  // 停止
   window.electron.on.sendPauseSongCommand(() => pause());
-  // 前へ
   window.electron.on.sendPrevSongCommand(async () => await previousSong());
-  // 次へ
   window.electron.on.sendNextSongCommand(async () => await nextSong(state.value === 'Playing'));
 
   return {

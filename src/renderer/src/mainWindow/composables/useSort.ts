@@ -51,11 +51,11 @@ export const useSongsSort = (
 
 export const useAlbumsSort = (albums: Ref<Album[]>) => {
   const sortedAlbums = ref<Album[]>([...albums.value]);
-  const sortKey = ref<AlbumsSortKey>('Name');
+  const sortKey = ref<AlbumsSortKey>('Title');
   const order = ref<Order>('Asc');
 
   watch([albums, sortKey, order], () => {
-    if (sortKey.value === 'Name' && order.value === 'Asc') {
+    if (sortKey.value === 'Title' && order.value === 'Asc') {
       sortedAlbums.value = [...albums.value];
     } else {
       const sortOptions = getAlbumsSortOptions(sortKey.value, order.value);

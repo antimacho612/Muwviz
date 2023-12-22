@@ -49,7 +49,7 @@ app.whenReady().then(async () => {
   });
 
   protocol.registerFileProtocol('media', (request, callback) => {
-    const url = request.url.replace(`media://`, '');
+    const url = request.url.replace('media://', '');
     try {
       return callback(decodeURIComponent(url));
     } catch (e) {
@@ -71,7 +71,7 @@ app.on('window-all-closed', () => {
 });
 
 function initializeLogger() {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV_ELECTRON_VITE === 'production';
 
   log.initialize({ preload: true });
   log.transports.file.level = isProduction ? 'info' : 'silly';
