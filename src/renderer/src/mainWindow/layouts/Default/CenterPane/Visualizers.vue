@@ -15,7 +15,7 @@ const containerEls = ref<HTMLDivElement[]>();
 const { htmlAudioElement } = useAudioPlayer();
 
 onMounted(async () => {
-  const configs = await window.electron.invoke.getAllVisualizerConfig();
+  const configs = await window.electron.invoke.getAllVisualizersConfig();
 
   let source: HTMLMediaElement | AudioNode = htmlAudioElement;
   containerEls.value?.forEach((containerEl, index) => {

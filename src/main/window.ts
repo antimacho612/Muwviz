@@ -9,7 +9,7 @@ import {
 } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import path from 'path';
-import { settingsStore, visualizerConfigStore, visualizerPresetsStore } from '.';
+import { settingsStore, visualizersConfigStore, visualizerPresetsStore } from '.';
 import {
   sendNextSongCommandToMain,
   sendPauseCommandToMain,
@@ -37,7 +37,7 @@ const onCloseWindow = async (_event: Event, window: BrowserWindow, isMainWindow 
       alwaysOnTop: window.isAlwaysOnTop(),
       ...window.getBounds(),
     });
-    await visualizerConfigStore.save();
+    await visualizersConfigStore.save();
     await visualizerPresetsStore.save();
   }
 };

@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useToast } from 'vue-toastification';
+import { sendMessageToMainWindowKey } from '../injectionKeys';
+import { SubToMainMessage } from '@renderer/commonUtils/messagePort';
+import { useVisualizersConfigStore } from '../stores/visualizersConfig';
 import { useVisualizerPresetsStore } from '../stores/visualizerPresets';
 import { useWindowStore } from '../stores/window';
+import { VisualizerOptions, VisualizerPreset } from '@shared/visualizerTypes';
+import { KeyValue } from '@shared/types';
 
 import CloseIcon from '@renderer/assets/icons/close.svg?component';
 import DeleteIcon from '@renderer/assets/icons/delete-outlined.svg?component';
 import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import InputText from '@renderer/commonComponents/InputText/InputText.vue';
-import { VisualizerPreset } from '@shared/visualizerTypes';
-import { useVisualizerConfigStore } from '../stores/visualizerConfig';
 
 const props = defineProps<{ isOpen: boolean }>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
@@ -21,40 +26,82 @@ const opened = computed({
 
 const presetsStore = useVisualizerPresetsStore();
 
+const { configs } = storeToRefs(useVisualizersConfigStore());
+const { currentVisualizerIndex } = storeToRefs(useWindowStore());
+const currentVisualizerConfig = computed(() => configs.value[currentVisualizerIndex.value]);
+
 watch(
   () => props.isOpen,
   async () => {
-    console.log(
-      'opened.value',
-      opened.value,
-      'presetsStore.presets.length',
-      presetsStore.presets.length
-    );
     if (opened.value && !presetsStore.presets.length) {
       await presetsStore.fetch();
     }
   }
 );
 
-const newPresetName = ref('');
+watch(currentVisualizerIndex, () => {
+  if (opened.value) opened.value = false;
+});
 
-const getCurrentVisualizerConfig = () => {
-  const { currentVisualizerIndex } = useWindowStore();
-  const { visualizerConfig } = useVisualizerConfigStore();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return (({ isOn, ...rest }) => rest)(visualizerConfig[currentVisualizerIndex]);
-};
+const toast = useToast();
+
+const newPresetName = ref('');
 
 const onClickSaveButton = () => {
   if (!newPresetName.value) return;
 
   const newPreset: VisualizerPreset = {
+    id: crypto.randomUUID(),
     name: newPresetName.value,
     canDelete: true,
-    config: getCurrentVisualizerConfig(),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    config: (({ isOn, ...rest }) => rest)(currentVisualizerConfig.value),
   };
 
   presetsStore.add(newPreset);
+  newPresetName.value = '';
+
+  toast.info('プリセットを保存しました。');
+};
+
+const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
+const onClickPreset = (preset: VisualizerPreset) => {
+  for (const key in preset.config) {
+    if (!Object.hasOwn(currentVisualizerConfig.value, key)) continue;
+
+    // メイン側に変更を通知
+    if (sendMessageToMainWindow) {
+      let message: SubToMainMessage;
+
+      if (key === 'background') {
+        message = {
+          channel: 'changeVisualizerBackgroundColor',
+          payload: { index: currentVisualizerIndex.value, color: preset.config.backgroundColor },
+        };
+      } else {
+        const keyValue = { key, value: preset.config[key] } as KeyValue<VisualizerOptions>;
+        message = {
+          channel: 'changeVisualizerOption',
+          payload: {
+            index: currentVisualizerIndex.value,
+            ...keyValue,
+          },
+        };
+      }
+
+      sendMessageToMainWindow(message);
+    }
+
+    // 現在のビジュアライザーの設定値にプリセットの値を反映
+    currentVisualizerConfig.value[key] = preset.config[key];
+  }
+};
+
+const onClickDeletePresetButton = async (id: string, name: string) => {
+  if (confirm(`プリセット【${name}】を削除しますか？`)) {
+    await presetsStore.delete(id);
+    toast.info('プリセットを削除しました。');
+  }
 };
 </script>
 
@@ -91,18 +138,21 @@ const onClickSaveButton = () => {
           <div class="sub-title flex align-items-center gap-2">プリセットから選択</div>
           <div class="preset-list">
             <div
-              v-for="(preset, index) in presetsStore.presets"
-              :key="index"
+              v-for="preset in presetsStore.presets"
+              :key="preset.id"
               v-ripple
               class="preset-list-item"
+              tabIndex="0"
+              @click="onClickPreset(preset)"
             >
               <div class="preset-name">{{ preset.name }}</div>
               <Button
+                v-if="preset.canDelete"
                 :icon="DeleteIcon"
                 size="xs"
                 text
                 class="delete-button"
-                @click.stop=""
+                @click.stop="onClickDeletePresetButton(preset.id, preset.name)"
                 @pointerdown.stop
               />
             </div>
@@ -157,24 +207,31 @@ const onClickSaveButton = () => {
 .preset-list {
   width: 100%;
   height: 13.5rem;
+  padding: 2px 0.5rem;
   display: flex;
   flex-direction: column;
-  padding: 0 0.5rem;
+  row-gap: 2px;
   overflow-y: auto;
 }
 
 .preset-list-item {
+  flex-shrink: 0;
   width: 100%;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.25rem 0.5rem;
+  padding: 0 0.5rem;
   border-radius: $borderRadiusMd;
   cursor: pointer;
   transition: box-shadow $transitionDuration;
 
   &:hover {
     box-shadow: $innerShadow;
+  }
+
+  &:focus {
+    @include focused;
   }
 }
 

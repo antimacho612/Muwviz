@@ -10,7 +10,7 @@ import ArtistsStore from './stores/artists';
 import LyricsStore from './stores/lyrics';
 import SettingsStore from './stores/settings';
 import ScannedFoldersStore from './stores/scannedFolders';
-import VisualizerConfigStore from './stores/visualizerConfig';
+import VisualizersConfigStore from './stores/visualizersConfig';
 import VisualizerPresetsStore from './stores/visualizerPresets';
 import { deleteOldLog } from './utils';
 import { createMainWindow } from './window';
@@ -21,7 +21,7 @@ export let artistsStore: ArtistsStore;
 export let lyricsStore: LyricsStore;
 export let settingsStore: SettingsStore;
 export let scannedFoldersStore: ScannedFoldersStore;
-export let visualizerConfigStore: VisualizerConfigStore;
+export let visualizersConfigStore: VisualizersConfigStore;
 export let visualizerPresetsStore: VisualizerPresetsStore;
 
 // 多重起動防止
@@ -105,8 +105,8 @@ function initializeStore() {
   lyricsStore = new LyricsStore(path.join(STORES_DIR, 'lyrics.json'));
   settingsStore = new SettingsStore(path.join(STORES_DIR, 'settings.json'));
   scannedFoldersStore = new ScannedFoldersStore(path.join(STORES_DIR, 'scanned-folders.json'));
-  visualizerConfigStore = new VisualizerConfigStore(
-    path.join(STORES_DIR, 'visualizer-config.json')
+  visualizersConfigStore = new VisualizersConfigStore(
+    path.join(STORES_DIR, 'visualizers-config.json')
   );
   visualizerPresetsStore = new VisualizerPresetsStore(
     path.join(STORES_DIR, 'visualizer-presets.json')

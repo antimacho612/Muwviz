@@ -8,7 +8,7 @@ import {
   scannedFoldersStore,
   settingsStore,
   songsStore,
-  visualizerConfigStore,
+  visualizersConfigStore,
   visualizerPresetsStore,
 } from '.';
 import { ARTWORKS_DIR, WAVEFORMS_DIR } from './core/paths';
@@ -127,21 +127,25 @@ export const registerIpcChannels = () => {
   );
 
   // 全ビジュアライザーの設定情報を取得する
-  ipcMain.handle('getAllVisualizerConfig', async () => visualizerConfigStore.getVisualizerConfig());
+  ipcMain.handle('getAllVisualizersConfig', async () =>
+    visualizersConfigStore.getAllVisualizersConfig()
+  );
 
   // ビジュアライザーの設定を更新する
   ipcMain.handle('updateVisualizerConfig', async (_, index, options, isMainWindow = false) => {
-    visualizerConfigStore.setVisualizerConfig(index, options);
+    visualizersConfigStore.setVisualizerConfig(index, options);
 
     // メインウィンドウからの更新時は、更新内容を設定ファイルに即時保存する
     // ※メインウィンドウを閉じた際はビジュアライザー設定ファイルへの保存を行わないため
-    if (isMainWindow) visualizerConfigStore.save();
+    if (isMainWindow) visualizersConfigStore.save();
   });
 
   // ビジュアライザーの全設定プリセットを取得する
   ipcMain.handle('getAllVisualizerPresets', async () => visualizerPresetsStore.getAll());
-  // ビジュアライザープリセットを追加する
+  // ビジュアライザーの設定プリセットを追加する
   ipcMain.handle('addVisualizerPreset', async (_, preset) => visualizerPresetsStore.add(preset));
+  // ビジュアライザーの設定プリセットを削除する
+  ipcMain.handle('deleteVisualizerPreset', async (_, id) => visualizerPresetsStore.delete(id));
 
   // デスクトップ通知を表示する
   ipcMain.handle('showDesktopNotification', async (_, title, body, imagePath) => {

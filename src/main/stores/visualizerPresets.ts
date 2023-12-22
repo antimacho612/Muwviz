@@ -21,4 +21,9 @@ export default class VisualizerPresetsStore extends BaseJSONStore<VisualizerPres
       this.cachedData = [preset];
     }
   }
+
+  public delete(id: string) {
+    const index = this.cachedData?.findIndex((preset) => preset.id === id) ?? -1;
+    if (index >= 0) this.cachedData?.splice(index, 1);
+  }
 }

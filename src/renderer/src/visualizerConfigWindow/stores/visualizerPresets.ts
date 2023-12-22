@@ -20,5 +20,13 @@ export const useVisualizerPresetsStore = defineStore('visualizerPresets', {
       await window.electron.invoke.addVisualizerPreset(preset);
       this.presets.push(preset);
     },
+
+    async delete(id: string) {
+      const target = this.presets.find((preset) => preset.id === id);
+      if (!(target && target.canDelete)) return;
+
+      await window.electron.invoke.deleteVisualizerPreset(id);
+      this.presets = this.presets.filter((preset) => preset.id !== id);
+    },
   },
 });

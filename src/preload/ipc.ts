@@ -165,7 +165,7 @@ export type ElectronAPI = GetApiType<
     /**
      * 全ビジュアライザーの設定情報を取得する
      */
-    getAllVisualizerConfig: () => Promise<VisualizerConfig[]>;
+    getAllVisualizersConfig: () => Promise<VisualizerConfig[]>;
 
     /**
      * ビジュアライザーの設定を更新する
@@ -185,10 +185,16 @@ export type ElectronAPI = GetApiType<
     getAllVisualizerPresets: () => Promise<VisualizerPreset[]>;
 
     /**
-     * ビジュアライザープリセットを追加する
+     * ビジュアライザーの設定プリセットを追加する
      * @param preset 追加するプリセット
      */
     addVisualizerPreset: (preset: VisualizerPreset) => Promise<void>;
+
+    /**
+     * ビジュアライザーの設定プリセットを削除する
+     * @param id 削除するプリセットのID
+     */
+    deleteVisualizerPreset: (id: string) => Promise<void>;
 
     /**
      * デスクトップ通知を表示する
@@ -283,12 +289,13 @@ export const electronAPI: ElectronAPI = {
     saveWaveformData: async (songId, waveformData) =>
       await ipcRenderer.invoke('saveWaveformData', songId, waveformData),
 
-    getAllVisualizerConfig: async () => await ipcRenderer.invoke('getAllVisualizerConfig'),
+    getAllVisualizersConfig: async () => await ipcRenderer.invoke('getAllVisualizersConfig'),
     updateVisualizerConfig: async (index, options, isMainWindow = false) =>
       await ipcRenderer.invoke('updateVisualizerConfig', index, options, isMainWindow),
 
     getAllVisualizerPresets: async () => await ipcRenderer.invoke('getAllVisualizerPresets'),
     addVisualizerPreset: async (preset) => await ipcRenderer.invoke('addVisualizerPreset', preset),
+    deleteVisualizerPreset: async (id) => await ipcRenderer.invoke('deleteVisualizerPreset', id),
 
     showDesktopNotification: async (title, body, imagePath) =>
       await ipcRenderer.invoke('showDesktopNotification', title, body, imagePath),

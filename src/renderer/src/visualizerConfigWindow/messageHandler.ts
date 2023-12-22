@@ -1,6 +1,6 @@
 import { storeToRefs } from 'pinia';
 import { useWindowStore } from './stores/window';
-import { useVisualizerConfigStore } from './stores/visualizerConfig';
+import { useVisualizersConfigStore } from './stores/visualizersConfig';
 import { ChangeAppearancePayload, MainToSubMessage } from '@renderer/commonUtils/messagePort';
 
 const handleOnChangeAppearance = (payload: ChangeAppearancePayload) => {
@@ -25,8 +25,8 @@ const handleOnChangeVisualizerSelection = (payload: { index: number }) => {
 };
 
 const handleOnChangeVisualizerState = (payload: { index: number; isOn: boolean }) => {
-  const { visualizerConfig } = storeToRefs(useVisualizerConfigStore());
-  visualizerConfig.value[payload.index].isOn = payload.isOn;
+  const { configs } = storeToRefs(useVisualizersConfigStore());
+  configs.value[payload.index].isOn = payload.isOn;
 };
 
 const handleOnCloseMainWindow = async () => await window.electron.invoke.closeWindow(false);

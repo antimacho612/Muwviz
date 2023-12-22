@@ -6,7 +6,7 @@ import {
   VISUALIZER_DEFAULT_PRESET3,
 } from '@shared/visualizerTypes';
 
-export default class VisualizerConfigStore extends BaseJSONStore<VisualizerConfig[]> {
+export default class VisualizersConfigStore extends BaseJSONStore<VisualizerConfig[]> {
   constructor(jsonPath: string) {
     super(jsonPath);
 
@@ -28,7 +28,7 @@ export default class VisualizerConfigStore extends BaseJSONStore<VisualizerConfi
     }
   }
 
-  public getVisualizerConfig() {
+  public getAllVisualizersConfig() {
     return this.cachedData;
   }
 

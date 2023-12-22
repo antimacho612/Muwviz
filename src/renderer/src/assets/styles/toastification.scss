@@ -25,6 +25,10 @@ $vt-text-color-error: #ff5252;
 @import 'vue-toastification/src/scss/_icon';
 @import 'vue-toastification/src/scss/animations/_fade';
 
+.#{$vt-namespace}__container.top-center {
+  top: 2.5rem !important;
+}
+
 .#{$vt-namespace}__toast {
   background: var(--background-color);
   border-radius: $borderRadiusLg;

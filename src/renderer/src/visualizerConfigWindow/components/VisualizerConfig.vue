@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
 import { openPresetModalKey, sendMessageToMainWindowKey } from '../injectionKeys';
-import { useVisualizerConfigStore } from '../stores/visualizerConfig';
+import { useVisualizersConfigStore } from '../stores/visualizersConfig';
 import {
   VISUALIZATION_MODE_MAP,
   CHANNEL_LAYOUT_MAP,
@@ -36,8 +36,8 @@ const currentIndex = computed(() => props.currentVisualizerIndex);
 const openPresetModal = inject(openPresetModalKey);
 const onClickOpenPresetMenu = () => openPresetModal?.();
 
-const { visualizerConfig } = useVisualizerConfigStore();
-const currentVisualizerConfig = computed(() => visualizerConfig[currentIndex.value]);
+const { configs } = useVisualizersConfigStore();
+const currentVisualizerConfig = computed(() => configs[currentIndex.value]);
 
 const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
 
@@ -89,7 +89,7 @@ const onChangeScaleXLabel = async () => {
   <div class="visualizer-configs">
     <ConfigGroup title="Core">
       <ConfigRow>
-        <ConfigItem item-name="Off / On" class="w-6rem">
+        <ConfigItem item-name="Off / On" class="w-5rem">
           <Switch
             v-model="currentVisualizerConfig.isOn"
             @change="
@@ -101,7 +101,7 @@ const onChangeScaleXLabel = async () => {
           />
         </ConfigItem>
         <Button size="xs" class="mt-auto" @click="onClickOpenPresetMenu">
-          プリセットメニュー...
+          <span class="text-sm">プリセットメニュー...</span>
         </Button>
       </ConfigRow>
 

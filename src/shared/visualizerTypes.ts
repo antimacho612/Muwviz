@@ -133,6 +133,7 @@ export type VisualizerConfig = {
 
 export type VisualizerPresetConfig = Omit<VisualizerConfig, 'isOn'>;
 export type VisualizerPreset = {
+  id: string;
   name: string;
   canDelete: boolean;
   config: VisualizerPresetConfig;
@@ -308,21 +309,25 @@ export const VISUALIZER_DEFAULT_PRESET3: VisualizerPresetConfig = {
 
 export const VISUALIZER_DEFAULT_PRESETS: VisualizerPreset[] = [
   {
+    id: 'c31e499c-88aa-47c7-8960-5e1bbd9db5c7',
     name: 'Default',
     canDelete: false,
     config: VISUALIZER_DEFAULT_PRESET,
   },
   {
+    id: 'a871577f-9eab-4d99-b580-3c6a52f4c32a',
     name: 'Default1（LED Bars）',
     canDelete: false,
     config: VISUALIZER_DEFAULT_PRESET1,
   },
   {
+    id: '03377db1-fd83-4db3-976a-fdf8dec2812f',
     name: 'Default2（Dual Lines）',
     canDelete: false,
     config: VISUALIZER_DEFAULT_PRESET2,
   },
   {
+    id: 'eae4d8de-0ae1-4112-9bc1-dfe641ccf4c3',
     name: 'Default3（Circle Lines）',
     canDelete: false,
     config: VISUALIZER_DEFAULT_PRESET3,
