@@ -23,6 +23,7 @@ import {
   minimizeWindow,
   openFileBrowser,
   setWindowAlwaysOnTop,
+  showConfirm,
 } from './window';
 import { removeSongsFromLibrary } from './core/libraryManager';
 import { getWaveformData, saveWaveformData } from './core/waveformManager';
@@ -47,29 +48,28 @@ export const registerIpcChannels = () => {
       filters,
     })
   );
+  // 確認メッセージを表示する
+  ipcMain.handle('showConfirm', async (_, isMainWindow, message, detail) =>
+    showConfirm(isMainWindow, message, detail)
+  );
+  // 指定されたパスをデフォルトのアプリケーションで開く
+  ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
 
   // ビジュアライザー設定ウィンドウを開く
   ipcMain.handle('openVisualizerConfigWindow', async () => createSubWindow());
 
-  // 指定されたパスをデフォルトのアプリケーションで開く
-  ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
-
+  // ウィンドウが最大化された状態かどうかを取得する
   ipcMain.handle('isWindowMaximized', async (_, isMainWindow) => isWindowMaximized(isMainWindow));
-
   // ウィンドウを最小化する
   ipcMain.handle('minimizeWindow', async (_, isMainWindow) => minimizeWindow(isMainWindow));
-
   // ウィンドウの最大化⇔最大化解除を切り替える
   ipcMain.handle('maximizeWindow', async (_, isMainWindow) => maximizeWindow(isMainWindow));
-
   // ウィンドウを閉じる
   ipcMain.handle('closeWindow', async (_, isMainWindow) => closeWindow(isMainWindow));
-
   // ウィンドウが常に他のウィンドウの上に表示されるようになっているかどうかを取得する
   ipcMain.handle('isWindowAlwaysOnTop', async (_, isMainWindow) =>
     isWindowAlwaysOnTop(isMainWindow)
   );
-
   // ウィンドウを常に他のウィンドウの上に表示するかどうかを設定する
   ipcMain.handle('setWindowAlwaysOnTop', async (_, isMainWindow, flag) =>
     setWindowAlwaysOnTop(isMainWindow, flag)

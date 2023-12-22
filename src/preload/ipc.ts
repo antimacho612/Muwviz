@@ -1,4 +1,4 @@
-import { FileFilter, OpenDialogReturnValue, ipcRenderer } from 'electron';
+import { FileFilter, MessageBoxReturnValue, OpenDialogReturnValue, ipcRenderer } from 'electron';
 import { GetApiType } from 'electron-typescript-ipc';
 import {
   Album,
@@ -38,6 +38,18 @@ export type ElectronAPI = GetApiType<
       mode: 'File' | 'Folder',
       filters?: FileFilter[]
     ) => Promise<OpenDialogReturnValue>;
+
+    /**
+     * 確認メッセージを表示する
+     * @param isMainWindow 表示対象がメインウィンドウかどうか
+     * @param message メッセージ
+     * @param detail 詳細
+     */
+    showConfirm: (
+      isMainWindow: boolean,
+      message: string,
+      detail?: string
+    ) => Promise<MessageBoxReturnValue>;
 
     /**
      * 指定されたパスをデフォルトのアプリケーションで開く
@@ -250,6 +262,8 @@ export const electronAPI: ElectronAPI = {
 
     openFileBrowser: async (isMainWindow, mode, filters) =>
       await ipcRenderer.invoke('openFileBrowser', isMainWindow, mode, filters),
+    showConfirm: async (isMainWindow, message, detail) =>
+      await ipcRenderer.invoke('showConfirm', isMainWindow, message, detail),
     openPath: async (path) => await ipcRenderer.invoke('openPath', path),
 
     openVisualizerConfigWindow: async () => await ipcRenderer.invoke('openVisualizerConfigWindow'),

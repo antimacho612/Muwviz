@@ -5,6 +5,7 @@ import { showSongDetailModalKey } from '@mainWindow/injectionKeys';
 import { useAudioPlayer } from './useAudioPlayer';
 import { useLibraryManager } from '../core/libraryManager';
 import { Song } from '@shared/types';
+import { showNativeConfirm } from '@renderer/commonUtils';
 
 export type ContextMenuType = 'Song' | 'Songs';
 
@@ -50,7 +51,12 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
     {
       label: 'ライブラリから削除',
       onClick: async () => {
-        if (confirm(`【${args.song.title}】をライブラリから削除しますか？`)) {
+        const isOk = await showNativeConfirm(
+          true,
+          '確認',
+          `【${args.song.title}】をライブラリから削除しますか？`
+        );
+        if (isOk) {
           await removeSongsFromLibrary([args.song.id]);
           toast.info('ライブラリから楽曲を削除しました。');
         }
@@ -136,7 +142,12 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
     {
       label: 'ライブラリから削除',
       onClick: async () => {
-        if (confirm(`選択中の${args.selectedSongs.length}曲をライブラリから削除しますか？`)) {
+        const isOk = await showNativeConfirm(
+          true,
+          '確認',
+          `選択中の${args.selectedSongs.length}曲をライブラリから削除しますか？`
+        );
+        if (isOk) {
           await removeSongsFromLibrary([...args.selectedSongs]);
           toast.info('ライブラリから楽曲を削除しました。');
         }

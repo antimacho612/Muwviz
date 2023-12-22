@@ -99,3 +99,12 @@ export const getNewShade = (baseColorHex: string, luminance: number) => {
 
   return newRgb;
 };
+
+export const showNativeConfirm = async (
+  isMainWindow: boolean,
+  message: string,
+  detail?: string
+) => {
+  const confirmResult = await window.electron.invoke.showConfirm(isMainWindow, message, detail);
+  return confirmResult.response === 0;
+};

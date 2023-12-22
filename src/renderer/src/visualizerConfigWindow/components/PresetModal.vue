@@ -7,6 +7,7 @@ import { SubToMainMessage } from '@renderer/commonUtils/messagePort';
 import { useVisualizersConfigStore } from '../stores/visualizersConfig';
 import { useVisualizerPresetsStore } from '../stores/visualizerPresets';
 import { useWindowStore } from '../stores/window';
+import { showNativeConfirm } from '@renderer/commonUtils';
 import { VisualizerOptions, VisualizerPreset } from '@shared/visualizerTypes';
 import { KeyValue } from '@shared/types';
 
@@ -98,7 +99,9 @@ const onClickPreset = (preset: VisualizerPreset) => {
 };
 
 const onClickDeletePresetButton = async (id: string, name: string) => {
-  if (confirm(`プリセット【${name}】を削除しますか？`)) {
+  const isOk = await showNativeConfirm(false, '確認', `プリセット【${name}】を削除しますか？`);
+
+  if (isOk) {
     await presetsStore.delete(id);
     toast.info('プリセットを削除しました。');
   }

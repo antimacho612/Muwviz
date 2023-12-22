@@ -253,3 +253,17 @@ export const setWindowAlwaysOnTop = (isMainWindow: boolean, flag: boolean) => {
   const window = getWindow(isMainWindow);
   window && window.setAlwaysOnTop(flag);
 };
+
+export const showConfirm = (isMainWindow: boolean, message: string, detail?: string) => {
+  const window = getWindow(isMainWindow);
+  return (
+    window &&
+    dialog.showMessageBox(window, {
+      type: 'warning',
+      message,
+      detail,
+      buttons: ['OK', 'Cancel'],
+      cancelId: 1,
+    })
+  );
+};
