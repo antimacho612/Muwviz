@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue';
-import { onBeforeRouteUpdate } from 'vue-router';
-import { storeToRefs } from 'pinia';
-import { useWindowStore } from '@mainWindow/stores/window';
 import { showSongDetailModalKey } from '@mainWindow/injectionKeys';
 import { Song } from '@shared/types';
 
@@ -11,16 +8,8 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 import Links from './Links.vue';
 import SongDetailModal from './SongDetailModal.vue';
 
-const windowStore = useWindowStore();
-const { isLeftSidePaneCollapsed } = storeToRefs(windowStore);
-
-const onClickSidebarToggle = () => windowStore.toggleLeftSidePaneCollapsed();
-const onClickLink = () => windowStore.expandLeftSidePane();
-
-onBeforeRouteUpdate((_to, _from, next) => {
-  windowStore.expandLeftSidePane();
-  next();
-});
+defineProps<{ isCollapsed: boolean }>();
+const emits = defineEmits<{ 'update:isCollapsed': [value: boolean] }>();
 
 const isModalOpen = ref(false);
 const modalSong = ref<Song | undefined>();
@@ -33,10 +22,10 @@ provide(showSongDetailModalKey, showSongDetailModal);
 </script>
 
 <template>
-  <aside class="left-side-pane" :class="{ 'is-collapsed': isLeftSidePaneCollapsed }">
+  <aside class="left-side-pane" :class="{ 'is-collapsed': isCollapsed }">
     <div class="sidenav" :inert="isModalOpen">
       <div class="links-container">
-        <Links @click="onClickLink" />
+        <Links @click="emits('update:isCollapsed', false)" />
       </div>
       <div class="left-pane-toggle">
         <Button
@@ -44,7 +33,7 @@ provide(showSongDetailModalKey, showSongDetailModal);
           size="lg"
           text
           class="toggle-button"
-          @click="onClickSidebarToggle"
+          @click="emits('update:isCollapsed', !isCollapsed)"
         />
       </div>
     </div>

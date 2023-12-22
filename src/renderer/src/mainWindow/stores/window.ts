@@ -3,12 +3,14 @@ import { defineStore } from 'pinia';
 type WindowStoreState = {
   isWindowMaximized: boolean;
   isLeftSidePaneCollapsed: boolean;
+  isRightSidePaneCollapsed: boolean;
 };
 
 export const useWindowStore = defineStore('window', {
   state: (): WindowStoreState => ({
     isWindowMaximized: true,
-    isLeftSidePaneCollapsed: true,
+    isLeftSidePaneCollapsed: false,
+    isRightSidePaneCollapsed: false,
   }),
 
   actions: {
@@ -26,6 +28,14 @@ export const useWindowStore = defineStore('window', {
 
     expandLeftSidePane() {
       this.isLeftSidePaneCollapsed = false;
+    },
+
+    collapseRightSidePane() {
+      this.isRightSidePaneCollapsed = true;
+    },
+
+    expandRightSidePane() {
+      this.isRightSidePaneCollapsed = false;
     },
   },
 });

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { provide, ref } from 'vue';
+import { onBeforeRouteUpdate } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { useWindowStore } from '@mainWindow/stores/window';
 import { openSettingsModalKey, openLibraryEditModalKey } from '@mainWindow/injectionKeys';
 
 import LeftSidePane from './LeftSidePane/LeftSidePane.vue';
@@ -8,6 +11,14 @@ import RightSidePane from './RightSidePane/RightSidePane.vue';
 import ControlsPane from './ControlsPane/ControlsPane.vue';
 import SettingsModal from './SettingsModal/SettingsModal.vue';
 import LibraryEditModal from './LibraryEditModal/LibraryEditModal.vue';
+
+const windowStore = useWindowStore();
+const { isLeftSidePaneCollapsed, isRightSidePaneCollapsed } = storeToRefs(windowStore);
+
+onBeforeRouteUpdate((_to, _from, next) => {
+  windowStore.expandLeftSidePane();
+  next();
+});
 
 const isSettingModalOpen = ref(false);
 provide(openSettingsModalKey, () => (isSettingModalOpen.value = true));
@@ -19,7 +30,7 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
 <template>
   <div class="layout">
     <div class="layout-left" :inert="isSettingModalOpen || isLibraryEditModalOpen">
-      <LeftSidePane />
+      <LeftSidePane v-model:is-collapsed="isLeftSidePaneCollapsed" />
     </div>
 
     <div class="layout-center" :inert="isSettingModalOpen || isLibraryEditModalOpen">
@@ -27,7 +38,7 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
     </div>
 
     <div class="layout-right" :inert="isSettingModalOpen || isLibraryEditModalOpen">
-      <RightSidePane />
+      <RightSidePane v-model:is-collapsed="isRightSidePaneCollapsed" />
     </div>
 
     <div class="layout-bottom" :inert="isSettingModalOpen || isLibraryEditModalOpen">
@@ -35,10 +46,10 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
     </div>
 
     <div :inert="isLibraryEditModalOpen">
-      <SettingsModal v-model:is-open="isSettingModalOpen"></SettingsModal>
+      <SettingsModal v-model:is-open="isSettingModalOpen" />
     </div>
 
-    <LibraryEditModal v-model:is-open="isLibraryEditModalOpen"></LibraryEditModal>
+    <LibraryEditModal v-model:is-open="isLibraryEditModalOpen" />
   </div>
 </template>
 
@@ -49,7 +60,7 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
   grid-template:
     'left   center right ' 1fr
     'bottom bottom bottom' #{$bottomPaneHeight}
-    / #{$leftSidePaneWidth} 1fr #{$rightSidePaneWidth};
+    / auto 1fr auto;
   height: 100%;
   max-height: 100%;
   width: 100%;
@@ -59,6 +70,7 @@ provide(openLibraryEditModalKey, () => (isLibraryEditModalOpen.value = true));
 
 .layout-left {
   grid-area: left;
+  width: $leftSidePaneWidth;
   position: relative;
   height: calc(100vh - $titleBarHeight - $bottomPaneHeight);
   padding: $paneGap;
