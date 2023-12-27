@@ -3,8 +3,9 @@ import {
   AppearanceSettings,
   DEFAULT_SETTINGS,
   KeyValue,
+  LibrarySettings,
   ScannedFolder,
-  Settings,
+  UpdatableSettings,
 } from '@shared/types';
 import AudioMotionAnalyzer from 'audiomotion-analyzer';
 
@@ -12,10 +13,9 @@ export type SettingsStoreState = {
   scannedFolders: ScannedFolder[];
   artworkPath: string;
   waveformPath: string;
-  cacheWaveformData: boolean;
   appVersion: string;
   audioMotionAnalyzerVersion: string;
-} & AppearanceSettings;
+} & UpdatableSettings;
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsStoreState => {
@@ -27,6 +27,7 @@ export const useSettingsStore = defineStore('settings', {
       fontFamily: DEFAULT_SETTINGS.fontFamily,
       theme: DEFAULT_SETTINGS.theme,
       primaryColor: DEFAULT_SETTINGS.primaryColor,
+      showDesktopNotification: DEFAULT_SETTINGS.showDesktopNotification,
       appVersion: '',
       audioMotionAnalyzerVersion: AudioMotionAnalyzer.version,
     };
@@ -51,29 +52,12 @@ export const useSettingsStore = defineStore('settings', {
       this.fontFamily = settings.fontFamily;
       this.theme = settings.theme;
       this.primaryColor = settings.primaryColor;
+      this.showDesktopNotification = settings.showDesktopNotification;
       this.appVersion = appVersion;
     },
 
-    async saveChanges(keys: Set<keyof Settings>) {
-      const state = this.$state;
-      const items: KeyValue<Omit<Settings, 'scannedFolders'>>[] = [];
-      keys.forEach((key) => {
-        switch (key) {
-          case 'fontFamily':
-            items.push({ key, value: state.fontFamily });
-            break;
-          case 'primaryColor':
-            items.push({ key, value: state.primaryColor });
-            break;
-          case 'theme':
-            items.push({ key, value: state.theme });
-            break;
-          default:
-            throw new Error();
-        }
-      });
-
-      await window.electron.invoke.updateSettings(items);
+    async saveChange<K extends keyof UpdatableSettings>(key: K, value: UpdatableSettings[K]) {
+      await window.electron.invoke.updateSettings(key, value);
     },
   },
 });

@@ -9,6 +9,7 @@ import {
   ScannedFolder,
   Settings,
   Song,
+  UpdatableSettings,
 } from '@shared/types';
 import { VisualizerConfig, VisualizerPreset } from '@shared/visualizerTypes';
 
@@ -101,7 +102,10 @@ export type ElectronAPI = GetApiType<
     /**
      * 設定を更新する
      */
-    updateSettings: (items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) => Promise<void>;
+    updateSettings: <K extends keyof UpdatableSettings>(
+      key: K,
+      value: UpdatableSettings[K]
+    ) => Promise<void>;
 
     /**
      * スキャン済みフォルダ情報を取得する
@@ -281,8 +285,7 @@ export const electronAPI: ElectronAPI = {
       await ipcRenderer.invoke('setWindowAlwaysOnTop', isMainWindow, flag),
 
     getSettings: async () => await ipcRenderer.invoke('getSettings'),
-    updateSettings: async (items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) =>
-      await ipcRenderer.invoke('updateSettings', items),
+    updateSettings: async (key, value) => await ipcRenderer.invoke('updateSettings', key, value),
 
     getScannedFolders: async () => await ipcRenderer.invoke('getScannedFolders'),
     scanFolder: async (folderPath, resortLibrary) =>

@@ -1,5 +1,5 @@
 import BaseJSONStore from './baseJsonStore';
-import { DEFAULT_SETTINGS, Settings } from '@shared/types';
+import { DEFAULT_SETTINGS, Settings, UpdatableSettings } from '@shared/types';
 
 export default class SettingsStore extends BaseJSONStore<Settings> {
   constructor(jsonPath: string) {
@@ -10,8 +10,12 @@ export default class SettingsStore extends BaseJSONStore<Settings> {
     }
   }
 
-  public getData() {
-    return structuredClone(this.cachedData);
+  public getAll() {
+    return this.cachedData ?? DEFAULT_SETTINGS;
+  }
+
+  public getByKey(key: keyof Settings) {
+    return (this.cachedData ?? DEFAULT_SETTINGS)[key];
   }
 
   public getMainWindowState() {
@@ -38,7 +42,7 @@ export default class SettingsStore extends BaseJSONStore<Settings> {
     this.cachedData.subWindowState = windowState;
   }
 
-  public update<K extends keyof Omit<Settings, 'scannedFolders'>>(key: K, value: Settings[K]) {
+  public update<K extends keyof UpdatableSettings>(key: K, value: Settings[K]) {
     if (!this.cachedData) throw new Error();
     this.cachedData[key] = value;
   }

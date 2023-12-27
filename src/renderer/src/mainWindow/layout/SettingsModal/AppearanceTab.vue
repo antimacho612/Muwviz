@@ -3,7 +3,7 @@ import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@mainWindow/stores/settings';
 import { sendMessageToSubWindowKey } from '@mainWindow/injectionKeys';
-import { AppearanceSettings, KeyValue } from '@shared/types';
+import { AppearanceSettings, KeyValue, UpdatableSettings } from '@shared/types';
 
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
@@ -13,9 +13,9 @@ import ColorPicker from '@renderer/commonComponents/ColorPicker/ColorPicker.vue'
 
 const settings = useSettingsStore();
 const { fontFamily, theme, primaryColor } = storeToRefs(settings);
-
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
-const onChangeInputValue = async <K extends keyof AppearanceSettings>(
+
+const onChangeValue = async <K extends keyof AppearanceSettings>(
   key: K,
   value: AppearanceSettings[K]
 ) => {
@@ -24,7 +24,9 @@ const onChangeInputValue = async <K extends keyof AppearanceSettings>(
       channel: 'changeAppearance',
       payload: { key, value } as KeyValue<AppearanceSettings>,
     });
-  await settings.saveChanges(new Set([key]));
+
+  // FIXME:
+  await settings.saveChange(key, value as UpdatableSettings[K]);
 };
 </script>
 
@@ -35,7 +37,7 @@ const onChangeInputValue = async <K extends keyof AppearanceSettings>(
         v-model="fontFamily"
         size="sm"
         style="width: 75%"
-        @change="onChangeInputValue('fontFamily', fontFamily)"
+        @change="onChangeValue('fontFamily', fontFamily)"
       ></InputText>
     </BaseSettingsItem>
 
@@ -46,14 +48,14 @@ const onChangeInputValue = async <K extends keyof AppearanceSettings>(
           name="theme"
           label="ライト"
           value="Light"
-          @update:model-value="onChangeInputValue('theme', theme)"
+          @change="onChangeValue('theme', theme)"
         />
         <Radio
           v-model="theme"
           name="theme"
           label="ダーク"
           value="Dark"
-          @update:model-value="onChangeInputValue('theme', theme)"
+          @change="onChangeValue('theme', theme)"
         />
       </div>
     </BaseSettingsItem>
@@ -63,7 +65,7 @@ const onChangeInputValue = async <K extends keyof AppearanceSettings>(
         <ColorPicker
           v-model="primaryColor"
           class="primary-color-picker"
-          @update:model-value="onChangeInputValue('primaryColor', primaryColor)"
+          @update:model-value="onChangeValue('primaryColor', primaryColor)"
         />
 
         <div

@@ -28,7 +28,7 @@ import {
 import { removeSongsFromLibrary } from './core/libraryManager';
 import { getWaveformData, saveWaveformData } from './core/waveformManager';
 import { showNotification } from './utils';
-import { KeyValue, ScanProgress, Settings } from '@shared/types';
+import { ScanProgress, Settings, UpdatableSettings } from '@shared/types';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
@@ -76,10 +76,12 @@ export const registerIpcChannels = () => {
   );
 
   // 設定を取得する
-  ipcMain.handle('getSettings', async () => settingsStore.getData());
+  ipcMain.handle('getSettings', async () => settingsStore.getAll());
   // 設定を更新する
-  ipcMain.handle('updateSettings', async (_, items: KeyValue<Omit<Settings, 'scannedFolders'>>[]) =>
-    items.forEach((item) => settingsStore.update(item.key, item.value))
+  ipcMain.handle(
+    'updateSettings',
+    async <K extends keyof UpdatableSettings>(_, key: K, value: UpdatableSettings[K]) =>
+      settingsStore.update(key, value as Settings[K])
   );
 
   // スキャン済みフォルダ情報を取得する
@@ -150,7 +152,7 @@ export const registerIpcChannels = () => {
   // デスクトップ通知を表示する
   ipcMain.handle('showDesktopNotification', async (_, title, body, imagePath) => {
     const window = getWindow();
-    if (window && window.isMinimized() && settingsStore.getData()?.showDesktopNotification) {
+    if (window && window.isMinimized() && settingsStore.getByKey('showDesktopNotification')) {
       showNotification(title, body, imagePath);
     }
   });

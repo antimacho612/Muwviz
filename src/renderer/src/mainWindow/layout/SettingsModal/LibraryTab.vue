@@ -8,10 +8,10 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
+import { LibrarySettings } from '@shared/types';
 
-const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeToRefs(
-  useSettingsStore()
-);
+const settings = useSettingsStore();
+const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeToRefs(settings);
 
 const openSettingsModal = inject(openLibraryEditModalKey);
 
@@ -20,6 +20,9 @@ const onClickOpenArtworkDirButton = async () =>
 
 const onClickOpenWaveformDirButton = async () =>
   await window.electron.invoke.openPath(waveformPath.value);
+
+const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: LibrarySettings[K]) =>
+  await settings.saveChange(key, value);
 </script>
 
 <template>
@@ -60,7 +63,10 @@ const onClickOpenWaveformDirButton = async () =>
 
     <BaseSettingsItem title="波形データのキャッシュ">
       <div class="flex align-items-center column-gap-3">
-        <Switch v-model="cacheWaveformData" />
+        <Switch
+          v-model="cacheWaveformData"
+          @change="onChangeValue('cacheWaveformData', cacheWaveformData)"
+        />
         <span>{{ cacheWaveformData ? 'ON' : 'OFF' }}</span>
       </div>
     </BaseSettingsItem>

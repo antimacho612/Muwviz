@@ -81,7 +81,10 @@ export type Settings = {
   subWindowState: { width: number; height: number; x?: number; y?: number };
 };
 
+export type LibrarySettings = Pick<Settings, 'cacheWaveformData'>;
 export type AppearanceSettings = Pick<Settings, 'fontFamily' | 'theme' | 'primaryColor'>;
+export type SystemSettings = Pick<Settings, 'showDesktopNotification'>;
+export type UpdatableSettings = LibrarySettings & AppearanceSettings & SystemSettings;
 
 export const DEFAULT_SETTINGS: Settings = {
   isFirstLaunch: true,
