@@ -57,7 +57,7 @@ const onFocus = (e: FocusEvent) => {
   line-height: normal;
   color: var(--primary-text-color);
   background: var(--background-color);
-  padding: 0.5rem 0.75rem;
+  padding: 0 0.75rem;
   height: 3rem;
   border-radius: $borderRadiusFull;
   appearance: none;
@@ -82,7 +82,6 @@ const onFocus = (e: FocusEvent) => {
 
   &.c-input-text-xs {
     height: 2rem;
-    padding: 0.25rem 0.75rem;
   }
 
   &.c-input-text-sm {

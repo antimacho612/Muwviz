@@ -9,7 +9,7 @@ import Modal from '@renderer/commonComponents/Modal/Modal.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
 import ProgressBar from '@renderer/commonComponents/ProgressBar/ProgressBar.vue';
-import { useEntitiesStore } from '@renderer/mainWindow/stores/entities';
+import { useEntitiesStore } from '@mainWindow/stores/entities';
 
 type ScanStatus = {
   path: string;

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
-import { openLibraryEditModalKey } from '@renderer/mainWindow/injectionKeys';
-import { useSettingsStore } from '@renderer/mainWindow/stores/settings';
+import { openLibraryEditModalKey } from '@mainWindow/injectionKeys';
+import { useSettingsStore } from '@mainWindow/stores/settings';
 
-import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
-import BaseSettingsItem from './BaseSettingsItem.vue';
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
+import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
+import BaseSettingsItem from './BaseSettingsItem.vue';
 
 const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeToRefs(
   useSettingsStore()
@@ -15,12 +15,11 @@ const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeTo
 
 const openSettingsModal = inject(openLibraryEditModalKey);
 
-const onClickOpenArtworkDirButton = async () => {
+const onClickOpenArtworkDirButton = async () =>
   await window.electron.invoke.openPath(artworkPath.value);
-};
-const onClickOpenWaveformDirButton = async () => {
+
+const onClickOpenWaveformDirButton = async () =>
   await window.electron.invoke.openPath(waveformPath.value);
-};
 </script>
 
 <template>

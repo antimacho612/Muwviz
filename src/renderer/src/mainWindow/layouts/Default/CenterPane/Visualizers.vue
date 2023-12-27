@@ -3,7 +3,7 @@ import { inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import { ConstructorOptions } from 'audiomotion-analyzer';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import visualizer from '@mainWindow/core/visualizer';
-import { useVisualizersStore } from '@renderer/mainWindow/stores/visualizers';
+import { useVisualizersStore } from '@mainWindow/stores/visualizers';
 import { sendMessageToSubWindowKey } from '@mainWindow/injectionKeys';
 
 import PowerIcon from '@renderer/assets/icons/power.svg?component';
@@ -123,11 +123,16 @@ const onClickOpenConfigWindowButton = async (index: number) => {
 }
 
 .icon-button {
-  padding: 0.5rem;
+  height: 2.5rem;
+  width: 2.5rem;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: var(--secondary-text-color);
   border: none;
+  border-radius: 50%;
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
@@ -137,6 +142,10 @@ const onClickOpenConfigWindowButton = async (index: number) => {
 
   &:hover {
     color: var(--primary-text-color);
+  }
+
+  &:focus {
+    @include focused;
   }
 }
 

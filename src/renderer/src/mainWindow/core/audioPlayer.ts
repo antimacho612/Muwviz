@@ -217,29 +217,38 @@ const audioPlayer = () => {
       autoplay?: boolean;
       /** 楽曲をシャッフルするか（default: false） */
       shuffle?: boolean;
-      /** 最初に再生する楽曲のインデックス（default: 0） */
+      /** 最初に再生する楽曲のインデックス（default: shuffle ? -1 : 0） */
       firstSongIndex?: number;
     }
   ) => {
-    const defaultOpts = {
+    const opts = {
       autoplay: true,
       shuffle: false,
-      firstSongIndex: 0,
+      firstSongIndex: options?.shuffle ? -1 : 0,
+      ...options,
     };
-    const opts = { ...defaultOpts, ...options };
 
     state.value = 'Loading';
-    queue.setItems(songIds, opts.shuffle, opts.firstSongIndex);
+    queue.set(songIds, opts.shuffle, opts.firstSongIndex);
     state.value = 'StandBy';
 
-    if (!opts.autoplay) return;
-
-    await loadSong();
+    await loadSong(opts.autoplay);
   };
 
-  // const addSongsToQueue = (songIds: string[]) => {
-  //   // TODO: 未実装
-  // };
+  const addSongsToQueue = async (
+    songIds: Readonly<string[]>,
+    options?: { nextToCurrent?: boolean; shuffle?: boolean; skipImmediate?: boolean }
+  ) => {
+    const opts = { nextToCurrent: false, shuffle: false, skipImmediate: false, ...options };
+
+    if (!queue.length.value) {
+      await setQueue(songIds, { autoplay: opts.skipImmediate, shuffle: opts.shuffle });
+    } else {
+      queue.push(songIds, { nextToCurrent: opts.nextToCurrent, shuffle: opts.shuffle });
+      if (opts.nextToCurrent && opts.skipImmediate)
+        await nextSong(state.value === 'Playing' || opts.skipImmediate);
+    }
+  };
 
   /**
    * キューから楽曲を削除する
@@ -249,7 +258,7 @@ const audioPlayer = () => {
     if (queue.currentItem.value && queueIds.includes(queue.currentItem.value.queueId)) {
       deactivateAudio();
     }
-    queue.removeItems(...queueIds);
+    queue.remove(...queueIds);
 
     if (queue.currentItem.value) await loadSong(false);
   };
@@ -260,11 +269,11 @@ const audioPlayer = () => {
   const clearQueue = () => {
     if (queue.length.value <= 1) {
       // 全削除
-      queue.clearItems(true);
+      queue.clear(true);
       deactivateAudio();
     } else {
       // 現在の曲以外を削除
-      queue.clearItems(false);
+      queue.clear(false);
     }
 
     toast.info('キューから曲を削除しました。');
@@ -309,6 +318,7 @@ const audioPlayer = () => {
 
     playSongInQueue,
     setQueue,
+    addSongsToQueue,
     shuffleQueue: queue.shuffle,
     clearQueue,
     removeSongsFromQueue,

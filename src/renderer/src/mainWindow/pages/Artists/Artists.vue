@@ -1,34 +1,35 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
-import { useArtistsSort } from '@renderer/mainWindow/composables/useSort';
-import { useArtistsQuickSearch } from '@renderer/mainWindow/composables/useQuickSearch';
+import { useArtistsSort } from '@mainWindow/composables/useSort';
+import { useArtistsQuickSearch } from '@mainWindow/composables/useQuickSearch';
+import { useContextMenu } from '@mainWindow/composables/useContextMenu';
+import { Artist } from '@shared/types';
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
-import SortWidget from '@renderer/mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchInput from '@renderer/mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
+import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
+import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import ArtistGridItem from './ArtistGridItem.vue';
-import { storeToRefs } from 'pinia';
 
 const { artistList } = storeToRefs(useEntitiesStore());
 const { sortedArtists, sortKey, order } = useArtistsSort(artistList);
 const { searchText, filteredArtists } = useArtistsQuickSearch(sortedArtists);
+
+const artistContextMenu = useContextMenu('Artist');
+const showContextMenu = (e: MouseEvent, artist: Artist) => artistContextMenu.show(e, { artist });
 
 const router = useRouter();
 const onClickItem = (artistId: string) => router.push(`artists/${artistId}`);
 
 const { setQueue } = useAudioPlayer();
 const { getArtistSongs } = useEntitiesStore();
-const onClickPlayButton = async (artistId: string) => {
-  const albumSongs = getArtistSongs(artistId);
-  const songIds = albumSongs.map((song) => song.id);
-  await setQueue(songIds);
-};
-
-const showContextMenu = (_e: MouseEvent, _artistId: string) => {
-  // TODO: 未実装（コンテキストメニュー表示）
+const playArtistSongs = async (artistId: string, shuffle: boolean) => {
+  const artistSongs = getArtistSongs(artistId);
+  const songIds = artistSongs.map((song) => song.id);
+  await setQueue(songIds, { shuffle });
 };
 </script>
 
@@ -62,8 +63,9 @@ const showContextMenu = (_e: MouseEvent, _artistId: string) => {
         <ArtistGridItem
           :artist="item"
           @click-item="onClickItem(item.id)"
-          @click-play-button="onClickPlayButton(item.id)"
-          @contextmenu="showContextMenu($event, item.id)"
+          @click-play-button="playArtistSongs(item.id, false)"
+          @click-shuffle-play-button="playArtistSongs(item.id, true)"
+          @contextmenu="showContextMenu($event, item)"
         />
       </template>
     </RecycleGridScroller>

@@ -11,6 +11,8 @@ import { formatAlbumTitle } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import PlayIcon from '@renderer/assets/icons/play.svg?component';
+import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
+import EllipsisIcon from '@renderer/assets/icons/ellipsis.svg?component';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import BackButton from '@mainWindow/components/BackButton/BackButton.vue';
 import AlbumSong from './AlbumSong.vue';
@@ -32,10 +34,18 @@ const { selectedSongs, getOrderedSelectedSongIds, clearSelection, onClickItem } 
 
 const { setQueue } = useAudioPlayer();
 const onDoubleClickRow = async (songId: string) => {
-  const songIds = sortedSongs.value.map((song) => song.id);
+  const songIds = filteredSongs.value.map((song) => song.id);
   const theSongIndex = songIds.indexOf(songId);
   await setQueue(songIds, { firstSongIndex: theSongIndex });
 };
+
+const playAlbumSongs = async (shuffle: boolean) => {
+  const songIds = filteredSongs.value.map((song) => song.id);
+  await setQueue(songIds, { shuffle });
+};
+const albumContextMenu = useContextMenu('Album');
+const onClickEllipsisButton = (e: MouseEvent) =>
+  album.value && albumContextMenu.show(e, { album: album.value });
 
 const songContextMenu = useContextMenu('Song');
 const songsContextMenu = useContextMenu('Songs');
@@ -68,10 +78,19 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
             </template>
           </div>
           <div class="actions">
-            <Button size="xs">
-              Play
-              <PlayIcon style="height: 1.25rem; width: 1.25rem; margin-left: 0.5rem" />
-            </Button>
+            <Button
+              size="sm"
+              :icon="PlayIcon"
+              :title="`【${formatAlbumTitle(album?.title)}】を再生`"
+              @click="playAlbumSongs(false)"
+            />
+            <Button
+              size="sm"
+              :icon="ShuffleIcon"
+              :title="`【${formatAlbumTitle(album?.title)}】をシャッフル再生`"
+              @click="playAlbumSongs(true)"
+            />
+            <Button size="sm" :icon="EllipsisIcon" @click="onClickEllipsisButton" />
           </div>
         </div>
       </div>
@@ -165,6 +184,9 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
       align-self: flex-end;
       padding-bottom: 0.75rem;
       padding-right: 0.75rem;
+      display: flex;
+      align-items: center;
+      column-gap: 1rem;
     }
   }
 }

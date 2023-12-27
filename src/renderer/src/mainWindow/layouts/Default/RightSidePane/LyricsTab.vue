@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
-import { useLyricsStore, LyricsData } from '@renderer/mainWindow/stores/lyrics';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
+import { useLyricsStore, LyricsData } from '@mainWindow/stores/lyrics';
 
-import Button from '@renderer/commonComponents/Button/Button.vue';
+// import Button from '@renderer/commonComponents/Button/Button.vue';
 import Select from '@renderer/commonComponents/Select/Select.vue';
 
 const { currentSong } = useAudioPlayer();
@@ -55,8 +55,8 @@ watch(
           </Select>
         </label>
       </div>
-      <Button v-if="lyricsData?.type === 'METADATA'" size="xs">歌詞検索</Button>
-      <div class="type">{{ lyricsData?.type }}</div>
+      <!-- <Button v-if="lyricsData?.type === 'METADATA'" size="xs">歌詞検索</Button>
+      <div class="type">{{ lyricsData?.type[0] }}</div> -->
     </div>
   </div>
 </template>

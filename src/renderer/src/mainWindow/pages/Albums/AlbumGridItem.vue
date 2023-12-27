@@ -4,6 +4,7 @@ import { formatAlbumTitle } from '@renderer/commonUtils';
 import { Album } from '@shared/types';
 
 import PlayIcon from '@renderer/assets/icons/play.svg?component';
+import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
 import RecycleGridScrollerItem from '@mainWindow/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 
@@ -12,6 +13,7 @@ const props = defineProps<{ album: Album }>();
 type Emits = {
   clickItem: [e: MouseEvent];
   clickPlayButton: [e: MouseEvent];
+  clickShufflePlayButton: [e: MouseEvent];
   contextmenu: [e: MouseEvent];
 };
 const emits = defineEmits<Emits>();
@@ -22,7 +24,7 @@ const artistName = computed(() => {
   return (props.album.artists[0].name || '不明なアーティスト') + ' 他';
 });
 
-const albumName = computed(() => formatAlbumTitle(props.album.title));
+const title = computed(() => formatAlbumTitle(props.album.title));
 </script>
 
 <template>
@@ -32,18 +34,32 @@ const albumName = computed(() => formatAlbumTitle(props.album.title));
     @contextmenu="emits('contextmenu', $event)"
   >
     <Artwork :src="album.artworkPath" width="128px" height="128px" style="z-index: 1" />
+
     <div>
-      <div class="name" :title="albumName">{{ albumName }}</div>
+      <div class="title" :title="title">{{ title }}</div>
       <div class="artist">{{ artistName }}</div>
     </div>
+
     <div class="song-count">{{ album.songCount }}</div>
+
     <div
       v-ripple
-      class="play-button"
+      :title="`【${formatAlbumTitle(album.title)}】を再生`"
+      class="icon-button play-button"
       @click.stop="emits('clickPlayButton', $event)"
       @pointerdown.stop
     >
-      <PlayIcon class="icon-play"></PlayIcon>
+      <PlayIcon />
+    </div>
+
+    <div
+      v-ripple
+      :title="`【${formatAlbumTitle(album.title)}】をシャッフル再生`"
+      class="icon-button shuffle-play-button"
+      @click.stop="emits('clickShufflePlayButton', $event)"
+      @pointerdown.stop
+    >
+      <ShuffleIcon />
     </div>
   </RecycleGridScrollerItem>
 </template>
@@ -55,6 +71,17 @@ const albumName = computed(() => formatAlbumTitle(props.album.title));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.title {
+  font-size: map-get($fontSizes, md);
+  @include singleLineClamp;
+}
+
+.artist {
+  font-size: map-get($fontSizes, sm);
+  color: var(--secondary-text-color);
+  @include singleLineClamp;
 }
 
 .song-count {
@@ -72,10 +99,8 @@ const albumName = computed(() => formatAlbumTitle(props.album.title));
   z-index: 2;
 }
 
-.play-button {
+.icon-button {
   position: absolute;
-  top: 6rem;
-  right: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,8 +108,6 @@ const albumName = computed(() => formatAlbumTitle(props.album.title));
   height: 2rem;
   background: rgba(var(--primary-color-rgb), 0.4);
   border-radius: $borderRadiusFull;
-  z-index: 3;
-
   visibility: hidden;
   opacity: 0;
   transition:
@@ -95,26 +118,27 @@ const albumName = computed(() => formatAlbumTitle(props.album.title));
     background: rgba(var(--primary-color-rgb), 1);
   }
 
-  .icon-play {
+  svg {
     width: 1.5rem;
     height: 1.5rem;
     color: #fff;
   }
 }
 
-.vue-recycle-scroller__item-view.hover .play-button {
+.play-button {
+  top: 6rem;
+  right: 3.75rem;
+  z-index: 3;
+}
+
+.shuffle-play-button {
+  top: 6rem;
+  right: 1.25rem;
+  z-index: 4;
+}
+
+.vue-recycle-scroller__item-view.hover .icon-button {
   visibility: visible;
   opacity: 1;
-}
-
-.name {
-  font-size: map-get($fontSizes, md);
-  @include singleLineClamp;
-}
-
-.artist {
-  font-size: map-get($fontSizes, sm);
-  color: var(--secondary-text-color);
-  @include singleLineClamp;
 }
 </style>

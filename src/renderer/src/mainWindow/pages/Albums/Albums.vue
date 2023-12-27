@@ -3,12 +3,14 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
-import { useAlbumsSort } from '@renderer/mainWindow/composables/useSort';
-import { useAlbumsQuickSearch } from '@renderer/mainWindow/composables/useQuickSearch';
+import { useAlbumsSort } from '@mainWindow/composables/useSort';
+import { useAlbumsQuickSearch } from '@mainWindow/composables/useQuickSearch';
+import { useContextMenu } from '@mainWindow/composables/useContextMenu';
+import { Album } from '@shared/types';
 
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
-import SortWidget from '@renderer/mainWindow/components/SortWidget/SortWidget.vue';
-import QuickSearchInput from '@renderer/mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
+import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
+import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import AlbumGridItem from './AlbumGridItem.vue';
 
@@ -16,19 +18,18 @@ const { albumList } = storeToRefs(useEntitiesStore());
 const { sortedAlbums, sortKey, order } = useAlbumsSort(albumList);
 const { searchText, filteredAlbums } = useAlbumsQuickSearch(sortedAlbums);
 
-const showContextMenu = (_e: MouseEvent, _albumId: string) => {
-  // TODO: 未実装（コンテキストメニュー表示）
-};
+const albumContextMenu = useContextMenu('Album');
+const showContextMenu = (e: MouseEvent, album: Album) => albumContextMenu.show(e, { album });
 
 const router = useRouter();
 const onClickItem = (albumId: string) => router.push(`albums/${albumId}`);
 
 const { setQueue } = useAudioPlayer();
 const { getAlbumSongs } = useEntitiesStore();
-const onClickPlayButton = async (albumId: string) => {
+const playAlbumSongs = async (albumId: string, shuffle: boolean) => {
   const albumSongs = getAlbumSongs(albumId);
   const songIds = albumSongs.map((song) => song.id);
-  await setQueue(songIds);
+  await setQueue(songIds, { shuffle });
 };
 </script>
 
@@ -62,15 +63,16 @@ const onClickPlayButton = async (albumId: string) => {
         <AlbumGridItem
           :album="item"
           @click-item="onClickItem(item.id)"
-          @click-play-button="onClickPlayButton(item.id)"
-          @contextmenu="showContextMenu($event, item.id)"
+          @click-play-button="playAlbumSongs(item.id, false)"
+          @click-shuffle-play-button="playAlbumSongs(item.id, true)"
+          @contextmenu="showContextMenu($event, item)"
         />
       </template>
     </RecycleGridScroller>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .albums-page {
   height: 100%;
   width: 100%;

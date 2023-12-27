@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 
 import VolumeIcon from '@renderer/assets/icons/volume.svg?component';
 import VolumeMuteIcon from '@renderer/assets/icons/volume-mute.svg?component';

@@ -16,8 +16,6 @@ import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import SongListItem from './SongListItem.vue';
 
-const { setQueue } = useAudioPlayer();
-
 const { songList } = storeToRefs(useEntitiesStore());
 const { sortedSongs, sortKey, order } = useSongsSort(songList);
 const { searchText, filteredSongs } = useSongsQuickSearch(sortedSongs);
@@ -35,13 +33,12 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
   }
 };
 
+const { setQueue } = useAudioPlayer();
 const playSong = async (songId: string) => {
   const songIds = sortedSongs.value.map((song) => song.id);
   const theSongIndex = songIds.indexOf(songId);
   await setQueue(songIds, { firstSongIndex: theSongIndex });
 };
-const onClickArtwork = async (songId: string) => await playSong(songId);
-const onDoubleClickRow = async (songId: string) => await playSong(songId);
 </script>
 
 <template>
@@ -85,8 +82,8 @@ const onDoubleClickRow = async (songId: string) => await playSong(songId);
             :song="item"
             :selected="selectedSongs.has(index)"
             @click-row="onClickItem($event, index, item.id)"
-            @click-artwork="onClickArtwork(item.id)"
-            @double-click-row="onDoubleClickRow(item.id)"
+            @click-artwork="playSong(item.id)"
+            @double-click-row="playSong(item.id)"
             @click-ellipsis-button="showContextMenu($event, item)"
             @contextmenu="showContextMenu($event, item)"
           />

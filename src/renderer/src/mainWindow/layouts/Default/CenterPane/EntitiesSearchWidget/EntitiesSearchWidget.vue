@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { watchDebounced } from '@vueuse/core';
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { Album, Artist, Song } from '@shared/types';
 

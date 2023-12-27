@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 
 import PauseIcon from '@renderer/assets/icons/pause.svg?component';
 import BackwardIcon from '@renderer/assets/icons/backward.svg?component';

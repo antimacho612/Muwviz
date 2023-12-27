@@ -2,7 +2,7 @@
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { formatAlbumTitle, formatArtistName, toHyphenIfEmpty } from '@renderer/commonUtils';
 
-import Artwork from '@renderer/mainWindow/components/Artwork/Artwork.vue';
+import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 
 const { currentSong } = useAudioPlayer();
 </script>

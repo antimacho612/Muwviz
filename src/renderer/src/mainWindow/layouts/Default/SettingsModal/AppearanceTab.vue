@@ -2,7 +2,7 @@
 import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@mainWindow/stores/settings';
-import { sendMessageToSubWindowKey } from '@renderer/mainWindow/injectionKeys';
+import { sendMessageToSubWindowKey } from '@mainWindow/injectionKeys';
 import { AppearanceSettings, KeyValue } from '@shared/types';
 
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';

@@ -25,7 +25,7 @@ import ContextMenu from '@imengyu/vue3-context-menu';
 import '@renderer/assets/styles/contextMenu.scss';
 
 import App from './App.vue';
-import router from '@renderer/mainWindow/router/index';
+import router from '@mainWindow/router/index';
 
 import { audioPlayerKey, sendMessageToSubWindowKey } from './injectionKeys';
 import audioPlayer from './core/audioPlayer';

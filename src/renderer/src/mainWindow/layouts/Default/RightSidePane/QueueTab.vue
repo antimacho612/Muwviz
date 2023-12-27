@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
-import { useEntitiesStore } from '@renderer/mainWindow/stores/entities';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
+import { useEntitiesStore } from '@mainWindow/stores/entities';
 
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
@@ -28,10 +28,6 @@ const scrollToCurrentSong = () => {
 
 const onClickDeleteButton = async (queueId: string) => await removeSongsFromQueue(queueId);
 const onDoubleClickRow = async (queueId: string) => await playSongInQueue(queueId);
-const showContextMenu = (_: MouseEvent) => {
-  // TODO: コンテキストメニュー表示
-  alert('show context menu');
-};
 </script>
 
 <template>
@@ -60,7 +56,6 @@ const showContextMenu = (_: MouseEvent) => {
               :song="songsMap.get(item.songId)"
               @click-delete-button="onClickDeleteButton(item.queueId)"
               @double-click-row="onDoubleClickRow(item.queueId)"
-              @contextmenu="showContextMenu"
             />
           </template>
         </RecycleScroller>

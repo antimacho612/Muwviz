@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { GroupedItem } from './grouping';
 import { formatAlbumTitle } from '@renderer/commonUtils';
+import { Song } from '@shared/types';
 
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 import ArtistAlbumSong from './ArtistAlbumSong.vue';
@@ -14,9 +15,10 @@ const props = defineProps<Props>();
 
 type Emits = {
   clickPlay: [e: MouseEvent];
-  clickSongRow: [e: MouseEvent, index: number, songId: string];
-  doubleClickSongRow: [e: MouseEvent, index: number, songId: string];
-  contextmenu: [e: MouseEvent, index: number, songId: string];
+  clickSongRow: [e: MouseEvent, index: number, song: Song];
+  doubleClickSongRow: [e: MouseEvent, index: number, song: Song];
+  clickEllipsisButton: [e: MouseEvent, index: number, song: Song];
+  contextmenu: [e: MouseEvent, index: number, song: Song];
   clickOutsideOfList: [e: MouseEvent];
 };
 const emits = defineEmits<Emits>();
@@ -47,10 +49,10 @@ const computedSelectedSongs = computed(() => props.selectedSongs);
         :key="song.id"
         :song="song"
         :selected="computedSelectedSongs.has(groupedItem.baseIndex + index)"
-        @click-row="emits('clickSongRow', $event, index, song.id)"
-        @double-click-row="emits('doubleClickSongRow', $event, index, song.id)"
-        @click-ellipsis-button="emits('contextmenu', $event, index, song.id)"
-        @contextmenu="emits('contextmenu', $event, index, song.id)"
+        @click-row="emits('clickSongRow', $event, index, song)"
+        @double-click-row="emits('doubleClickSongRow', $event, index, song)"
+        @click-ellipsis-button="emits('clickEllipsisButton', $event, index, song)"
+        @contextmenu="emits('contextmenu', $event, index, song)"
       />
     </div>
   </div>

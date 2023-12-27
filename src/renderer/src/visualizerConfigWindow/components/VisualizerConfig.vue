@@ -89,9 +89,10 @@ const onChangeScaleXLabel = async () => {
   <div class="visualizer-configs">
     <ConfigGroup title="Core">
       <ConfigRow>
-        <ConfigItem item-name="Off / On" class="w-5rem">
+        <ConfigItem item-name="Off / On" class="w-4rem">
           <Switch
             v-model="currentVisualizerConfig.isOn"
+            size="sm"
             @change="
               onChangeValue({
                 key: 'isOn',
@@ -100,7 +101,7 @@ const onChangeScaleXLabel = async () => {
             "
           />
         </ConfigItem>
-        <Button size="xs" class="mt-auto" @click="onClickOpenPresetMenu">
+        <Button size="xs" class="mt-auto px-3" @click="onClickOpenPresetMenu">
           <span class="text-sm">プリセットメニュー...</span>
         </Button>
       </ConfigRow>

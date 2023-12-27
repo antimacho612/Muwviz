@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import {
   formatAlbumTitle,
   formatArtistName,
@@ -129,10 +129,10 @@ const { currentSong } = useAudioPlayer();
 
     .prop-name {
       flex: 0 0 auto;
-      width: 30%;
+      width: 32%;
       display: inline-flex;
       flex-shrink: 0;
-      font-weight: 500;
+      font-weight: bold;
     }
 
     .prop-value {
@@ -146,7 +146,7 @@ const { currentSong } = useAudioPlayer();
 
     &.two-items {
       .prop-value {
-        width: 22.5%;
+        width: 18%;
       }
     }
   }

@@ -4,6 +4,7 @@ import { formatArtistName } from '@renderer/commonUtils';
 import { Artist } from '@shared/types';
 
 import PlayIcon from '@renderer/assets/icons/play.svg?component';
+import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
 import RecycleGridScrollerItem from '@mainWindow/components/RecycleGridScroller/RecycleGridScrollerItem.vue';
 import ArtistImage from '@mainWindow/components/ArtistImage/ArtistImage.vue';
 
@@ -12,6 +13,7 @@ const props = defineProps<{ artist: Artist }>();
 type Emits = {
   clickItem: [e: MouseEvent];
   clickPlayButton: [e: MouseEvent];
+  clickShufflePlayButton: [e: MouseEvent];
   contextmenu: [e: MouseEvent];
 };
 const emits = defineEmits<Emits>();
@@ -28,14 +30,25 @@ const formattedArtistName = computed(() => formatArtistName(props.artist.name));
     <ArtistImage class="artist-image" />
 
     <div class="name" :title="formattedArtistName">{{ formattedArtistName }}</div>
+
     <div class="song-count">{{ artist.songCount }}</div>
+
     <div
       v-ripple
-      class="play-button"
+      class="icon-button play-button"
       @click.stop="emits('clickPlayButton', $event)"
       @pointerdown.stop
     >
-      <PlayIcon class="play-icon"></PlayIcon>
+      <PlayIcon class="play-icon" />
+    </div>
+
+    <div
+      v-ripple
+      class="icon-button shuffle-play-button"
+      @click.stop="emits('clickShufflePlayButton', $event)"
+      @pointerdown.stop
+    >
+      <ShuffleIcon class="play-icon" />
     </div>
   </RecycleGridScrollerItem>
 </template>
@@ -75,10 +88,8 @@ const formattedArtistName = computed(() => formatArtistName(props.artist.name));
   z-index: 2;
 }
 
-.play-button {
+.icon-button {
   position: absolute;
-  top: 6rem;
-  right: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,7 +97,6 @@ const formattedArtistName = computed(() => formatArtistName(props.artist.name));
   height: 2rem;
   background: rgba(var(--primary-color-rgb), 0.4);
   border-radius: $borderRadiusFull;
-  z-index: 3;
 
   visibility: hidden;
   opacity: 0;
@@ -98,14 +108,26 @@ const formattedArtistName = computed(() => formatArtistName(props.artist.name));
     background: rgba(var(--primary-color-rgb), 1);
   }
 
-  .play-icon {
+  svg {
     width: 1.5rem;
     height: 1.5rem;
     color: #fff;
   }
 }
 
-.vue-recycle-scroller__item-view.hover .play-button {
+.play-button {
+  top: 6rem;
+  right: 3.75rem;
+  z-index: 3;
+}
+
+.shuffle-play-button {
+  top: 6rem;
+  right: 1.25rem;
+  z-index: 4;
+}
+
+.vue-recycle-scroller__item-view.hover .icon-button {
   visibility: visible;
   opacity: 1;
 }

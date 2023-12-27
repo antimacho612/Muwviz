@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
+import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { formatAlbumTitle, formatArtistName } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
