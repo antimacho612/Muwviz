@@ -5,6 +5,7 @@ import CloseIcon from '@renderer/assets/icons/close.svg?component';
 import SettingsIcon from '@renderer/assets/icons/settings.svg?component';
 import LibraryIcon from '@renderer/assets/icons/library.svg?component';
 import SparklesIcon from '@renderer/assets/icons/sparkles.svg?component';
+import KeyboardIcon from '@renderer/assets/icons/keyboard.svg?component';
 import SystemIcon from '@renderer/assets/icons/system.svg?component';
 import InformationIcon from '@renderer/assets/icons/information.svg?component';
 import ChevronRightIcon from '@renderer/assets/icons/chevron-right.svg?component';
@@ -14,6 +15,7 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 import LibraryTab from './LibraryTab.vue';
 import AppearanceTab from './AppearanceTab.vue';
 import SystemTab from './SystemTab.vue';
+import HotKeyTab from './HotKeyTab.vue';
 import AboutTab from './AboutTab.vue';
 
 const props = defineProps<{ isOpen: boolean }>();
@@ -40,6 +42,11 @@ const TABS = [
     title: 'System',
     icon: SystemIcon,
     component: SystemTab,
+  },
+  {
+    title: 'Hot Key',
+    icon: KeyboardIcon,
+    component: HotKeyTab,
   },
   {
     title: 'About',

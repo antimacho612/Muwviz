@@ -10,12 +10,6 @@ export const useKeyboardHotKeys = () => {
           e.preventDefault();
           await audioPlayer.togglePlay();
           break;
-        case 'KeyM':
-          audioPlayer.toggleMute();
-          break;
-        case 'KeyR':
-          audioPlayer.toggleRepeat();
-          break;
         case 'ArrowLeft':
           if (e.altKey) {
             await audioPlayer.previousSong();
@@ -31,6 +25,12 @@ export const useKeyboardHotKeys = () => {
               Math.min(audioPlayer.currentTime.value + 5, audioPlayer.duration.value)
             );
           }
+          break;
+        case 'KeyM':
+          audioPlayer.toggleMute();
+          break;
+        case 'KeyR':
+          audioPlayer.toggleRepeat();
           break;
         case 'F5':
           location.reload();
