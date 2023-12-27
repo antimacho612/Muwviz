@@ -95,7 +95,7 @@ const createThumbarButtons = (window: BrowserWindow) => {
     {
       icon: nativeImage.createFromPath(prevIcon),
       click: () => sendPrevSongCommandToMain(),
-      tooltip: '前へ',
+      tooltip: '前の楽曲',
     },
     {
       icon: nativeImage.createFromPath(playIcon),
@@ -110,13 +110,9 @@ const createThumbarButtons = (window: BrowserWindow) => {
     {
       icon: nativeImage.createFromPath(nextIcon),
       click: () => sendNextSongCommandToMain(),
-      tooltip: '次へ',
+      tooltip: '次の楽曲',
     },
   ]);
-};
-
-const createTray = async () => {
-  // TODO: 未実装
 };
 
 export const getWindow = (isMainWindow = true) => {
@@ -159,8 +155,6 @@ export const createMainWindow = async () => {
   }
 
   createThumbarButtons(window);
-
-  await createTray();
 };
 
 const setupMessagePort = (subWindow: BrowserWindow) => {
@@ -251,7 +245,13 @@ export const isWindowAlwaysOnTop = (isMainWindow: boolean) => {
 
 export const setWindowAlwaysOnTop = (isMainWindow: boolean, flag: boolean) => {
   const window = getWindow(isMainWindow);
-  window && window.setAlwaysOnTop(flag);
+  window?.setAlwaysOnTop(flag);
+};
+
+export const showWindow = (isMainWindow: boolean) => {
+  const window = getWindow(isMainWindow);
+  window?.show();
+  window?.focus();
 };
 
 export const showConfirm = (isMainWindow: boolean, message: string, detail?: string) => {

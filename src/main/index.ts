@@ -1,9 +1,17 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { BrowserWindow, app, protocol } from 'electron';
+import { BrowserWindow, Menu, Tray, app, nativeImage, protocol } from 'electron';
 import log from 'electron-log/main';
 import path from 'path';
+import icon from '../../resources/icon.png?asset';
+import { createMainWindow, minimizeWindow, showWindow } from './window';
+import {
+  registerIpcChannels,
+  sendNextSongCommandToMain,
+  sendPauseCommandToMain,
+  sendPlayCommandToMain,
+  sendPrevSongCommandToMain,
+} from './ipc';
 import { STORES_DIR } from './core/paths';
-import { registerIpcChannels } from './ipc';
 import SongsStore from './stores/songs';
 import AlbumsStore from './stores/albums';
 import ArtistsStore from './stores/artists';
@@ -13,7 +21,6 @@ import ScannedFoldersStore from './stores/scannedFolders';
 import VisualizersConfigStore from './stores/visualizersConfig';
 import VisualizerPresetsStore from './stores/visualizerPresets';
 import { deleteOldLog } from './utils';
-import { createMainWindow } from './window';
 
 export let songsStore: SongsStore;
 export let albumsStore: AlbumsStore;
@@ -60,6 +67,8 @@ app.whenReady().then(async () => {
   registerIpcChannels();
 
   await createMainWindow();
+
+  createTray();
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) await createMainWindow();
@@ -118,4 +127,48 @@ function registerProtocols() {
     { scheme: 'muwviz', privileges: { secure: true, standard: true } },
     { scheme: 'media', privileges: { corsEnabled: true, supportFetchAPI: true } },
   ]);
+}
+
+function createTray() {
+  const tray = new Tray(nativeImage.createFromPath(icon));
+
+  tray.setToolTip('Muwviz');
+  tray.setTitle('Muwviz');
+
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      {
+        label: 'メインウィンドウを表示',
+        click: () => showWindow(true),
+      },
+      {
+        label: 'メインウィンドウを最小化',
+        click: () => minimizeWindow(true),
+      },
+      { type: 'separator' },
+      {
+        label: '前の楽曲',
+        click: () => sendPrevSongCommandToMain(),
+      },
+      {
+        label: '再生',
+        click: () => sendPlayCommandToMain(),
+      },
+      {
+        label: '停止',
+        click: () => sendPauseCommandToMain(),
+      },
+      {
+        label: '次の楽曲',
+        click: () => sendNextSongCommandToMain(),
+      },
+      { type: 'separator' },
+      {
+        label: '終了',
+        click: () => app.quit(),
+      },
+    ])
+  );
+
+  tray.addListener('click', () => showWindow(true));
 }

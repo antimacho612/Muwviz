@@ -1,6 +1,6 @@
-import { RouteRecordRaw, createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHashHistory } from 'vue-router';
 
-import DefaultLayout from '@mainWindow/layouts/Default/Default.vue';
+import Layout from '@renderer/mainWindow/layout/Layout.vue';
 
 import Songs from '@mainWindow/pages/Songs/Songs.vue';
 import Album from '@mainWindow/pages/Album/Album.vue';
@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '',
     redirect: '/songs',
-    component: DefaultLayout,
+    component: Layout,
     children: [
       {
         path: 'songs',
