@@ -1,6 +1,8 @@
+import { ElectronAPI } from '@preload/ipc';
+import { DEFAULT_SETTINGS, ScanProgress, Settings, UpdatableSettings } from '@shared/types';
+import { VISUALIZERS_DEFAULT_CONFIG, VISUALIZER_DEFAULT_PRESETS } from '@shared/visualizerTypes';
 import { app, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
-import { ElectronAPI } from '@preload/ipc';
 import {
   albumsStore,
   artistsStore,
@@ -8,11 +10,14 @@ import {
   scannedFoldersStore,
   settingsStore,
   songsStore,
-  visualizersConfigStore,
   visualizerPresetsStore,
+  visualizersConfigStore,
 } from '.';
+import { initializeLibrary, removeSongsFromLibrary } from './core/libraryManager';
 import { ARTWORKS_DIR, WAVEFORMS_DIR } from './core/paths';
 import { scanFolder } from './core/scanner';
+import { getWaveformData, saveWaveformData } from './core/waveformManager';
+import { showNotification } from './utils';
 import {
   closeWindow,
   createSubWindow,
@@ -25,16 +30,26 @@ import {
   setWindowAlwaysOnTop,
   showConfirm,
 } from './window';
-import { removeSongsFromLibrary } from './core/libraryManager';
-import { getWaveformData, saveWaveformData } from './core/waveformManager';
-import { showNotification } from './utils';
-import { ScanProgress, Settings, UpdatableSettings } from '@shared/types';
 
 const ipcMain = createIpcMain<ElectronAPI>();
 
 export const registerIpcChannels = () => {
   // アプリのバージョンを取得する
   ipcMain.handle('getAppVersion', async () => app.getVersion());
+  // アプリケーションを初期化する
+  ipcMain.handle('initializeApp', async () => {
+    await Promise.allSettled([
+      initializeLibrary(),
+      settingsStore.save(DEFAULT_SETTINGS),
+      visualizersConfigStore.save(VISUALIZERS_DEFAULT_CONFIG),
+      visualizerPresetsStore.save(VISUALIZER_DEFAULT_PRESETS),
+    ]);
+  });
+  // アプリケーションを再起動する
+  ipcMain.handle('relaunchApp', async () => {
+    app.relaunch();
+    app.exit();
+  });
 
   // アートワークの保存先を取得する
   ipcMain.handle('getArtworkPath', async () => ARTWORKS_DIR);
@@ -91,6 +106,8 @@ export const registerIpcChannels = () => {
     'scanFolder',
     async (_, folderPath, resortLibrary) => await scanFolder(folderPath, resortLibrary)
   );
+  // ライブラリを初期化する
+  ipcMain.handle('initializeLibrary', async () => await initializeLibrary());
   // ライブラリから楽曲を削除する
   ipcMain.handle(
     'removeSongsFromLibrary',

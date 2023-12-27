@@ -1,12 +1,16 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ title?: string }>(), { title: '' });
+interface Props {
+  title?: string;
+  description?: string;
+}
+withDefaults(defineProps<Props>(), { title: '', description: '' });
 </script>
 
 <template>
   <div class="settings-item">
     <h4 class="settings-item-title">{{ title }}</h4>
-
     <div class="settings-item-main">
+      <div v-if="description" class="settings-item-description">{{ description }}</div>
       <slot></slot>
     </div>
   </div>
@@ -36,6 +40,13 @@ withDefaults(defineProps<{ title?: string }>(), { title: '' });
     left: 1.5rem;
     background: var(--divider-color);
   }
+}
+
+.settings-item-description {
+  font-size: map-get($fontSizes, sm);
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
+  white-space: pre-line;
 }
 </style>
 

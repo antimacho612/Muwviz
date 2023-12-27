@@ -3,7 +3,6 @@ import { GetApiType } from 'electron-typescript-ipc';
 import {
   Album,
   Artist,
-  KeyValue,
   Lyrics,
   ScanProgress,
   ScannedFolder,
@@ -21,9 +20,20 @@ export type ElectronAPI = GetApiType<
     getAppVersion: () => Promise<string>;
 
     /**
+     * アプリケーションを初期化する
+     */
+    initializeApp: () => Promise<void>;
+
+    /**
+     * アプリケーションを再起動する
+     */
+    relaunchApp: () => Promise<void>;
+
+    /**
      * アートワークの保存先を取得する
      */
     getArtworkPath: () => Promise<string>;
+
     /**
      * 波形データの保存先を取得する
      */
@@ -134,6 +144,11 @@ export type ElectronAPI = GetApiType<
      * @param songIds 削除する楽曲のID
      */
     removeSongsFromLibrary: (songIds: string[]) => Promise<void>;
+
+    /**
+     * ライブラリを初期化する
+     */
+    initializeLibrary: () => Promise<void>;
 
     /**
      * 全アルバム情報を取得する
@@ -261,6 +276,8 @@ export type ElectronAPI = GetApiType<
 export const electronAPI: ElectronAPI = {
   invoke: {
     getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
+    initializeApp: async () => await ipcRenderer.invoke('initializeApp'),
+    relaunchApp: async () => await ipcRenderer.invoke('relaunchApp'),
     getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
     getWaveformPath: async () => await ipcRenderer.invoke('getWaveformPath'),
 
@@ -290,6 +307,7 @@ export const electronAPI: ElectronAPI = {
     getScannedFolders: async () => await ipcRenderer.invoke('getScannedFolders'),
     scanFolder: async (folderPath, resortLibrary) =>
       await ipcRenderer.invoke('scanFolder', folderPath, resortLibrary),
+    initializeLibrary: async () => await ipcRenderer.invoke('initializeLibrary'),
     removeSongsFromLibrary: async (songIds) =>
       await ipcRenderer.invoke('removeSongsFromLibrary', songIds),
 

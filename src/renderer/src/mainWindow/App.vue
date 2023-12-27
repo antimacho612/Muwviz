@@ -6,6 +6,7 @@ import { useSettingsStore } from '@mainWindow/stores/settings';
 import { useAppearance } from '@renderer/commonComposables/useAppearance';
 import { useWindowStore } from '@mainWindow/stores/window';
 import { useIpcEventHandler } from '@mainWindow/composables/useIpcEventHandler';
+import { useKeyboardHotKeys } from './composables/useKeyboardHotKeys';
 
 import Titlebar from '@renderer/commonComponents/Titlebar/Titlebar.vue';
 
@@ -13,6 +14,8 @@ const { fontFamily, theme, primaryColor } = storeToRefs(useSettingsStore());
 useAppearance(fontFamily, theme, primaryColor);
 
 useIpcEventHandler();
+
+useKeyboardHotKeys();
 
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
 

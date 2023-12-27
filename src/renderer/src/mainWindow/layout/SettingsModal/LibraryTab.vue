@@ -3,17 +3,35 @@ import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { openLibraryEditModalKey } from '@mainWindow/injectionKeys';
 import { useSettingsStore } from '@mainWindow/stores/settings';
+import { showNativeConfirm } from '@renderer/commonUtils';
+import { LibrarySettings } from '@shared/types';
 
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
-import { LibrarySettings } from '@shared/types';
+import { useToast } from 'vue-toastification';
+import { useLibraryManager } from '@renderer/mainWindow/core/libraryManager';
 
 const settings = useSettingsStore();
+
 const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeToRefs(settings);
 
 const openSettingsModal = inject(openLibraryEditModalKey);
+
+const { initializeLibrary } = useLibraryManager();
+const toast = useToast();
+const onClickInitializeLibraryButton = async () => {
+  const isOk = await showNativeConfirm(
+    true,
+    '確認',
+    'ライブラリを初期化してよろしいですか？\n※全楽曲および関連情報（アートワーク、歌詞、波形データ）がアプリケーションから削除されます。'
+  );
+  if (isOk) {
+    await initializeLibrary();
+    toast.info('ライブラリを初期化しました。');
+  }
+};
 
 const onClickOpenArtworkDirButton = async () =>
   await window.electron.invoke.openPath(artworkPath.value);
@@ -27,7 +45,10 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
 
 <template>
   <BaseSettingsTabPanel>
-    <BaseSettingsItem title="スキャン済みフォルダ">
+    <BaseSettingsItem
+      title="スキャン済みフォルダ"
+      :description="`フォルダのスキャン履歴が下記に表示されます。\n追加でフォルダをスキャンする場合は、「フォルダを追加...」ボタンを押してください。`"
+    >
       <div class="max-h-15rem overflow-auto">
         <table class="scanned-folders-table">
           <thead>
@@ -47,12 +68,18 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
         </table>
       </div>
 
-      <Button size="sm" class="add-folder-button" @click="openSettingsModal">
-        フォルダを追加...
-      </Button>
+      <div class="flex align-items-center justify-content-center mt-4 gap-8">
+        <Button size="sm" @click="openSettingsModal">フォルダを追加...</Button>
+        <Button size="xs" class="initialize-library-button" @click="onClickInitializeLibraryButton">
+          ライブラリを初期化
+        </Button>
+      </div>
     </BaseSettingsItem>
 
-    <BaseSettingsItem title="アートワークの保存場所">
+    <BaseSettingsItem
+      title="アートワークの保存場所"
+      description="スキャンした楽曲のアートワークが保存されているフォルダです。"
+    >
       <div class="flex align-items-center justify-content-between column-gap-1">
         <span class="artwork-dir">{{ artworkPath }}</span>
         <Button size="sm" class="flex-shrink-0" @click="onClickOpenArtworkDirButton">
@@ -61,7 +88,10 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
       </div>
     </BaseSettingsItem>
 
-    <BaseSettingsItem title="波形データのキャッシュ">
+    <BaseSettingsItem
+      title="波形データのキャッシュ"
+      :description="`楽曲の再生時に生成した波形データ（アプリケーション下部のシークバー）をキャッシュするかどうかを設定します。\n※キャッシュしない場合、楽曲を再生してから波形が表示されるまで少し時間がかかります。`"
+    >
       <div class="flex align-items-center column-gap-3">
         <Switch
           v-model="cacheWaveformData"
@@ -71,7 +101,10 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
       </div>
     </BaseSettingsItem>
 
-    <BaseSettingsItem title="波形データの保存場所">
+    <BaseSettingsItem
+      title="波形データの保存場所"
+      description="波形データが保存されているフォルダです。"
+    >
       <div class="flex align-items-center justify-content-between column-gap-1">
         <span class="waveform-dir">{{ waveformPath }}</span>
         <Button size="sm" class="flex-shrink-0" @click="onClickOpenWaveformDirButton">
@@ -103,10 +136,9 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
   }
 }
 
-.add-folder-button {
-  display: flex;
-  width: 50%;
-  margin: 2rem auto 0;
+.initialize-library-button {
+  --ripple-color: rgba(255, 0, 0, 0.3);
+  color: red !important;
 }
 
 .artwork-dir,

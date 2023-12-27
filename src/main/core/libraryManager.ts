@@ -135,14 +135,15 @@ export const removeSongsFromLibrary = async (songIds: string[]) => {
 };
 
 /**
- * ライブラリをクリアする
+ * ライブラリを初期化する
  */
-export const clearLibrary = async () =>
+export const initializeLibrary = async () =>
   await Promise.allSettled([
     songsStore.save([]),
     albumsStore.save([]),
     artistsStore.save([]),
     lyricsStore.save({}),
+    scannedFoldersStore.save([]),
     deleteAllArtworks(),
     deleteAllWaveformData(),
   ]);

@@ -3,7 +3,7 @@ import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSettingsStore } from '@mainWindow/stores/settings';
 import { sendMessageToSubWindowKey } from '@mainWindow/injectionKeys';
-import { AppearanceSettings, KeyValue, UpdatableSettings } from '@shared/types';
+import { AppearanceSettings, DEFAULT_SETTINGS, KeyValue, UpdatableSettings } from '@shared/types';
 
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
@@ -24,24 +24,30 @@ const onChangeValue = async <K extends keyof AppearanceSettings>(
       channel: 'changeAppearance',
       payload: { key, value } as KeyValue<AppearanceSettings>,
     });
-
-  // FIXME:
   await settings.saveChange(key, value as UpdatableSettings[K]);
 };
 </script>
 
 <template>
   <BaseSettingsTabPanel>
-    <BaseSettingsItem title="フォント">
+    <BaseSettingsItem
+      title="フォント"
+      :description="`アプリケーション全体で使用するフォントを設定します。（デフォルト: ${DEFAULT_SETTINGS.fontFamily}）`"
+    >
       <InputText
         v-model="fontFamily"
         size="sm"
         style="width: 75%"
         @change="onChangeValue('fontFamily', fontFamily)"
-      ></InputText>
+      />
     </BaseSettingsItem>
 
-    <BaseSettingsItem title="テーマ">
+    <BaseSettingsItem
+      title="テーマ"
+      :description="`アプリケーションのテーマを設定します。（デフォルト: ${
+        DEFAULT_SETTINGS.theme === 'Light' ? 'ライト' : 'ダーク'
+      }）`"
+    >
       <div class="flex" style="column-gap: 2rem">
         <Radio
           v-model="theme"
@@ -60,7 +66,10 @@ const onChangeValue = async <K extends keyof AppearanceSettings>(
       </div>
     </BaseSettingsItem>
 
-    <BaseSettingsItem title="プライマリーカラー">
+    <BaseSettingsItem
+      title="プライマリーカラー"
+      :description="`アプリケーション全体で使用するプライマリカラーを選択してください。\n※LighterカラーとLightestカラーはプライマリーカラーから自動で生成されます。`"
+    >
       <div class="flex align-items-center" style="gap: 3rem">
         <ColorPicker
           v-model="primaryColor"
@@ -72,15 +81,23 @@ const onChangeValue = async <K extends keyof AppearanceSettings>(
           class="flex align-items-center border-radius-lg column-gap-3"
           style="padding: 0.75rem 1.5rem; border: 1px solid var(--divider-color)"
         >
-          プレビュー
-          <div class="preview-swatch" style="background: var(--primary-color)" />
-          <span style="color: var(--primary-color)">Primary</span>
+          <div class="flex-shrink-0">プレビュー</div>
+          <div class="flex flex-wrap align-items-center column-gap-3 row-gap-2">
+            <div class="flex align-items-center column-gap-3">
+              <div class="preview-swatch" style="background: var(--primary-color)" />
+              <span style="color: var(--primary-color)">Primary</span>
+            </div>
 
-          <div class="preview-swatch" style="background: var(--primary-color--lighter)" />
-          <span style="color: var(--primary-color--lighter)">Lighter</span>
+            <div class="flex align-items-center column-gap-3">
+              <div class="preview-swatch" style="background: var(--primary-color--lighter)" />
+              <span style="color: var(--primary-color--lighter)">Lighter</span>
+            </div>
 
-          <div class="preview-swatch" style="background: var(--primary-color--lightest)" />
-          <span style="color: var(--primary-color--lightest)">Lightest</span>
+            <div class="flex align-items-center column-gap-3">
+              <div class="preview-swatch" style="background: var(--primary-color--lightest)" />
+              <span style="color: var(--primary-color--lightest)">Lightest</span>
+            </div>
+          </div>
         </div>
       </div>
     </BaseSettingsItem>
@@ -109,6 +126,7 @@ const onChangeValue = async <K extends keyof AppearanceSettings>(
 }
 
 .preview-swatch {
+  flex-shrink: 0;
   margin-left: 1rem;
   height: 2rem;
   width: 2rem;

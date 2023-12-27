@@ -15,7 +15,7 @@ import Timeline from './Timeline.vue';
 import SongInfo from './SongInfo.vue';
 import VolumeControl from './VolumeControl.vue';
 
-const { playerState, repeat, previousSong, togglePlay, nextSong, setRepeat } = useAudioPlayer();
+const { playerState, repeat, previousSong, togglePlay, nextSong, toggleRepeat } = useAudioPlayer();
 
 const playerDisabled = computed(
   () => playerState.value === 'UnReady' || playerState.value === 'Loading'
@@ -40,8 +40,7 @@ const toggleRepeatButtonAttrs = computed(() => ({
 const onClickPrevButton = async () => await previousSong();
 const onClickPlayPauseButton = async () => await togglePlay();
 const onClickNextButton = async () => await nextSong(playerState.value === 'Playing');
-const onClickRepeatButton = () =>
-  setRepeat(repeat.value === 'Off' ? 'All' : repeat.value === 'All' ? 'Once' : 'Off');
+const onClickRepeatButton = () => toggleRepeat();
 </script>
 
 <template>

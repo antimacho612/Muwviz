@@ -196,13 +196,20 @@ const audioPlayer = () => {
     if (!isMuted.value && volume.value < 10) setVolume(10);
   };
 
-  const setCurrentTime = (currentTime: number) => {
-    audio.currentTime = currentTime;
+  const toggleRepeat = () => {
+    if (repeat.value === 'Off') {
+      repeat.value = 'All';
+    } else if (repeat.value === 'All') {
+      repeat.value = 'Once';
+    } else {
+      repeat.value = 'Off';
+    }
+
+    audio.loop = repeat.value === 'Once';
   };
 
-  const setRepeat = (payload: RepeatState) => {
-    audio.loop = payload === 'Once';
-    repeat.value = payload;
+  const setCurrentTime = (currentTime: number) => {
+    audio.currentTime = currentTime;
   };
 
   /**
@@ -311,10 +318,10 @@ const audioPlayer = () => {
     nextSong,
     previousSong,
 
+    setCurrentTime,
     setVolume,
     toggleMute,
-    setCurrentTime,
-    setRepeat,
+    toggleRepeat,
 
     playSongInQueue,
     setQueue,

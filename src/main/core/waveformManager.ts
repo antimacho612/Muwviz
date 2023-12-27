@@ -50,7 +50,8 @@ export const deleteAllWaveformData = async () => {
   const contents = await fsAsync.readdir(WAVEFORMS_DIR);
   contents
     .filter((content) => content.endsWith('.dat'))
-    .forEach(async (datFilePath) => {
+    .forEach(async (datFile) => {
+      const datFilePath = path.join(WAVEFORMS_DIR, datFile);
       try {
         await fsAsync.unlink(datFilePath);
       } catch (e) {

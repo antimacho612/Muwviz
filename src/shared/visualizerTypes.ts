@@ -83,46 +83,48 @@ export type VisualizerOptions = {
   colorMode: ColorMode;
   gradientLeft: string;
   gradientRight: string;
-  // When set to true and channelLayout is dual-vertical, the gradient will be split between channels.
-  // This option has no effect on vertical gradients, except on radial spectrum
+  // NOTE:
+  //        When set to true and channelLayout is dual-vertical, the gradient will be split between channels.
+  //        This option has no effect on vertical gradients, except on radial spectrum
   splitGradient: boolean;
 
   barSpace: number;
   alphaBars: boolean;
   ansiBands: boolean;
-  // modes 1-8 only.
+  // NOTE: modes 1-8 only.
   ledBars: boolean;
-  // This option is only effective for frequency bands modes, when ledBars is true and colorMode is set to ‘gradient’.
+  // NOTE: This option is only effective for frequency bands modes, when ledBars is true and colorMode is set to ‘gradient’.
   trueLeds: boolean;
 
-  // This has no effect when ledBars or lumiBars are set to true.
+  // NOTE: This has no effect when ledBars or lumiBars are set to true.
   roundBars: boolean;
-  // This is only effective for frequency bands modes
-  // lumiBars takes precedence over alphaBars and outlineBars, except on radial spectrum.
+  // NOTE:
+  //        This is only effective for frequency bands modes
+  //        lumiBars takes precedence over alphaBars and outlineBars, except on radial spectrum.
   lumiBars: boolean;
-  // When true and mode is set to one of the bands modes, analyzer bars are rendered outlined, with customizable fillAlpha and lineWidth
+  // NOTE: When true and mode is set to one of the bands modes, analyzer bars are rendered outlined, with customizable fillAlpha and lineWidth
   outlineBars: boolean;
 
   lineWidth: number;
   fillAlpha: number;
-  // mode !== 0. In radial view, ledBars and lumiBars effects are disabled.
+  // NOTE: mode !== 0. In radial view, ledBars and lumiBars effects are disabled.
   radial: boolean;
   spinSpeed: number;
-  // This has no effect when lumiBars is true.
+  // NOTE: This has no effect when lumiBars is true.
   reflexRatio: number;
-  // when reflexRatio > 0
+  // NOTE: when reflexRatio > 0
   reflexAlpha: number;
-  // when reflexRatio > 0
+  // NOTE: when reflexRatio > 0
   reflexBright: number;
-  // when reflexRatio > 0 && reflexRatio !== .5
+  // NOTE: when reflexRatio > 0 && reflexRatio !== .5
   reflexFit: boolean;
   mirror: Mirror;
   showPeaks: boolean;
-  // When true and mode is 10 (Graph) and showPeaks is true, peaks are connected into a continuous line. It has no effect in other modes.
+  // NOTE: When true and mode is 10 (Graph) and showPeaks is true, peaks are connected into a continuous line. It has no effect in other modes.
   peakLine: boolean;
   showScaleX: boolean;
   noteLabels: boolean;
-  // This option has no effect when radial or lumiBars are set to true.
+  // NOTE: This option has no effect when radial or lumiBars are set to true.
   showScaleY: boolean;
 };
 
@@ -331,5 +333,20 @@ export const VISUALIZER_DEFAULT_PRESETS: VisualizerPreset[] = [
     name: 'Default3（Circle Lines）',
     canDelete: false,
     config: VISUALIZER_DEFAULT_PRESET3,
+  },
+];
+
+export const VISUALIZERS_DEFAULT_CONFIG: VisualizerConfig[] = [
+  {
+    isOn: true,
+    ...VISUALIZER_DEFAULT_PRESET1,
+  },
+  {
+    isOn: true,
+    ...VISUALIZER_DEFAULT_PRESET2,
+  },
+  {
+    isOn: true,
+    ...VISUALIZER_DEFAULT_PRESET3,
   },
 ];
