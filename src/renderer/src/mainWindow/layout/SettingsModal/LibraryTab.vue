@@ -3,6 +3,9 @@ import { inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { openLibraryEditModalKey } from '@mainWindow/injectionKeys';
 import { useSettingsStore } from '@mainWindow/stores/settings';
+import { useToast } from 'vue-toastification';
+import { useLibraryManager } from '@renderer/mainWindow/core/libraryManager';
+import { useAudioPlayer } from '@renderer/mainWindow/composables/useAudioPlayer';
 import { showNativeConfirm } from '@renderer/commonUtils';
 import { LibrarySettings } from '@shared/types';
 
@@ -10,15 +13,13 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 import Switch from '@renderer/commonComponents/Switch/Switch.vue';
 import BaseSettingsTabPanel from './BaseSettingsTabPanel.vue';
 import BaseSettingsItem from './BaseSettingsItem.vue';
-import { useToast } from 'vue-toastification';
-import { useLibraryManager } from '@renderer/mainWindow/core/libraryManager';
 
 const settings = useSettingsStore();
-
 const { scannedFolders, artworkPath, waveformPath, cacheWaveformData } = storeToRefs(settings);
 
 const openSettingsModal = inject(openLibraryEditModalKey);
 
+const audioPlayer = useAudioPlayer();
 const { initializeLibrary } = useLibraryManager();
 const toast = useToast();
 const onClickInitializeLibraryButton = async () => {
@@ -28,6 +29,7 @@ const onClickInitializeLibraryButton = async () => {
     'ライブラリを初期化してよろしいですか？\n※全楽曲および関連情報（アートワーク、歌詞、波形データ）がアプリケーションから削除されます。'
   );
   if (isOk) {
+    audioPlayer.clearQueue(true);
     await initializeLibrary();
     toast.info('ライブラリを初期化しました。');
   }

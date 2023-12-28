@@ -273,8 +273,8 @@ const audioPlayer = () => {
   /**
    * キューをクリアする
    */
-  const clearQueue = () => {
-    if (queue.length.value <= 1) {
+  const clearQueue = (all = false) => {
+    if (all || queue.length.value <= 1) {
       // 全削除
       queue.clear(true);
       deactivateAudio();
@@ -282,8 +282,6 @@ const audioPlayer = () => {
       // 現在の曲以外を削除
       queue.clear(false);
     }
-
-    toast.info('キューから曲を削除しました。');
   };
 
   // メディアセッションのイベントハンドリング

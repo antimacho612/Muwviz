@@ -38,7 +38,7 @@ export const addParsedSongToLibrary = (scanId: string, parsedSong: ParsedSong) =
     albumId = crypto.randomUUID();
     albumsStore.add({
       id: albumId,
-      artists: [{ id: artistId, name: parsedSong.artist }],
+      artists: parsedSong.album === '' ? [] : [{ id: artistId, name: parsedSong.artist }],
       title: parsedSong.album,
       artworkPath: parsedSong.artworkPath,
       songCount: 1,

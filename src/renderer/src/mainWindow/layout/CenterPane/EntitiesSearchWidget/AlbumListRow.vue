@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { formatAlbumTitle } from '@renderer/commonUtils';
+import { formatAlbumTitle, formatArtistName } from '@renderer/commonUtils';
 import { Album } from '@shared/types';
 
 import RecycleScrollerItem from '@mainWindow/components/RecycleScrollerItem/RecycleScrollerItem.vue';
@@ -15,9 +15,9 @@ type Emits = {
 const emits = defineEmits<Emits>();
 
 const artistName = computed(() => {
-  if (!props.album.artists) return '不明なアーティスト';
-  if (props.album.artists.length === 1) return props.album.artists[0].name || '不明なアーティスト';
-  return (props.album.artists[0].name || '不明なアーティスト') + ' 他';
+  if (!props.album.artists) return formatArtistName();
+  if (props.album.artists.length === 1) return formatArtistName(props.album.artists[0].name);
+  return `${formatArtistName(props.album.artists[0].name)} 他`;
 });
 
 const title = computed(() => formatAlbumTitle(props.album.title));

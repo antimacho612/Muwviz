@@ -45,7 +45,7 @@ const playAlbumSongs = async (albumId: string, shuffle: boolean) => {
         v-model:sort-by="sortKey"
         v-model:order="order"
         :items="[
-          { key: 'Name', label: 'タイトル' },
+          { key: 'Title', label: 'タイトル' },
           { key: 'SongCount', label: '曲数' },
         ]"
       />

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
+import { useToast } from 'vue-toastification';
 
 import Button from '@renderer/commonComponents/Button/Button.vue';
 import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
@@ -28,6 +29,12 @@ const scrollToCurrentSong = () => {
 
 const onClickDeleteButton = async (queueId: string) => await removeSongsFromQueue(queueId);
 const onDoubleClickRow = async (queueId: string) => await playSongInQueue(queueId);
+
+const toast = useToast();
+const onClickClearQueueButton = () => {
+  clearQueue();
+  toast.info('キューから曲を削除しました。');
+};
 </script>
 
 <template>
@@ -36,7 +43,12 @@ const onDoubleClickRow = async (queueId: string) => await playSongInQueue(queueI
     <template v-else>
       <div class="actions">
         <Button size="xs" :icon="ShuffleIcon" title="キューをシャッフル" @click="shuffleQueue" />
-        <Button size="xs" :icon="DeleteIcon" title="キューをクリア" @click="clearQueue"></Button>
+        <Button
+          size="xs"
+          :icon="DeleteIcon"
+          title="キューをクリア"
+          @click="onClickClearQueueButton"
+        />
       </div>
 
       <div class="queue-list">
