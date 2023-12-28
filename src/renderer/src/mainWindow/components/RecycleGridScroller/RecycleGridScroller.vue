@@ -29,11 +29,18 @@ const resizeScroller = () => {
 
 onMounted(() => resizeScroller());
 const onResizeScroller = useDebounceFn(resizeScroller, 300);
+
+const scroller = ref();
+const scrollToItem = (index: number) => {
+  if (scroller.value) scroller.value.scrollToItem(index);
+};
+defineExpose({ scrollToItem });
 </script>
 
 <template>
   <div ref="scrollerWrapperEl" class="scroller-wrapper">
     <RecycleScroller
+      ref="scroller"
       class="grid-scroller"
       :items="items"
       :key-field="keyField"

@@ -49,19 +49,27 @@ export const useSongsSort = (
   };
 };
 
-export const useAlbumsSort = (albums: Ref<Album[]>) => {
-  const sortedAlbums = ref<Album[]>([...albums.value]);
-  const sortKey = ref<AlbumsSortKey>('Title');
-  const order = ref<Order>('Asc');
+export const useAlbumsSort = (
+  albums: Ref<Album[]>,
+  defaultSortKey?: AlbumsSortKey,
+  defaultOrder?: Order
+) => {
+  const sortedAlbums = ref<Album[]>([]);
+  const sortKey = ref<AlbumsSortKey>(defaultSortKey ?? 'Title');
+  const order = ref<Order>(defaultOrder ?? 'Asc');
 
-  watch([albums, sortKey, order], () => {
+  const sort = () => {
     if (sortKey.value === 'Title' && order.value === 'Asc') {
       sortedAlbums.value = [...albums.value];
     } else {
       const sortOptions = getAlbumsSortOptions(sortKey.value, order.value);
       sortedAlbums.value = sortArrayOfObjects([...albums.value], sortOptions);
     }
-  });
+  };
+
+  sort();
+
+  watch([albums, sortKey, order], () => sort());
 
   return {
     sortedAlbums,
@@ -70,19 +78,27 @@ export const useAlbumsSort = (albums: Ref<Album[]>) => {
   };
 };
 
-export const useArtistsSort = (artists: Ref<Artist[]>) => {
-  const sortedArtists = ref<Artist[]>([...artists.value]);
-  const sortKey = ref<ArtistsSortKey>('Name');
-  const order = ref<Order>('Asc');
+export const useArtistsSort = (
+  artists: Ref<Artist[]>,
+  defaultSortKey?: ArtistsSortKey,
+  defaultOrder?: Order
+) => {
+  const sortedArtists = ref<Artist[]>([]);
+  const sortKey = ref<ArtistsSortKey>(defaultSortKey ?? 'Name');
+  const order = ref<Order>(defaultOrder ?? 'Asc');
 
-  watch([artists, sortKey, order], () => {
+  const sort = () => {
     if (sortKey.value === 'Name' && order.value === 'Asc') {
       sortedArtists.value = [...artists.value];
     } else {
       const sortOptions = getArtistsSortOptions(sortKey.value, order.value);
       sortedArtists.value = sortArrayOfObjects([...artists.value], sortOptions);
     }
-  });
+  };
+
+  sort();
+
+  watch([artists, sortKey, order], () => sort());
 
   return {
     sortedArtists,

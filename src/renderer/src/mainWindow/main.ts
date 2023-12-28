@@ -26,6 +26,7 @@ import '@renderer/assets/styles/contextMenu.scss';
 
 import App from './App.vue';
 import router from '@mainWindow/router/index';
+import HistoryStatePlugin from 'vue-history-state';
 
 import { audioPlayerKey, sendMessageToSubWindowKey } from './injectionKeys';
 import audioPlayer from './core/audioPlayer';
@@ -59,6 +60,9 @@ await fetchDatas();
 
 // Router
 app.use(router);
+
+// History State
+app.use(HistoryStatePlugin, { maxHistoryLength: 5 });
 
 // Ripple Effect Directive
 app.use(VWave, getRippleEffectOptions());

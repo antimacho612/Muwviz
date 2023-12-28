@@ -4,23 +4,24 @@ import { Album, Artist, Song } from '@shared/types';
 
 const useQuickSearch = <T>(
   items: Ref<T[]>,
-  filterCallbackFn: (item: T, searchStr: string) => boolean
+  filterCallbackFn: (item: T, searchStr: string) => boolean,
+  defaultSearchText?: string
 ) => {
-  const searchText = ref('');
-  const filteredItems = ref<T[]>(items.value) as Ref<T[]>;
+  const searchText = ref(defaultSearchText ?? '');
+  const filteredItems = ref<T[]>([]) as Ref<T[]>;
 
-  watchDebounced(
-    [searchText, items],
-    () => {
-      if (searchText.value === '') {
-        filteredItems.value = items.value;
-      } else {
-        const searchStr = searchText.value.toLocaleLowerCase();
-        filteredItems.value = items.value.filter((item) => filterCallbackFn(item, searchStr));
-      }
-    },
-    { debounce: 500, maxWait: 1000 }
-  );
+  const filter = () => {
+    if (searchText.value === '') {
+      filteredItems.value = items.value;
+    } else {
+      const searchStr = searchText.value.toLocaleLowerCase();
+      filteredItems.value = items.value.filter((item) => filterCallbackFn(item, searchStr));
+    }
+  };
+
+  filter();
+
+  watchDebounced([searchText, items], () => filter(), { debounce: 500, maxWait: 1000 });
 
   return { searchText, filteredItems };
 };
@@ -38,10 +39,10 @@ export const useSongsQuickSearch = (songs: Ref<Song[]>) => {
   };
 };
 
-export const useAlbumsQuickSearch = (albums: Ref<Album[]>) => {
+export const useAlbumsQuickSearch = (albums: Ref<Album[]>, defaultSearchText?: string) => {
   const filterCb = (album: Album, searchStr: string) =>
     album.title.toLocaleLowerCase().includes(searchStr);
-  const { searchText, filteredItems } = useQuickSearch<Album>(albums, filterCb);
+  const { searchText, filteredItems } = useQuickSearch<Album>(albums, filterCb, defaultSearchText);
 
   return {
     searchText,
@@ -49,10 +50,14 @@ export const useAlbumsQuickSearch = (albums: Ref<Album[]>) => {
   };
 };
 
-export const useArtistsQuickSearch = (artists: Ref<Artist[]>) => {
+export const useArtistsQuickSearch = (artists: Ref<Artist[]>, defaultSearchText?: string) => {
   const filterCb = (artist: Artist, searchStr: string) =>
     artist.name.toLocaleLowerCase().includes(searchStr);
-  const { searchText, filteredItems } = useQuickSearch<Artist>(artists, filterCb);
+  const { searchText, filteredItems } = useQuickSearch<Artist>(
+    artists,
+    filterCb,
+    defaultSearchText
+  );
 
   return {
     searchText,

@@ -75,12 +75,14 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
 <template>
   <div class="artist-page">
     <PageHeader>
-      <BackButton to="/artists" />
+      <BackButton :to="$route.query.back ? 'Back' : '/artists'" />
     </PageHeader>
 
     <div class="artist-header">
       <ArtistImage class="image" />
+
       <span class="name">{{ formatArtistName(artist?.name) }}</span>
+
       <div class="actions">
         <Button
           size="sm"

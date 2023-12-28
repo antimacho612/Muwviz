@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { nextTick, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { useArtistsHistoryState } from '@renderer/mainWindow/composables/useHistoryState';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { useArtistsSort } from '@mainWindow/composables/useSort';
@@ -14,15 +16,39 @@ import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearc
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import ArtistGridItem from './ArtistGridItem.vue';
 
+const { backupData } = useArtistsHistoryState();
+
 const { artistList } = storeToRefs(useEntitiesStore());
-const { sortedArtists, sortKey, order } = useArtistsSort(artistList);
-const { searchText, filteredArtists } = useArtistsQuickSearch(sortedArtists);
+const { sortedArtists, sortKey, order } = useArtistsSort(
+  artistList,
+  backupData.value.sortKey,
+  backupData.value.order
+);
+const { searchText, filteredArtists } = useArtistsQuickSearch(
+  sortedArtists,
+  backupData.value.searchText
+);
+
+const scroller = ref();
+onMounted(() => {
+  if (!scroller.value || !backupData.value.scrollTo) return;
+  if (backupData.value.scrollTo > filteredArtists.value.length - 1) return;
+  nextTick(() => scroller.value.scrollToItem(backupData.value.scrollTo));
+});
 
 const artistContextMenu = useContextMenu('Artist');
 const showContextMenu = (e: MouseEvent, artist: Artist) => artistContextMenu.show(e, { artist });
 
 const router = useRouter();
-const onClickItem = (artistId: string) => router.push(`artists/${artistId}`);
+const onClickItem = (index: number, artistId: string) => {
+  backupData.value = {
+    searchText: searchText.value,
+    sortKey: sortKey.value,
+    order: order.value,
+    scrollTo: index,
+  };
+  router.push(`artists/${artistId}?back=true`);
+};
 
 const { setQueue } = useAudioPlayer();
 const { getArtistSongs } = useEntitiesStore();
@@ -37,7 +63,6 @@ const playArtistSongs = async (artistId: string, shuffle: boolean) => {
   <div class="artist-list-page">
     <PageHeader>
       <template #title>アーティスト ({{ artistList.length }})</template>
-      <template #actions></template>
     </PageHeader>
 
     <div class="widgets">
@@ -53,16 +78,17 @@ const playArtistSongs = async (artistId: string, shuffle: boolean) => {
     </div>
 
     <RecycleGridScroller
+      ref="scroller"
       scroller-height="calc(100% - 6rem)"
       :items="filteredArtists"
       key-field="id"
       :item-height="192"
       :base-item-width="176"
     >
-      <template #default="{ item }">
+      <template #default="{ index, item }">
         <ArtistGridItem
           :artist="item"
-          @click-item="onClickItem(item.id)"
+          @click-item="onClickItem(index, item.id)"
           @click-play-button="playArtistSongs(item.id, false)"
           @click-shuffle-play-button="playArtistSongs(item.id, true)"
           @contextmenu="showContextMenu($event, item)"

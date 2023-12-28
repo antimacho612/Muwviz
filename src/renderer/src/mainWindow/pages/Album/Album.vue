@@ -61,7 +61,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
 <template>
   <div class="album-page">
     <PageHeader>
-      <BackButton to="/albums" />
+      <BackButton :to="$route.query.back ? 'Back' : '/albums'" />
     </PageHeader>
 
     <div class="header">

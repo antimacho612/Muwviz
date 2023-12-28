@@ -62,6 +62,7 @@
     "vite": "^4.4.9",
     "vite-svg-loader": "^5.1.0",
     "vue": "^3.3.7",
+    "vue-history-state": "^0.14.0",
     "vue-router": "^4.2.5",
     "vue-toastification": "^2.0.0-rc.5",
     "vue-tsc": "^1.8.8",

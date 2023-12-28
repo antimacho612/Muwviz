@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { nextTick, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { useAlbumsHistoryState } from '@renderer/mainWindow/composables/useHistoryState';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
 import { useAlbumsSort } from '@mainWindow/composables/useSort';
@@ -14,15 +16,39 @@ import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearc
 import RecycleGridScroller from '@mainWindow/components/RecycleGridScroller/RecycleGridScroller.vue';
 import AlbumGridItem from './AlbumGridItem.vue';
 
+const { backupData } = useAlbumsHistoryState();
+
 const { albumList } = storeToRefs(useEntitiesStore());
-const { sortedAlbums, sortKey, order } = useAlbumsSort(albumList);
-const { searchText, filteredAlbums } = useAlbumsQuickSearch(sortedAlbums);
+const { sortedAlbums, sortKey, order } = useAlbumsSort(
+  albumList,
+  backupData.value.sortKey,
+  backupData.value.order
+);
+const { searchText, filteredAlbums } = useAlbumsQuickSearch(
+  sortedAlbums,
+  backupData.value.searchText
+);
+
+const scroller = ref();
+onMounted(() => {
+  if (!scroller.value || !backupData.value.scrollTo) return;
+  if (backupData.value.scrollTo > filteredAlbums.value.length - 1) return;
+  nextTick(() => scroller.value.scrollToItem(backupData.value.scrollTo));
+});
 
 const albumContextMenu = useContextMenu('Album');
 const showContextMenu = (e: MouseEvent, album: Album) => albumContextMenu.show(e, { album });
 
 const router = useRouter();
-const onClickItem = (albumId: string) => router.push(`albums/${albumId}`);
+const onClickItem = (index: number, albumId: string) => {
+  backupData.value = {
+    searchText: searchText.value,
+    sortKey: sortKey.value,
+    order: order.value,
+    scrollTo: index,
+  };
+  router.push(`albums/${albumId}?back=true`);
+};
 
 const { setQueue } = useAudioPlayer();
 const { getAlbumSongs } = useEntitiesStore();
@@ -37,7 +63,6 @@ const playAlbumSongs = async (albumId: string, shuffle: boolean) => {
   <div class="albums-page">
     <PageHeader>
       <template #title>アルバム ({{ albumList.length }})</template>
-      <template #default></template>
     </PageHeader>
 
     <div class="widgets">
@@ -53,16 +78,17 @@ const playAlbumSongs = async (albumId: string, shuffle: boolean) => {
     </div>
 
     <RecycleGridScroller
+      ref="scroller"
       scroller-height="calc(100% - 6rem)"
       :items="filteredAlbums"
       key-field="id"
       :item-height="208"
       :base-item-width="176"
     >
-      <template #default="{ item }">
+      <template #default="{ item, index }">
         <AlbumGridItem
           :album="item"
-          @click-item="onClickItem(item.id)"
+          @click-item="onClickItem(index, item.id)"
           @click-play-button="playAlbumSongs(item.id, false)"
           @click-shuffle-play-button="playAlbumSongs(item.id, true)"
           @contextmenu="showContextMenu($event, item)"
