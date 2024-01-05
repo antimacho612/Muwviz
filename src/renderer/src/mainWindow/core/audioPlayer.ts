@@ -229,11 +229,11 @@ const audioPlayer = () => {
     }
   ) => {
     const opts = {
-      autoplay: true,
-      shuffle: false,
-      firstSongIndex: options?.shuffle ? -1 : 0,
-      ...options,
+      autoplay: options?.autoplay ?? true,
+      shuffle: options?.shuffle ?? false,
+      firstSongIndex: options?.firstSongIndex,
     };
+    opts.firstSongIndex ??= opts.shuffle ? -1 : 0;
 
     state.value = 'Loading';
     queue.set(songIds, opts.shuffle, opts.firstSongIndex);

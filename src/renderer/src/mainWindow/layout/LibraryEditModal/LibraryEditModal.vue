@@ -10,13 +10,15 @@ import Button from '@renderer/commonComponents/Button/Button.vue';
 import LoadingAnimation from '@mainWindow/components/LoadingAnimation/LoadingAnimation.vue';
 import ProgressBar from '@renderer/commonComponents/ProgressBar/ProgressBar.vue';
 import { useEntitiesStore } from '@mainWindow/stores/entities';
+import { useLyricsStore } from '@renderer/mainWindow/stores/lyrics';
 
-type ScanStatus = {
+type FolderToScan = {
   path: string;
   status: string;
   isScanning: boolean;
   needReFetch: boolean;
 };
+type ScanStatus = 'Waiting' | 'Scanning' | 'Done';
 
 const props = defineProps<{ isOpen: boolean }>();
 const emits = defineEmits<{ 'update:isOpen': [value: boolean] }>();
@@ -27,10 +29,9 @@ const opened = computed({
 });
 
 const toast = useToast();
-const { fetch: fetchEntities } = useEntitiesStore();
 
-const foldersToScan = ref<ScanStatus[]>([]);
-const status = ref<'Waiting' | 'Scanning' | 'Done'>('Waiting');
+const foldersToScan = ref<FolderToScan[]>([]);
+const scanStatus = ref<ScanStatus>('Waiting');
 
 const alreadyAdded = (path: string) =>
   foldersToScan.value.some(
@@ -62,8 +63,11 @@ const onClickDeleteButton = (index: number) => {
   foldersToScan.value.splice(index, 1);
 };
 
+const { fetch: fetchEntities } = useEntitiesStore();
+const { rebuild: rebuildLyricsMap } = useLyricsStore();
+
 const onClickScanButton = async () => {
-  status.value = 'Scanning';
+  scanStatus.value = 'Scanning';
 
   for (const folder of foldersToScan.value) {
     folder.isScanning = true;
@@ -78,8 +82,12 @@ const onClickScanButton = async () => {
     }
   }
 
-  if (foldersToScan.value.some((folder) => folder.needReFetch)) await fetchEntities();
-  status.value = 'Done';
+  if (foldersToScan.value.some((folder) => folder.needReFetch)) {
+    // レンダラー側のストア・歌詞情報更新
+    await Promise.allSettled([rebuildLyricsMap(), fetchEntities()]);
+  }
+
+  scanStatus.value = 'Done';
 };
 
 const progressBarValue = ref(0);
@@ -105,7 +113,7 @@ watch(
   () => {
     if (!props.isOpen) return;
     foldersToScan.value = [];
-    status.value = 'Waiting';
+    scanStatus.value = 'Waiting';
   },
   { immediate: true }
 );
@@ -121,7 +129,7 @@ watch(
     <div class="library-edit-modal">
       <div class="header">
         <div class="title">スキャン対象のフォルダ</div>
-        <Button v-if="status === 'Waiting'" size="sm" text @click="onClickAddFolderButton">
+        <Button v-if="scanStatus === 'Waiting'" size="sm" text @click="onClickAddFolderButton">
           <AddFolderIcon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
           フォルダを追加...
         </Button>
@@ -140,14 +148,14 @@ watch(
             <tr v-for="(folder, index) in foldersToScan" :key="folder.path">
               <td class="text-center">
                 <Button
-                  v-if="status === 'Waiting'"
+                  v-if="scanStatus === 'Waiting'"
                   :icon="DeleteIcon"
                   size="sm"
                   text
                   class="delete-button"
                   @click="onClickDeleteButton(index)"
                 />
-                <LoadingAnimation v-else-if="folder.isScanning" size="1.5rem"></LoadingAnimation>
+                <LoadingAnimation v-else-if="folder.isScanning" size="1.5rem" />
               </td>
               <td>{{ folder.path }}</td>
               <td style="white-space: pre-line">{{ folder.status }}</td>
@@ -158,11 +166,11 @@ watch(
 
       <div class="footer">
         <div class="progress-bar-container">
-          <ProgressBar v-if="status === 'Scanning'" :value="progressBarValue" />
+          <ProgressBar v-if="scanStatus === 'Scanning'" :value="progressBarValue" />
         </div>
 
         <Button
-          v-if="status === 'Waiting'"
+          v-if="scanStatus === 'Waiting'"
           size="sm"
           :disabled="!foldersToScan.length"
           @click="onClickScanButton"
@@ -173,7 +181,7 @@ watch(
         <Button
           size="sm"
           text
-          :disabled="status === 'Scanning'"
+          :disabled="scanStatus === 'Scanning'"
           @click="emits('update:isOpen', false)"
         >
           閉じる

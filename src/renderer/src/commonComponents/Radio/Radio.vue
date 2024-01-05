@@ -6,8 +6,8 @@ interface Props {
   name: string;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   label?: string;
-  value?: boolean | string | number | object;
-  modelValue?: boolean | string | number | object;
+  value?: string | number | object;
+  modelValue?: string | number | object;
   disabled?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 type Emits = {
-  'update:modelValue': [modelValue?: boolean | string | number | object];
+  'update:modelValue': [modelValue?: string | number | object];
   click: [e: MouseEvent];
   change: [e: Event];
   focus: [e: FocusEvent];

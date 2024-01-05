@@ -10,6 +10,7 @@ import { useAlbumsQuickSearch } from '@mainWindow/composables/useQuickSearch';
 import { useContextMenu } from '@mainWindow/composables/useContextMenu';
 import { Album } from '@shared/types';
 
+import AlbumIcon from '@renderer/assets/icons/album.svg?component';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
@@ -62,7 +63,12 @@ const playAlbumSongs = async (albumId: string, shuffle: boolean) => {
 <template>
   <div class="albums-page">
     <PageHeader>
-      <template #title>アルバム ({{ albumList.length }})</template>
+      <template #title>
+        <div class="flex align-items-center column-gap-2">
+          <AlbumIcon style="height: 1.75rem; width: 1.75rem" />
+          アルバム ({{ albumList.length.toLocaleString() }})
+        </div>
+      </template>
     </PageHeader>
 
     <div class="widgets">

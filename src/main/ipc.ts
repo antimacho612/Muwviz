@@ -1,10 +1,11 @@
 import { ElectronAPI } from '@preload/ipc';
 import { DEFAULT_SETTINGS, ScanProgress, Settings, UpdatableSettings } from '@shared/types';
-import { VISUALIZERS_DEFAULT_CONFIG, VISUALIZER_DEFAULT_PRESETS } from '@shared/visualizerTypes';
+import { VISUALIZERS_DEFAULT_CONFIG } from '@shared/visualizerTypes';
 import { app, shell } from 'electron';
 import { createIpcMain } from 'electron-typescript-ipc';
 import {
   albumsStore,
+  appUpdater,
   artistsStore,
   lyricsStore,
   scannedFoldersStore,
@@ -42,7 +43,7 @@ export const registerIpcChannels = () => {
       initializeLibrary(),
       settingsStore.save(DEFAULT_SETTINGS),
       visualizersConfigStore.save(VISUALIZERS_DEFAULT_CONFIG),
-      visualizerPresetsStore.save(VISUALIZER_DEFAULT_PRESETS),
+      visualizerPresetsStore.save([]),
     ]);
   });
   // アプリケーションを再起動する
@@ -50,6 +51,10 @@ export const registerIpcChannels = () => {
     app.relaunch();
     app.exit();
   });
+  // アプリケーションのアップデート有無をチェックする
+  ipcMain.handle('checkUpdates', async () => appUpdater.checkUpdates());
+  // アプリケーションをアップデートする
+  ipcMain.handle('updateApp', async () => appUpdater.updateNow());
 
   // アートワークの保存先を取得する
   ipcMain.handle('getArtworkPath', async () => ARTWORKS_DIR);
@@ -130,11 +135,7 @@ export const registerIpcChannels = () => {
   ipcMain.handle('clearArtistsCache', async () => artistsStore.clearCache());
 
   // 全歌詞情報を取得する
-  ipcMain.handle('getAllLyrics', async () => {
-    const lyrics = lyricsStore.getAll();
-    lyricsStore.clearCache();
-    return lyrics;
-  });
+  ipcMain.handle('getAllLyrics', async () => lyricsStore.getAll());
   // 歌詞情報のキャッシュ（メイン側で保持しているデータ）を削除する
   ipcMain.handle('clearLyricsCache', async () => lyricsStore.clearCache());
 
@@ -173,6 +174,14 @@ export const registerIpcChannels = () => {
       showNotification(title, body, imagePath);
     }
   });
+};
+
+/**
+ * アプリケーションのアップデートが可能となったことをメインウィンドウに通知する
+ */
+export const sendUpdateNotificationToMain = () => {
+  const window = getWindow();
+  window && ipcMain.send(window, 'isAppUpdateAvailable');
 };
 
 /**

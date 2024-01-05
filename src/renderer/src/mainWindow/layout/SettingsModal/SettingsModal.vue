@@ -29,27 +29,27 @@ const opened = computed({
 const activeMenuIndex = ref(0);
 const TABS = [
   {
-    title: 'Library',
+    title: 'ライブラリー',
     icon: LibraryIcon,
     component: LibraryTab,
   },
   {
-    title: 'Appearance',
+    title: '外観',
     icon: SparklesIcon,
     component: AppearanceTab,
   },
   {
-    title: 'System',
+    title: 'システム',
     icon: SystemIcon,
     component: SystemTab,
   },
   {
-    title: 'Hot Key',
+    title: 'ホットキー',
     icon: KeyboardIcon,
     component: HotKeyTab,
   },
   {
-    title: 'About',
+    title: 'アプリについて',
     icon: InformationIcon,
     component: AboutTab,
   },

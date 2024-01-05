@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import UserGroupIcon from '@renderer/assets/icons/user-group.svg?component';
 import MusicIcon from '@renderer/assets/icons/music.svg?component';
 import AlbumIcon from '@renderer/assets/icons/album.svg?component';
+import UserGroupIcon from '@renderer/assets/icons/user-group.svg?component';
 
 const LINKS = [
   {
     to: '/songs',
-    title: 'All Songs',
+    title: '全楽曲',
     icon: MusicIcon,
   },
   {
     to: '/albums',
-    title: 'Albums',
+    title: 'アルバム',
     icon: AlbumIcon,
   },
   {
     to: '/artists',
-    title: 'Artists',
+    title: 'アーティスト',
     icon: UserGroupIcon,
   },
 ] as const;

@@ -10,6 +10,7 @@ import { useArtistsQuickSearch } from '@mainWindow/composables/useQuickSearch';
 import { useContextMenu } from '@mainWindow/composables/useContextMenu';
 import { Artist } from '@shared/types';
 
+import UserGroupIcon from '@renderer/assets/icons/user-group.svg?component';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
 import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
@@ -62,7 +63,12 @@ const playArtistSongs = async (artistId: string, shuffle: boolean) => {
 <template>
   <div class="artist-list-page">
     <PageHeader>
-      <template #title>アーティスト ({{ artistList.length }})</template>
+      <template #title>
+        <div class="flex align-items-center column-gap-2">
+          <UserGroupIcon style="height: 1.75rem; width: 1.75rem" />
+          アーティスト ({{ artistList.length.toLocaleString() }})
+        </div>
+      </template>
     </PageHeader>
 
     <div class="widgets">

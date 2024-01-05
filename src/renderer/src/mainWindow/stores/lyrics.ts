@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getLyrics } from 'genius-lyrics-api';
+// import { getLyrics } from 'genius-lyrics-api';
 
 export type LyricsData = {
   type: 'METADATA' | 'EXTERNAL';
@@ -10,7 +10,7 @@ type LyricsStoreState = {
   lyricsMap: { [songId: string]: LyricsData };
 };
 
-const getLocalDbKey = (songId: string) => `lyric-${songId}`;
+const getLocalDbKey = (songId: string) => `lyrics-${songId}`;
 
 export const useLyricsStore = defineStore('lyrics', {
   state: (): LyricsStoreState => {
@@ -39,21 +39,17 @@ export const useLyricsStore = defineStore('lyrics', {
       return lyricsData;
     },
 
-    async fetchApi(_songId: string, _title: string, _artist: string) {
-      // TODO:
-      console.log('fetchApi');
+    // TODO: 未実装
+    // async fetchApi(_songId: string, title: string, artist: string) {
+    //   const options = {
+    //     apiKey: 'NiD8kHwPkM6ADr5k5vELd9U_MEETq2yovtnGaj87ZGwaR8NGepBqdEFoUAhDU7k2',
+    //     title,
+    //     artist,
+    //     optimizeQuery: true,
+    //   };
 
-      const options = {
-        apiKey: 'NiD8kHwPkM6ADr5k5vELd9U_MEETq2yovtnGaj87ZGwaR8NGepBqdEFoUAhDU7k2',
-        title: 'Posthumous Forgiveness',
-        artist: 'Tame Impala',
-        optimizeQuery: true,
-      };
-
-      const lyrics = await getLyrics(options);
-
-      console.log(lyrics);
-    },
+    //   await getLyrics(options);
+    // },
 
     async rebuild() {
       try {
@@ -73,6 +69,25 @@ export const useLyricsStore = defineStore('lyrics', {
       } finally {
         await window.electron.invoke.clearLyricsCache();
       }
+    },
+
+    delete(songId: string) {
+      delete this.lyricsMap[songId];
+      localStorage.removeItem(getLocalDbKey(songId));
+    },
+
+    deleteAll() {
+      this.lyricsMap = {};
+
+      const targetKeys = Array<string>();
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith('lyrics-')) {
+          targetKeys.push(key);
+        }
+      }
+
+      targetKeys.forEach((key) => localStorage.removeItem(key));
     },
   },
 });

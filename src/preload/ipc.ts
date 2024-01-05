@@ -30,6 +30,16 @@ export type ElectronAPI = GetApiType<
     relaunchApp: () => Promise<void>;
 
     /**
+     * アプリケーションのアップデート有無をチェックする
+     */
+    checkUpdates: () => Promise<void>;
+
+    /**
+     * アプリケーションをアップデートする
+     */
+    updateApp: () => Promise<void>;
+
+    /**
      * アートワークの保存先を取得する
      */
     getArtworkPath: () => Promise<string>;
@@ -237,6 +247,11 @@ export type ElectronAPI = GetApiType<
   },
   {
     /**
+     * アプリケーションのアップデートが可能になったことをメインウィンドウに通知する
+     */
+    isAppUpdateAvailable: () => Promise<void>;
+
+    /**
      * ウィンドウのサイズ変更時
      */
     resizeWindow: (isMaximized: boolean) => Promise<void>;
@@ -278,6 +293,9 @@ export const electronAPI: ElectronAPI = {
     getAppVersion: async () => await ipcRenderer.invoke('getAppVersion'),
     initializeApp: async () => await ipcRenderer.invoke('initializeApp'),
     relaunchApp: async () => await ipcRenderer.invoke('relaunchApp'),
+    checkUpdates: async () => await ipcRenderer.invoke('checkUpdates'),
+    updateApp: async () => await ipcRenderer.invoke('updateApp'),
+
     getArtworkPath: async () => await ipcRenderer.invoke('getArtworkPath'),
     getWaveformPath: async () => await ipcRenderer.invoke('getWaveformPath'),
 
@@ -336,6 +354,8 @@ export const electronAPI: ElectronAPI = {
       await ipcRenderer.invoke('showDesktopNotification', title, body, imagePath),
   },
   on: {
+    isAppUpdateAvailable: (listener) => ipcRenderer.on('isAppUpdateAvailable', listener),
+
     resizeWindow: (listener) => ipcRenderer.on('resizeWindow', listener),
 
     sendPlaySongCommand: (listener) => ipcRenderer.on('sendPlaySongCommand', listener),

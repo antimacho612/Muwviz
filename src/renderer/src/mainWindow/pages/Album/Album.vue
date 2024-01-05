@@ -163,6 +163,7 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
 
   .title {
     font-size: map-get($fontSizes, xl);
+    font-weight: bold;
     @include singleLineClamp;
   }
 

@@ -8,6 +8,7 @@ import { useMultiSelectableSongList } from '@mainWindow/composables/useMultiSele
 import { useContextMenu } from '@mainWindow/composables/useContextMenu';
 import { Song } from '@shared/types';
 
+import MusicIcon from '@renderer/assets/icons/music.svg?component';
 import PlayIcon from '@renderer/assets/icons/play.svg?component';
 import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
 import PageHeader from '@mainWindow/components/PageHeader/PageHeader.vue';
@@ -34,22 +35,36 @@ const showContextMenu = (e: MouseEvent, song: Song) => {
 };
 
 const { setQueue } = useAudioPlayer();
-const playSong = async (songId: string) => {
-  const songIds = sortedSongs.value.map((song) => song.id);
-  const theSongIndex = songIds.indexOf(songId);
-  await setQueue(songIds, { firstSongIndex: theSongIndex });
+const playSong = async (songId?: string, shuffle = false) => {
+  const songIds = filteredSongs.value.map((song) => song.id);
+  const options = {
+    firstSongIndex: songId ? songIds.indexOf(songId) : undefined,
+    shuffle,
+  };
+  await setQueue(songIds, options);
 };
 </script>
 
 <template>
   <div class="songs-page">
     <PageHeader>
-      <template #title>すべての曲 ({{ songList.length }})</template>
+      <template #title>
+        <div class="flex align-items-center column-gap-2">
+          <MusicIcon style="height: 1.75rem; width: 1.75rem" />
+          全楽曲 ({{ songList.length.toLocaleString() }})
+        </div>
+      </template>
 
       <template #default>
         <div class="header-actions">
-          <Button :icon="PlayIcon" size="sm" text title="全曲再生" />
-          <Button :icon="ShuffleIcon" size="sm" text title="全曲シャフル再生" />
+          <Button :icon="PlayIcon" size="sm" text title="全曲再生" @click="playSong()" />
+          <Button
+            :icon="ShuffleIcon"
+            size="sm"
+            text
+            title="全曲シャフル再生"
+            @click="playSong(undefined, true)"
+          />
         </div>
       </template>
     </PageHeader>
@@ -103,6 +118,7 @@ const playSong = async (songId: string) => {
 .header-actions {
   display: flex;
   align-items: center;
+  column-gap: 0.5rem;
 }
 
 .widgets {

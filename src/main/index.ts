@@ -1,6 +1,6 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { BrowserWindow, Menu, Tray, app, nativeImage, protocol } from 'electron';
-import log from 'electron-log/main';
+import logger from 'electron-log/main';
 import path from 'path';
 import icon from '../../resources/icon.png?asset';
 import { createMainWindow, minimizeWindow, showWindow } from './window';
@@ -20,6 +20,7 @@ import SettingsStore from './stores/settings';
 import ScannedFoldersStore from './stores/scannedFolders';
 import VisualizersConfigStore from './stores/visualizersConfig';
 import VisualizerPresetsStore from './stores/visualizerPresets';
+import AppUpdater from './utils/appUpdater';
 import { deleteOldLog } from './utils';
 
 export let songsStore: SongsStore;
@@ -30,6 +31,7 @@ export let settingsStore: SettingsStore;
 export let scannedFoldersStore: ScannedFoldersStore;
 export let visualizersConfigStore: VisualizersConfigStore;
 export let visualizerPresetsStore: VisualizerPresetsStore;
+export let appUpdater: AppUpdater;
 
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) app.quit();
@@ -49,7 +51,7 @@ initializeStore();
 registerProtocols();
 
 app.whenReady().then(async () => {
-  electronApp.setAppUserModelId('com.electron');
+  electronApp.setAppUserModelId(app.getName());
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);
@@ -73,6 +75,8 @@ app.whenReady().then(async () => {
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) await createMainWindow();
   });
+
+  appUpdater = new AppUpdater();
 });
 
 app.on('window-all-closed', () => {
@@ -82,17 +86,17 @@ app.on('window-all-closed', () => {
 function initializeLogger() {
   const isProduction = process.env.NODE_ENV_ELECTRON_VITE === 'production';
 
-  log.initialize({ preload: true });
-  log.transports.file.level = isProduction ? 'info' : 'silly';
-  log.transports.console.level = isProduction ? 'info' : 'silly';
-  log.transports.file.writeOptions = {
+  logger.initialize({ preload: true });
+  logger.transports.file.level = isProduction ? 'info' : 'silly';
+  logger.transports.console.level = isProduction ? 'info' : 'silly';
+  logger.transports.file.writeOptions = {
     encoding: 'utf-8',
     flag: 'a',
     mode: 0o666,
   };
-  log.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] [{processType}] {text}';
-  log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] [{processType}] {text}';
-  log.transports.file.resolvePathFn = (variables) => {
+  logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] [{processType}] {text}';
+  logger.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] [{processType}] {text}';
+  logger.transports.file.resolvePathFn = (variables) => {
     const dir = variables.electronDefaultDir ?? app.getPath('logs');
     // sv-SEロケールはYYYY-MM-DD形式
     const fileName = `${new Date().toLocaleDateString('sv-SE')}.log`;
@@ -100,11 +104,11 @@ function initializeLogger() {
   };
 
   // Consoleをオーバーライド
-  Object.assign(console, log.functions);
+  Object.assign(console, logger.functions);
   process.on('uncaughtException', (err) => console.error(err));
   process.on('unhandledRejection', (err) => console.error(err));
 
-  deleteOldLog(log.variables.electronDefaultDir ?? app.getPath('logs'));
+  deleteOldLog(logger.variables.electronDefaultDir ?? app.getPath('logs'));
 }
 
 function initializeStore() {

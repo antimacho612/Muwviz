@@ -58,7 +58,10 @@ const registerWindowEvents = (
   });
 
   window.webContents.setWindowOpenHandler((details) => {
-    const ALLOWED_URLS = ['https://audiomotion.dev'] as const;
+    const ALLOWED_URLS = [
+      'https://audiomotion.dev',
+      'https://github.com/antimacho612/Muwviz',
+    ] as const;
     if (ALLOWED_URLS.some((url) => details.url.startsWith(url))) {
       shell.openExternal(details.url, { activate: true });
     }

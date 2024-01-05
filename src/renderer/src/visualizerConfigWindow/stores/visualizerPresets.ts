@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { VisualizerPreset } from '@shared/visualizerTypes';
+import { VISUALIZER_DEFAULT_PRESETS, VisualizerPreset } from '@shared/visualizerTypes';
 
 type VisualizerPresetsStoreState = {
   presets: VisualizerPreset[];
@@ -12,8 +12,12 @@ export const useVisualizerPresetsStore = defineStore('visualizerPresets', {
 
   actions: {
     async fetch() {
+      this.presets = [];
+      this.presets.push(...VISUALIZER_DEFAULT_PRESETS);
+
       console.info('Fetching visualizer presets...');
-      this.presets = await window.electron.invoke.getAllVisualizerPresets();
+      const userPresets = await window.electron.invoke.getAllVisualizerPresets();
+      this.presets.push(...userPresets);
     },
 
     async add(preset: VisualizerPreset) {

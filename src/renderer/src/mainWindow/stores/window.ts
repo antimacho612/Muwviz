@@ -4,6 +4,7 @@ type WindowStoreState = {
   isWindowMaximized: boolean;
   isLeftSidePaneCollapsed: boolean;
   isRightSidePaneCollapsed: boolean;
+  isUpdateAvailable: boolean;
 };
 
 export const useWindowStore = defineStore('window', {
@@ -11,6 +12,7 @@ export const useWindowStore = defineStore('window', {
     isWindowMaximized: true,
     isLeftSidePaneCollapsed: false,
     isRightSidePaneCollapsed: false,
+    isUpdateAvailable: false,
   }),
 
   actions: {

@@ -14,9 +14,9 @@ const emits = defineEmits<{ 'update:isCollapsed': [value: boolean] }>();
 
 const activeMenuIndex = ref(0);
 const TABS = [
-  { title: 'Info', component: InfoTab },
-  { title: 'Queue', component: QueueTab },
-  { title: 'Lyrics', component: LyricsTab },
+  { title: '楽曲情報', component: InfoTab },
+  { title: 'キュー', component: QueueTab },
+  { title: '歌詞', component: LyricsTab },
 ] as const;
 </script>
 

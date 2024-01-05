@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
 import { useLyricsStore, LyricsData } from '@mainWindow/stores/lyrics';
 
@@ -17,11 +17,6 @@ const FONT_SIZES = [
 
 const lyricsData = ref<LyricsData | undefined>();
 const fontSize = ref(FONT_SIZES[0].value);
-
-onMounted(async () => {
-  await lyricsStore.rebuild();
-  // await lyrics.fetchApi('', 'title', 'artist');
-});
 
 watch(
   currentSong,
