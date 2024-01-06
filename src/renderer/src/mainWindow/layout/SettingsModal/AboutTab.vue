@@ -16,7 +16,7 @@ const { appVersion, audioMotionAnalyzerVersion } = useSettingsStore();
         <span class="font-bold text-lg">{{ appVersion }}</span>
       </div>
       <div class="mt-4">
-        バグ報告・ご意見・ご要望などはGitHubのIssuesまでお願いいたします👇
+        バグ報告・ご意見・ご要望などはGitHubのIssuesまでお願いします👇
         <br />
         <a
           target="_blank"
