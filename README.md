@@ -4,9 +4,9 @@
 
 **Muwviz**は、音楽を耳と目で楽しむためのデスクトップアプリケーションです。
 
-<img align="left" width="50%" src="/screenshots/screenshot-light.png" alt="screenshot light mode" />
+<img align="left" width="45%" src="/screenshots/screenshot-light.png" alt="screenshot light mode" />
 
-<img width="50%" src="/screenshots/screenshot-dark.png" alt="screenshot dark mode" />
+<img width="45%" src="/screenshots/screenshot-dark.png" alt="screenshot dark mode" />
 
 ## 機能／特徴
 
