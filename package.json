@@ -2,7 +2,7 @@
   "name": "muwviz",
   "version": "0.9.0",
   "private": true,
-  "author": "antimacho612",
+  "author": "antimacho612 <antimacho612@gmail.com>",
   "description": "A desktop music player with visualizers.",
   "repository": {
     "type": "git",
