@@ -1,7 +1,10 @@
 appId: com.muwviz.Muwviz
+
 productName: Muwviz
+
 directories:
   buildResources: build
+
 files:
   - '!**/.github/*'
   - '!**/.vscode/*'
@@ -12,29 +15,37 @@ files:
   - '!{.editorconfig,.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.cjs,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+
 asarUnpack:
   - resources/**
+
 win:
   executableName: Muwviz
+
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   notarize: false
+
 dmg:
   artifactName: ${name}-${version}.${ext}
+
 linux:
   target:
     - AppImage
-    - snap
     - deb
   category: Audio
+
 appImage:
   artifactName: ${name}-${version}.${ext}
+
 npmRebuild: false
+
 publish:
   provider: github
   owner: 'antimacho612'
