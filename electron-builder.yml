@@ -38,7 +38,7 @@ dmg:
 linux:
   target:
     - AppImage
-    - deb
+    - tar.gz
   category: Audio
 
 appImage:
