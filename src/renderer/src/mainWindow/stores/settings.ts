@@ -1,12 +1,5 @@
 import { defineStore } from 'pinia';
-import {
-  AppearanceSettings,
-  DEFAULT_SETTINGS,
-  KeyValue,
-  LibrarySettings,
-  ScannedFolder,
-  UpdatableSettings,
-} from '@shared/types';
+import { DEFAULT_SETTINGS, ScannedFolder, UpdatableSettings } from '@shared/types';
 import AudioMotionAnalyzer from 'audiomotion-analyzer';
 
 export type SettingsStoreState = {

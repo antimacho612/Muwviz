@@ -64,7 +64,14 @@ npm run dev:watch
 ### ビルド
 
 ```bash
-npm run build:electron
+# For Windows
+npm run build:win
+
+# For MacOS
+npm run build:mac
+
+# For Linux
+npm run build:linux
 ```
 
 ## フィードバック
