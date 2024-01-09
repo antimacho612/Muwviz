@@ -16,6 +16,8 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 
+artifactName: ${productName}-${version}-${os}-setup.${ext}
+
 asarUnpack:
   - resources/**
 
@@ -23,7 +25,6 @@ win:
   executableName: Muwviz
 
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   allowToChangeInstallationDirectory: true
@@ -33,9 +34,6 @@ nsis:
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   notarize: false
-
-dmg:
-  artifactName: ${name}-${version}.${ext}
 
 linux:
   target:
