@@ -49,7 +49,7 @@ const onClickInitializeApplicationButton = async () => {
         class="initialize-application-button"
         @click="onClickInitializeApplicationButton"
       >
-        アプリケーションを初期化
+        ⚠️アプリケーションを初期化
       </Button>
     </div>
   </BaseSettingsTabPanel>

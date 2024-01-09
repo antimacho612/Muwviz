@@ -73,7 +73,7 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
       <div class="flex align-items-center justify-content-center mt-4 gap-8">
         <Button size="sm" @click="openSettingsModal">フォルダを追加...</Button>
         <Button size="xs" class="initialize-library-button" @click="onClickInitializeLibraryButton">
-          ライブラリを初期化
+          ⚠️ライブラリを初期化
         </Button>
       </div>
     </BaseSettingsItem>

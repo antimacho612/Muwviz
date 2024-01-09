@@ -5,6 +5,7 @@ directories:
 files:
   - '!**/.github/*'
   - '!**/.vscode/*'
+  - '!docs/*'
   - '!src/*'
   - '!screenshots/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
