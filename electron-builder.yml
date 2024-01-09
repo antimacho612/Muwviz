@@ -26,7 +26,9 @@ nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
-  createDesktopShortcut: always
+  allowToChangeInstallationDirectory: true
+  oneClick: false
+  perMachine: false
 
 mac:
   entitlementsInherit: build/entitlements.mac.plist
@@ -38,15 +40,27 @@ dmg:
 linux:
   target:
     - AppImage
+    - deb
     - tar.gz
   category: Audio
 
 appImage:
   artifactName: ${name}-${version}.${ext}
 
+deb:
+  depends:
+    - libnotify4
+    - libxtst6
+    - libnss3
+    - libatomic1
+    - libicu-dev
+    - libasound2-dev
+
 npmRebuild: false
 
 publish:
   provider: github
-  owner: 'antimacho612'
-  repo: 'Muwviz'
+  owner: antimacho612
+  repo: Muwviz
+  vPrefixedTagName: true
+  releaseType: draft
