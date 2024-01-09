@@ -11,7 +11,7 @@
 ## 機能／特徴
 
 - PC内の音楽ファイル（`.aac`, `.mp3`, `.ogg`, `.wav`, `.flac`, `.webm`, `.m4a`）を再生します
-- 楽曲再生時、リアルタイムで楽曲の波形解析を行い、ビジュアライザーを表示します
+- 楽曲再生時、リアルタイムで楽曲の音声解析を行い、ビジュアライザーを表示します
   - ビジュアライザーの表示には[`audioMotion-analyzer`ライブラリ](https://github.com/hvianna/audioMotion-analyzer)を使用しています
 - ビジュアライザーのカスタマイズが可能です
   - ビジュアライザーの各設定値については、[audioMotion-analyzerのサイト（英語）](https://audiomotion.dev/#/?id=properties)を参照してください
