@@ -2,10 +2,10 @@ import { parseFile as parseMetadata } from 'music-metadata';
 import fsAsync from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
-import { Song } from '@shared/types';
-import { ensureDirectory } from '@main/utils';
-import { ARTWORKS_DIR, WAVEFORMS_DIR } from './paths';
 import { saveArtwork } from './artworkManager';
+import { ARTWORKS_DIR, WAVEFORMS_DIR } from './paths';
+import { ensureDirectory } from '@main/utils';
+import { Song } from '@shared/types';
 
 export type ParsedSong = Omit<Song, 'artistId' | 'albumId' | 'scanId'> & { lyrics?: string };
 
@@ -13,9 +13,7 @@ export const parseSongFile = async (filePath: string) => {
   await ensureDirectory(ARTWORKS_DIR);
   await ensureDirectory(WAVEFORMS_DIR);
 
-  const metadata = await parseMetadata(filePath, {
-    duration: true,
-  });
+  const metadata = await parseMetadata(filePath, { duration: true });
 
   let artworkPath: string | undefined;
   if (metadata.common.picture) {
