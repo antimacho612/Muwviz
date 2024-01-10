@@ -91,10 +91,6 @@ const audioPlayer = () => {
     mediaSession.playbackState = 'none';
   };
 
-  document.addEventListener('keydown', (_event) => {
-    // TODO: bind event
-  });
-
   const loadSong = async (autoPlay = true) => {
     audio.removeAttribute('src');
     audio.srcObject = null;
@@ -119,9 +115,6 @@ const audioPlayer = () => {
     if (!currentSong.value) return;
 
     await audio.play();
-
-    // MEMO: main側に再生状態を伝える ← 必要だったら
-    // MEMO: 再生回数増やす ← 必要だったら
 
     // メディアセッションに再生中の曲の情報をセット
     mediaSession.metadata = new MediaMetadata({
@@ -242,6 +235,11 @@ const audioPlayer = () => {
     await loadSong(opts.autoplay);
   };
 
+  /**
+   * キューに楽曲を追加する
+   * @param songIds 追加する楽曲のID
+   * @param options オプション
+   */
   const addSongsToQueue = async (
     songIds: Readonly<string[]>,
     options?: { nextToCurrent?: boolean; shuffle?: boolean; skipImmediate?: boolean }
@@ -331,4 +329,5 @@ const audioPlayer = () => {
 };
 
 export type AudioPlayer = ReturnType<typeof audioPlayer>;
+
 export default audioPlayer;
