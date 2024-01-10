@@ -36,14 +36,6 @@ export let appUpdater: AppUpdater;
 // 多重起動防止
 if (!app.requestSingleInstanceLock()) app.quit();
 
-if (process.defaultApp) {
-  if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('muwviz', process.execPath, [path.resolve(process.argv[1])]);
-  }
-} else {
-  app.setAsDefaultProtocolClient('muwviz');
-}
-
 initializeLogger();
 
 initializeStore();
