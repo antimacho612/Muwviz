@@ -49,7 +49,7 @@ export const deleteArtworksIfNoReferred = async (artworkPaths: ReadonlySet<strin
       albums?.some((album) => album.artworkPath === artworkPath)
     ) {
       // まだ使用されているため削除しない
-      return;
+      continue;
     }
 
     if (fs.existsSync(artworkPath)) {
