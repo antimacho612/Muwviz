@@ -10,9 +10,7 @@ interface Props {
   height?: string;
   showPlayIcon?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), {
-  showPlayIcon: false,
-});
+const props = withDefaults(defineProps<Props>(), { showPlayIcon: false });
 
 const emits = defineEmits<{ click: [e: MouseEvent] }>();
 

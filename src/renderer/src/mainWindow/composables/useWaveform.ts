@@ -112,7 +112,5 @@ export const useWaveform = (pathElementSelector: string) => {
     await drawPath();
   });
 
-  watch(currentSong, async () => {
-    await drawPath();
-  });
+  watch(currentSong, async () => await drawPath());
 };

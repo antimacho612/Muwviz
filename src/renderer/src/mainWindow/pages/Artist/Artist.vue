@@ -22,8 +22,6 @@ import SortWidget from '@mainWindow/components/SortWidget/SortWidget.vue';
 import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import ArtistGroupedItem from './ArtistGroupedItem.vue';
 
-// TODO: コード整理
-
 const props = defineProps<{ artistId: string }>();
 
 const { artistsMap, songList } = storeToRefs(useEntitiesStore());

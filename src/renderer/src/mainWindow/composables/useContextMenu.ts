@@ -11,21 +11,13 @@ import { Album, Artist, Song } from '@shared/types';
 export type ContextMenuType = 'Song' | 'Songs' | 'Album' | 'Artist';
 
 export type ContextMenuArgs<T extends ContextMenuType> = T extends 'Song'
-  ? {
-      song: Song;
-    }
+  ? { song: Song }
   : T extends 'Songs'
-  ? {
-      selectedSongs: ReadonlyArray<string>;
-    }
+  ? { selectedSongs: ReadonlyArray<string> }
   : T extends 'Album'
-  ? {
-      album: Album;
-    }
+  ? { album: Album }
   : T extends 'Artist'
-  ? {
-      artist: Artist;
-    }
+  ? { artist: Artist }
   : Record<string, never>;
 
 const toast = useToast();

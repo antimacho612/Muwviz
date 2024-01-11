@@ -2,9 +2,7 @@
 import UserIcon from '@renderer/assets/icons/user.svg?component';
 import PlayIcon from '@renderer/assets/icons/play.svg?component';
 
-withDefaults(defineProps<{ showPlayIcon?: boolean }>(), {
-  showPlayIcon: false,
-});
+withDefaults(defineProps<{ showPlayIcon?: boolean }>(), { showPlayIcon: false });
 
 const emits = defineEmits<{ click: [e: MouseEvent] }>();
 </script>

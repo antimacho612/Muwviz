@@ -19,9 +19,7 @@ const emits = defineEmits<Emits>();
 
 const onSortButtonClick = (key: string) => {
   const order = key === props.sortBy && props.order === 'Asc' ? 'Desc' : 'Asc';
-  if (key !== props.sortBy) {
-    emits('update:sortBy', key);
-  }
+  if (key !== props.sortBy) emits('update:sortBy', key);
   emits('update:order', order);
 };
 </script>

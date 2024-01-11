@@ -9,9 +9,7 @@ interface Props {
   modelValue: string;
   size?: 'xs' | 'sm';
 }
-const props = withDefaults(defineProps<Props>(), {
-  size: 'xs',
-});
+const props = withDefaults(defineProps<Props>(), { size: 'xs' });
 
 type Emits = {
   'update:modelValue': [value: string];
