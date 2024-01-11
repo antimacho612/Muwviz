@@ -66,7 +66,7 @@ const onClickSaveButton = () => {
 };
 
 const sendMessageToMainWindow = inject(sendMessageToMainWindowKey);
-const onClickPreset = (preset: VisualizerPreset) => {
+const onClickPreset = async (preset: VisualizerPreset) => {
   for (const key in preset.config) {
     if (!Object.hasOwn(currentVisualizerConfig.value, key)) continue;
 
@@ -95,6 +95,11 @@ const onClickPreset = (preset: VisualizerPreset) => {
 
     // 現在のビジュアライザーの設定値にプリセットの値を反映
     currentVisualizerConfig.value[key] = preset.config[key];
+
+    // メインプロセスのストア値更新
+    await window.electron.invoke.updateVisualizerConfig(currentVisualizerIndex.value, {
+      [key]: preset.config[key],
+    });
   }
 };
 
