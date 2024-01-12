@@ -41,7 +41,6 @@
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vueuse/core": "^10.6.0",
     "animate.css": "^4.1.1",
-    "audio-decode": "^2.2.0",
     "audiomotion-analyzer": "^4.3.0",
     "d3": "^7.8.5",
     "electron": "^28.1.1",
