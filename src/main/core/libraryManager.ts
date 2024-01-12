@@ -92,11 +92,7 @@ export const removeSongsFromLibrary = async (songIds: string[]) => {
         album.songCount--;
 
         // アルバム内に同一アーティストの曲が複数存在しない場合は、アルバムのアーティストから該当のアーティストを削除
-        if (
-          !songsStore.some(
-            (s) => s.id !== song.id && s.albumId === album.id && s.artistId === song.artistId
-          )
-        ) {
+        if (!songsStore.some((s) => s.id !== song.id && s.albumId === album.id && s.artistId === song.artistId)) {
           album.artists = album.artists.filter((artist) => artist.id !== song.artistId);
         }
       }

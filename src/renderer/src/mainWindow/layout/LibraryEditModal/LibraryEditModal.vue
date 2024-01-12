@@ -34,9 +34,7 @@ const foldersToScan = ref<FolderToScan[]>([]);
 const scanStatus = ref<ScanStatus>('Waiting');
 
 const alreadyAdded = (path: string) =>
-  foldersToScan.value.some(
-    (folder) => folder.path.toLocaleLowerCase() === path.toLocaleLowerCase()
-  );
+  foldersToScan.value.some((folder) => folder.path.toLocaleLowerCase() === path.toLocaleLowerCase());
 
 const onClickAddFolderButton = async () => {
   const result = await window.electron.invoke.openFileBrowser(true, 'Folder');
@@ -120,12 +118,7 @@ watch(
 </script>
 
 <template>
-  <Modal
-    v-model:is-open="opened"
-    :close-on-click-outside="false"
-    :close-on-press-esc="false"
-    :z-index="5000"
-  >
+  <Modal v-model:is-open="opened" :close-on-click-outside="false" :close-on-press-esc="false" :z-index="5000">
     <div class="library-edit-modal">
       <div class="header">
         <div class="title">スキャン対象のフォルダ</div>
@@ -169,21 +162,11 @@ watch(
           <ProgressBar v-if="scanStatus === 'Scanning'" :value="progressBarValue" />
         </div>
 
-        <Button
-          v-if="scanStatus === 'Waiting'"
-          size="sm"
-          :disabled="!foldersToScan.length"
-          @click="onClickScanButton"
-        >
+        <Button v-if="scanStatus === 'Waiting'" size="sm" :disabled="!foldersToScan.length" @click="onClickScanButton">
           <Search2Icon style="width: 1.5rem; height: 1.5rem; margin-right: 0.5rem" />
           スキャン
         </Button>
-        <Button
-          size="sm"
-          text
-          :disabled="scanStatus === 'Scanning'"
-          @click="emits('update:isOpen', false)"
-        >
+        <Button size="sm" text :disabled="scanStatus === 'Scanning'" @click="emits('update:isOpen', false)">
           閉じる
         </Button>
       </div>

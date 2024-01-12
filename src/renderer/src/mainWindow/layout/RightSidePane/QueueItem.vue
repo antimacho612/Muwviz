@@ -37,9 +37,7 @@ const current = computed(() => props.index === currentSongIndex.value);
     <div class="index">{{ index !== undefined ? index + 1 : '-' }}</div>
     <div class="song-info">
       <span class="title">{{ song?.title }}</span>
-      <span class="artist-and-album">
-        {{ formatArtistName(song?.artist) }}／{{ formatAlbumTitle(song?.album) }}
-      </span>
+      <span class="artist-and-album"> {{ formatArtistName(song?.artist) }}／{{ formatAlbumTitle(song?.album) }} </span>
     </div>
     <BarsAnimation
       v-if="current"

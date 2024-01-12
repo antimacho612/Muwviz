@@ -31,12 +31,7 @@ withDefaults(defineProps<Props>(), {
     width: 25%;
     height: 100%;
 
-    @include animation(
-      $name: up-and-down,
-      $duration: 1.2s,
-      $iterationCount: infinite,
-      $direction: alternate
-    );
+    @include animation($name: up-and-down, $duration: 1.2s, $iterationCount: infinite, $direction: alternate);
 
     &:nth-child(1) {
       height: 60%;

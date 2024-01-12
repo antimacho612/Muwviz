@@ -62,24 +62,16 @@ const getSliderValue = (event: MouseEvent): number => {
   const { pageX, pageY } = event;
   const { x, y, width, height } = getBarRect();
 
-  const handleValue = props.vertical
-    ? ((y + height - pageY) * 100) / height
-    : ((pageX - x) * 100) / width;
+  const handleValue = props.vertical ? ((y + height - pageY) * 100) / height : ((pageX - x) * 100) / width;
   const sliderValue = (props.max - props.min) * (handleValue / 100) + props.min;
 
   if (props.step) {
     const currentValue = props.modelValue;
     const diff = sliderValue - currentValue;
 
-    if (diff < 0)
-      return (
-        currentValue + Math.ceil(sliderValue / props.step - currentValue / props.step) * props.step
-      );
+    if (diff < 0) return currentValue + Math.ceil(sliderValue / props.step - currentValue / props.step) * props.step;
 
-    if (diff > 0)
-      return (
-        currentValue + Math.floor(sliderValue / props.step - currentValue / props.step) * props.step
-      );
+    if (diff > 0) return currentValue + Math.floor(sliderValue / props.step - currentValue / props.step) * props.step;
 
     return sliderValue;
   } else {

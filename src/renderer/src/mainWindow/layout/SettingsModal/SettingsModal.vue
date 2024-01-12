@@ -57,12 +57,7 @@ const TABS = [
 </script>
 
 <template>
-  <Modal
-    v-model:is-open="opened"
-    :close-on-click-outside="false"
-    :close-on-press-esc="false"
-    :z-index="1500"
-  >
+  <Modal v-model:is-open="opened" :close-on-click-outside="false" :close-on-press-esc="false" :z-index="1500">
     <div class="settings-modal">
       <div class="content-grid">
         <div class="header">
@@ -87,11 +82,7 @@ const TABS = [
         </TabMenu>
 
         <div class="tab-panel-container">
-          <Transition
-            mode="out-in"
-            enter-active-class="tab-panel-fade-in"
-            leave-active-class="tab-panel-fade-out"
-          >
+          <Transition mode="out-in" enter-active-class="tab-panel-fade-in" leave-active-class="tab-panel-fade-out">
             <KeepAlive>
               <component :is="TABS[activeMenuIndex].component"></component>
             </KeepAlive>

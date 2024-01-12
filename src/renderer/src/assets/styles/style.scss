@@ -18,8 +18,7 @@ $themeVariables: (
   artist-img-bg-color: #e0e0e0 #393939,
   artist-img-icon-color: #888 #adadad,
 
-  outline-color: 'rgba(var(--primary-color--lightest-rgb), 0.5)'
-    'rgba(var(--primary-color--lightest-rgb), 0.5)',
+  outline-color: 'rgba(var(--primary-color--lightest-rgb), 0.5)' 'rgba(var(--primary-color--lightest-rgb), 0.5)',
   outline-color--bordered: 'rgba(var(--primary-color--lightest-rgb), 0.5)'
     'rgba(var(--primary-color--lightest-rgb), 0.15)',
 
@@ -27,11 +26,9 @@ $themeVariables: (
   shadow-color--dark: #c8d0e7 #17181b,
   shadow-flat: '6px 6px 12px var(--shadow-color--dark), -4px -4px 8px var(--shadow-color--light)'
     '6px 6px 12px var(--shadow-color--dark), -3px -3px 6px var(--shadow-color--light)',
-  shadow-flat--hover:
-    '2.5px 2.5px 5px var(--shadow-color--dark), -1.5px -1.5px 4px var(--shadow-color--light)'
+  shadow-flat--hover: '2.5px 2.5px 5px var(--shadow-color--dark), -1.5px -1.5px 4px var(--shadow-color--light)'
     '2.5px 2.5px 5px var(--shadow-color--dark), -1.5px -1.5px 4px var(--shadow-color--light)',
-  shadow-pressed:
-    'inset 4px 4px 6px var(--shadow-color--dark), inset -3px -3px 6px var(--shadow-color--light)'
+  shadow-pressed: 'inset 4px 4px 6px var(--shadow-color--dark), inset -3px -3px 6px var(--shadow-color--light)'
     'inset 3px 3px 6px var(--shadow-color--dark), inset -2px -2px 6px var(--shadow-color--light)',
 );
 

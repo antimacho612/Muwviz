@@ -48,12 +48,7 @@ withDefaults(defineProps<Props>(), {
   color: v-bind(color);
 
   .circle-outer {
-    @include animation(
-      $name: rotate,
-      $duration: 1s,
-      $timingFunction: ease-in-out,
-      $iterationCount: infinite
-    );
+    @include animation($name: rotate, $duration: 1s, $timingFunction: ease-in-out, $iterationCount: infinite);
   }
 
   .circle-inner {

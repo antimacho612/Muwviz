@@ -69,8 +69,7 @@ const onClickToggleButton = async (index: number) => {
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
 const onClickOpenConfigWindowButton = async (index: number) => {
   await window.electron.invoke.openVisualizerConfigWindow();
-  sendMessageToSubWindow &&
-    sendMessageToSubWindow({ channel: 'changeVisualizerSelection', payload: { index } });
+  sendMessageToSubWindow && sendMessageToSubWindow({ channel: 'changeVisualizerSelection', payload: { index } });
 };
 </script>
 

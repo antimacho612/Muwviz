@@ -100,8 +100,7 @@ export const useWaveform = (pathElementSelector: string) => {
     if (!waveformData) {
       waveformData = await getWaveformData(currentSong.value);
       // 波形データをキャッシュ（設定の「波形データキャッシュ」が有効の場合のみ）
-      if (waveformData && cacheWaveformData.value)
-        await saveWaveformData(currentSong.value.id, waveformData);
+      if (waveformData && cacheWaveformData.value) await saveWaveformData(currentSong.value.id, waveformData);
     }
 
     if (waveformData) drawWaveform(waveformData);

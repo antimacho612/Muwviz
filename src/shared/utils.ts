@@ -1,16 +1,6 @@
-import {
-  Album,
-  AlbumsSortKey,
-  Artist,
-  ArtistsSortKey,
-  Order,
-  Song,
-  SongsSortKey,
-  SortOption,
-} from './types';
+import { Album, AlbumsSortKey, Artist, ArtistsSortKey, Order, Song, SongsSortKey, SortOption } from './types';
 
-export const getRandomInt = (max: number, min = 0) =>
-  Math.floor(Math.random() * (max + 1 - min)) + min;
+export const getRandomInt = (max: number, min = 0) => Math.floor(Math.random() * (max + 1 - min)) + min;
 
 export const shuffleArray = <T>(array: readonly T[], firstItemIndex = -1): T[] => {
   const fixFirstItem = firstItemIndex >= 0 && firstItemIndex < array.length;
@@ -38,8 +28,7 @@ export const sortArrayOfObjects = <T>(array: T[], sortOptions: SortOption<T>[]) 
     let collator: Intl.Collator | undefined;
 
     for (const opt of sortOptions) {
-      const [first, second] =
-        opt.order !== 'Desc' ? [a[opt.key], b[opt.key]] : [b[opt.key], a[opt.key]];
+      const [first, second] = opt.order !== 'Desc' ? [a[opt.key], b[opt.key]] : [b[opt.key], a[opt.key]];
 
       if (first !== second) {
         if (typeof first === 'number' && typeof second === 'number') {
@@ -67,29 +56,11 @@ export const sortArrayOfObjects = <T>(array: T[], sortOptions: SortOption<T>[]) 
 export const getSongsSortOptions = (key: SongsSortKey, order: Order): SortOption<Song>[] => {
   switch (key) {
     case 'Artist':
-      return [
-        { key: 'artist', order },
-        { key: 'album' },
-        { key: 'diskNo' },
-        { key: 'trackNo' },
-        { key: 'title' },
-      ];
+      return [{ key: 'artist', order }, { key: 'album' }, { key: 'diskNo' }, { key: 'trackNo' }, { key: 'title' }];
     case 'Album':
-      return [
-        { key: 'album', order },
-        { key: 'diskNo' },
-        { key: 'trackNo' },
-        { key: 'artist' },
-        { key: 'title' },
-      ];
+      return [{ key: 'album', order }, { key: 'diskNo' }, { key: 'trackNo' }, { key: 'artist' }, { key: 'title' }];
     case 'Title':
-      return [
-        { key: 'title', order },
-        { key: 'artist' },
-        { key: 'album' },
-        { key: 'diskNo' },
-        { key: 'trackNo' },
-      ];
+      return [{ key: 'title', order }, { key: 'artist' }, { key: 'album' }, { key: 'diskNo' }, { key: 'trackNo' }];
     case 'TrackNo':
       return [
         { key: 'diskNo', order },
@@ -110,6 +81,5 @@ export const getArtistsSortOptions = (key: ArtistsSortKey, order: Order): SortOp
 export const isRejected = (input: PromiseSettledResult<unknown>): input is PromiseRejectedResult =>
   input.status === 'rejected';
 
-export const isFulfilled = <T>(
-  input: PromiseSettledResult<T>
-): input is PromiseFulfilledResult<T> => input.status === 'fulfilled';
+export const isFulfilled = <T>(input: PromiseSettledResult<T>): input is PromiseFulfilledResult<T> =>
+  input.status === 'fulfilled';

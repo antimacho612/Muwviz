@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import {
-  formatTime,
-  formatBytes,
-  toHyphenIfEmpty,
-  formatArtistName,
-  formatAlbumTitle,
-} from '@renderer/commonUtils';
+import { formatTime, formatBytes, toHyphenIfEmpty, formatArtistName, formatAlbumTitle } from '@renderer/commonUtils';
 import { Song } from '@shared/types';
 
 import CloseIcon from '@renderer/assets/icons/close.svg?component';
@@ -34,22 +28,10 @@ const opened = computed({
         <h3 class="modal-title">
           {{ toHyphenIfEmpty(song?.title) }}
         </h3>
-        <Button
-          class="modal-close-button"
-          size="sm"
-          :icon="CloseIcon"
-          text
-          @click="emits('update:isOpen', false)"
-        />
+        <Button class="modal-close-button" size="sm" :icon="CloseIcon" text @click="emits('update:isOpen', false)" />
       </div>
       <div class="modal-main">
-        <Artwork
-          :src="song?.artworkPath"
-          class="artwork"
-          width="120px"
-          height="120px"
-          :show-play-icon="false"
-        />
+        <Artwork :src="song?.artworkPath" class="artwork" width="120px" height="120px" :show-play-icon="false" />
         <div class="info">
           <div class="row">
             <div class="prop-name">アーティスト</div>

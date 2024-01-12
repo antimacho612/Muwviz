@@ -69,9 +69,7 @@ export const registerIpcChannels = () => {
     })
   );
   // 確認メッセージを表示する
-  ipcMain.handle('showConfirm', async (_, isMainWindow, message, detail) =>
-    showConfirm(isMainWindow, message, detail)
-  );
+  ipcMain.handle('showConfirm', async (_, isMainWindow, message, detail) => showConfirm(isMainWindow, message, detail));
   // 指定されたパスをデフォルトのアプリケーションで開く
   ipcMain.handle('openPath', async (_, path) => shell.openPath(path));
 
@@ -87,37 +85,25 @@ export const registerIpcChannels = () => {
   // ウィンドウを閉じる
   ipcMain.handle('closeWindow', async (_, isMainWindow) => closeWindow(isMainWindow));
   // ウィンドウが常に他のウィンドウの上に表示されるようになっているかどうかを取得する
-  ipcMain.handle('isWindowAlwaysOnTop', async (_, isMainWindow) =>
-    isWindowAlwaysOnTop(isMainWindow)
-  );
+  ipcMain.handle('isWindowAlwaysOnTop', async (_, isMainWindow) => isWindowAlwaysOnTop(isMainWindow));
   // ウィンドウを常に他のウィンドウの上に表示するかどうかを設定する
-  ipcMain.handle('setWindowAlwaysOnTop', async (_, isMainWindow, flag) =>
-    setWindowAlwaysOnTop(isMainWindow, flag)
-  );
+  ipcMain.handle('setWindowAlwaysOnTop', async (_, isMainWindow, flag) => setWindowAlwaysOnTop(isMainWindow, flag));
 
   // 設定を取得する
   ipcMain.handle('getSettings', async () => settingsStore.getAll());
   // 設定を更新する
-  ipcMain.handle(
-    'updateSettings',
-    async <K extends keyof UpdatableSettings>(_, key: K, value: UpdatableSettings[K]) =>
-      settingsStore.update(key, value as Settings[K])
+  ipcMain.handle('updateSettings', async <K extends keyof UpdatableSettings>(_, key: K, value: UpdatableSettings[K]) =>
+    settingsStore.update(key, value as Settings[K])
   );
 
   // スキャン済みフォルダ情報を取得する
   ipcMain.handle('getScannedFolders', async () => scannedFoldersStore.getAll());
   // フォルダをスキャンし楽曲ライブラリを構築する
-  ipcMain.handle(
-    'scanFolder',
-    async (_, folderPath, resortLibrary) => await scanFolder(folderPath, resortLibrary)
-  );
+  ipcMain.handle('scanFolder', async (_, folderPath, resortLibrary) => await scanFolder(folderPath, resortLibrary));
   // ライブラリを初期化する
   ipcMain.handle('initializeLibrary', async () => await initializeLibrary());
   // ライブラリから楽曲を削除する
-  ipcMain.handle(
-    'removeSongsFromLibrary',
-    async (_, songIds) => await removeSongsFromLibrary(songIds)
-  );
+  ipcMain.handle('removeSongsFromLibrary', async (_, songIds) => await removeSongsFromLibrary(songIds));
 
   // 全楽曲情報を取得する
   ipcMain.handle('getAllSongs', async () => songsStore.getAll());
@@ -142,14 +128,10 @@ export const registerIpcChannels = () => {
   // 波形データを取得する
   ipcMain.handle('getWaveformData', async (_, songId) => getWaveformData(songId));
   // 波形データを保存する
-  ipcMain.handle('saveWaveformData', async (_, songId, waveformData) =>
-    saveWaveformData(songId, waveformData)
-  );
+  ipcMain.handle('saveWaveformData', async (_, songId, waveformData) => saveWaveformData(songId, waveformData));
 
   // 全ビジュアライザーの設定情報を取得する
-  ipcMain.handle('getAllVisualizersConfig', async () =>
-    visualizersConfigStore.getAllVisualizersConfig()
-  );
+  ipcMain.handle('getAllVisualizersConfig', async () => visualizersConfigStore.getAllVisualizersConfig());
 
   // ビジュアライザーの設定を更新する
   ipcMain.handle('updateVisualizerConfig', async (_, index, options, isMainWindow = false) => {

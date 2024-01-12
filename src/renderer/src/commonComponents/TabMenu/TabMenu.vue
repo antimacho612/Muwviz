@@ -29,9 +29,7 @@ const distance = computed(() => {
   }
 });
 
-const buttonWidth = computed(() =>
-  props.direction === 'vertical' ? '100%' : `${distance.value}%`
-);
+const buttonWidth = computed(() => (props.direction === 'vertical' ? '100%' : `${distance.value}%`));
 const buttonHeight = computed(() => (props.size === 'lg' ? '2.5rem' : '2rem'));
 const activeColorWidth = computed(
   () =>

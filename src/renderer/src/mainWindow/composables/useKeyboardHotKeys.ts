@@ -21,9 +21,7 @@ export const useKeyboardHotKeys = () => {
           if (e.altKey) {
             await audioPlayer.nextSong();
           } else if (e.ctrlKey && audioPlayer.currentSong.value) {
-            audioPlayer.setCurrentTime(
-              Math.min(audioPlayer.currentTime.value + 5, audioPlayer.duration.value)
-            );
+            audioPlayer.setCurrentTime(Math.min(audioPlayer.currentTime.value + 5, audioPlayer.duration.value));
           }
           break;
         case 'KeyM':

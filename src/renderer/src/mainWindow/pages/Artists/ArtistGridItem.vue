@@ -33,12 +33,7 @@ const formattedArtistName = computed(() => formatArtistName(props.artist.name));
 
     <div class="song-count">{{ artist.songCount }}</div>
 
-    <div
-      v-ripple
-      class="icon-button play-button"
-      @click.stop="emits('clickPlayButton', $event)"
-      @pointerdown.stop
-    >
+    <div v-ripple class="icon-button play-button" @click.stop="emits('clickPlayButton', $event)" @pointerdown.stop>
       <PlayIcon class="play-icon" />
     </div>
 

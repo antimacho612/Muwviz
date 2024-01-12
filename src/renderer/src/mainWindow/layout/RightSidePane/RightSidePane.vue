@@ -23,23 +23,12 @@ const TABS = [
 <template>
   <div class="right-side-pane" :class="{ 'is-collapsed': isCollapsed }">
     <template v-if="isCollapsed">
-      <Button
-        size="sm"
-        text
-        :icon="ChevronLeftIcon"
-        class="h-full"
-        @click="emits('update:isCollapsed', false)"
-      />
+      <Button size="sm" text :icon="ChevronLeftIcon" class="h-full" @click="emits('update:isCollapsed', false)" />
     </template>
 
     <template v-else>
       <div>
-        <Button
-          size="sm"
-          text
-          :icon="ChevronRightIcon"
-          @click="emits('update:isCollapsed', true)"
-        />
+        <Button size="sm" text :icon="ChevronRightIcon" @click="emits('update:isCollapsed', true)" />
       </div>
       <TabMenu
         v-model:active-menu-index="activeMenuIndex"

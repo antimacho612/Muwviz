@@ -40,8 +40,7 @@ export const useSongsQuickSearch = (songs: Ref<Song[]>) => {
 };
 
 export const useAlbumsQuickSearch = (albums: Ref<Album[]>, defaultSearchText?: string) => {
-  const filterCb = (album: Album, searchStr: string) =>
-    album.title.toLocaleLowerCase().includes(searchStr);
+  const filterCb = (album: Album, searchStr: string) => album.title.toLocaleLowerCase().includes(searchStr);
   const { searchText, filteredItems } = useQuickSearch<Album>(albums, filterCb, defaultSearchText);
 
   return {
@@ -51,13 +50,8 @@ export const useAlbumsQuickSearch = (albums: Ref<Album[]>, defaultSearchText?: s
 };
 
 export const useArtistsQuickSearch = (artists: Ref<Artist[]>, defaultSearchText?: string) => {
-  const filterCb = (artist: Artist, searchStr: string) =>
-    artist.name.toLocaleLowerCase().includes(searchStr);
-  const { searchText, filteredItems } = useQuickSearch<Artist>(
-    artists,
-    filterCb,
-    defaultSearchText
-  );
+  const filterCb = (artist: Artist, searchStr: string) => artist.name.toLocaleLowerCase().includes(searchStr);
+  const { searchText, filteredItems } = useQuickSearch<Artist>(artists, filterCb, defaultSearchText);
 
   return {
     searchText,

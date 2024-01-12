@@ -95,9 +95,7 @@ const audioPlayer = () => {
     audio.removeAttribute('src');
     audio.srcObject = null;
 
-    currentSong.value = queue.currentItem.value
-      ? songsMap.value.get(queue.currentItem.value.songId)
-      : undefined;
+    currentSong.value = queue.currentItem.value ? songsMap.value.get(queue.currentItem.value.songId) : undefined;
     if (!currentSong.value) {
       toast.error('曲が存在しません...😢');
       console.error('曲が存在しません...');
@@ -250,8 +248,7 @@ const audioPlayer = () => {
       await setQueue(songIds, { autoplay: opts.skipImmediate, shuffle: opts.shuffle });
     } else {
       queue.push(songIds, { nextToCurrent: opts.nextToCurrent, shuffle: opts.shuffle });
-      if (opts.nextToCurrent && opts.skipImmediate)
-        await nextSong(state.value === 'Playing' || opts.skipImmediate);
+      if (opts.nextToCurrent && opts.skipImmediate) await nextSong(state.value === 'Playing' || opts.skipImmediate);
     }
   };
 

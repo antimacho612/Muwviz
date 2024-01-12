@@ -9,14 +9,8 @@ import ShuffleIcon from '@renderer/assets/icons/shuffle.svg?component';
 import DeleteIcon from '@renderer/assets/icons/delete.svg?component';
 import QueueItem from './QueueItem.vue';
 
-const {
-  queueItems,
-  currentSongIndex,
-  playSongInQueue,
-  shuffleQueue,
-  clearQueue,
-  removeSongsFromQueue,
-} = useAudioPlayer();
+const { queueItems, currentSongIndex, playSongInQueue, shuffleQueue, clearQueue, removeSongsFromQueue } =
+  useAudioPlayer();
 const { songsMap } = useEntitiesStore();
 
 const scroller = ref();
@@ -43,12 +37,7 @@ const onClickClearQueueButton = () => {
     <template v-else>
       <div class="actions">
         <Button size="xs" :icon="ShuffleIcon" title="キューをシャッフル" @click="shuffleQueue" />
-        <Button
-          size="xs"
-          :icon="DeleteIcon"
-          title="キューをクリア"
-          @click="onClickClearQueueButton"
-        />
+        <Button size="xs" :icon="DeleteIcon" title="キューをクリア" @click="onClickClearQueueButton" />
       </div>
 
       <div class="queue-list">

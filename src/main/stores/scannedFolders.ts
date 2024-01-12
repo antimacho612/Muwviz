@@ -15,9 +15,7 @@ export default class ScannedFoldersStore extends BaseJSONStore<ScannedFolder[]> 
   }
 
   public findByPath(path: string) {
-    return this.cachedData?.find(
-      (folder) => folder.path.toLocaleLowerCase() === path.toLocaleLowerCase()
-    );
+    return this.cachedData?.find((folder) => folder.path.toLocaleLowerCase() === path.toLocaleLowerCase());
   }
 
   public upsert(scannedFolder: ScannedFolder) {

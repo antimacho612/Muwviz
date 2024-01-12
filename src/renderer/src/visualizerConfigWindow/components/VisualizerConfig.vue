@@ -111,12 +111,8 @@ const onChangeScaleXLabel = async () => {
           <Select
             v-model="currentVisualizerConfig.mode"
             size="sm"
-            :options="
-              Array.from(VISUALIZATION_MODE_MAP).map(([value, label]) => ({ label, value }))
-            "
-            @update:model-value="
-              onChangeValue({ key: 'mode', value: currentVisualizerConfig.mode })
-            "
+            :options="Array.from(VISUALIZATION_MODE_MAP).map(([value, label]) => ({ label, value }))"
+            @update:model-value="onChangeValue({ key: 'mode', value: currentVisualizerConfig.mode })"
           >
           </Select>
         </ConfigItem>
@@ -129,9 +125,7 @@ const onChangeScaleXLabel = async () => {
             size="sm"
             :options="FFT_SIZES.map((fftSize) => ({ label: fftSize.toString(), value: fftSize }))"
             class="text-right"
-            @update:model-value="
-              onChangeValue({ key: 'fftSize', value: currentVisualizerConfig.fftSize })
-            "
+            @update:model-value="onChangeValue({ key: 'fftSize', value: currentVisualizerConfig.fftSize })"
           >
           </Select>
         </ConfigItem>
@@ -143,9 +137,7 @@ const onChangeScaleXLabel = async () => {
               :max="0.95"
               :step="0.05"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'smoothing', value: currentVisualizerConfig.smoothing })
-              "
+              @update:model-value="onChangeValue({ key: 'smoothing', value: currentVisualizerConfig.smoothing })"
             />
           </div>
         </ConfigItem>
@@ -163,9 +155,7 @@ const onChangeScaleXLabel = async () => {
               }))
             "
             class="text-right"
-            @update:model-value="
-              onChangeValue({ key: 'minFreq', value: currentVisualizerConfig.minFreq })
-            "
+            @update:model-value="onChangeValue({ key: 'minFreq', value: currentVisualizerConfig.minFreq })"
           >
           </Select>
         </ConfigItem>
@@ -180,9 +170,7 @@ const onChangeScaleXLabel = async () => {
               }))
             "
             class="text-right"
-            @update:model-value="
-              onChangeValue({ key: 'maxFreq', value: currentVisualizerConfig.maxFreq })
-            "
+            @update:model-value="onChangeValue({ key: 'maxFreq', value: currentVisualizerConfig.maxFreq })"
           >
           </Select>
         </ConfigItem>
@@ -240,9 +228,7 @@ const onChangeScaleXLabel = async () => {
               :max="-60"
               :step="5"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'minDecibels', value: currentVisualizerConfig.minDecibels })
-              "
+              @update:model-value="onChangeValue({ key: 'minDecibels', value: currentVisualizerConfig.minDecibels })"
             />
           </div>
         </ConfigItem>
@@ -254,9 +240,7 @@ const onChangeScaleXLabel = async () => {
               :max="0"
               :step="5"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'maxDecibels', value: currentVisualizerConfig.maxDecibels })
-              "
+              @update:model-value="onChangeValue({ key: 'maxDecibels', value: currentVisualizerConfig.maxDecibels })"
             />
           </div>
         </ConfigItem>
@@ -287,9 +271,7 @@ const onChangeScaleXLabel = async () => {
               :max="4"
               :step="0.1"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'linearBoost', value: currentVisualizerConfig.linearBoost })
-              "
+              @update:model-value="onChangeValue({ key: 'linearBoost', value: currentVisualizerConfig.linearBoost })"
             />
           </div>
         </ConfigItem>
@@ -367,9 +349,7 @@ const onChangeScaleXLabel = async () => {
               size="sm"
               :value="colorMode"
               :label="label"
-              @change="
-                onChangeValue({ key: 'colorMode', value: currentVisualizerConfig.colorMode })
-              "
+              @change="onChangeValue({ key: 'colorMode', value: currentVisualizerConfig.colorMode })"
             />
           </div>
         </ConfigItem>
@@ -381,9 +361,7 @@ const onChangeScaleXLabel = async () => {
             v-model="currentVisualizerConfig.gradientLeft"
             size="sm"
             :options="Array.from(BUILT_IN_GRADIENT_MAP).map(([value, label]) => ({ label, value }))"
-            @update:model-value="
-              onChangeValue({ key: 'gradientLeft', value: currentVisualizerConfig.gradientLeft })
-            "
+            @update:model-value="onChangeValue({ key: 'gradientLeft', value: currentVisualizerConfig.gradientLeft })"
           >
           </Select>
         </ConfigItem>
@@ -396,16 +374,11 @@ const onChangeScaleXLabel = async () => {
             v-model="currentVisualizerConfig.gradientRight"
             size="sm"
             :options="Array.from(BUILT_IN_GRADIENT_MAP).map(([value, label]) => ({ label, value }))"
-            @update:model-value="
-              onChangeValue({ key: 'gradientRight', value: currentVisualizerConfig.gradientRight })
-            "
+            @update:model-value="onChangeValue({ key: 'gradientRight', value: currentVisualizerConfig.gradientRight })"
           >
           </Select>
         </ConfigItem>
-        <ConfigItem
-          v-if="currentVisualizerConfig.channelLayout !== 'single'"
-          item-name="Split Gradient"
-        >
+        <ConfigItem v-if="currentVisualizerConfig.channelLayout !== 'single'" item-name="Split Gradient">
           <div class="flex align-items-center" style="height: 2.5rem">
             <Switch
               v-model="currentVisualizerConfig.splitGradient"
@@ -441,9 +414,7 @@ const onChangeScaleXLabel = async () => {
               :min="-20"
               :max="20"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'spinSpeed', value: currentVisualizerConfig.spinSpeed })
-              "
+              @update:model-value="onChangeValue({ key: 'spinSpeed', value: currentVisualizerConfig.spinSpeed })"
             />
           </div>
         </ConfigItem>
@@ -496,9 +467,7 @@ const onChangeScaleXLabel = async () => {
           <Switch
             v-model="currentVisualizerConfig.outlineBars"
             size="sm"
-            @change="
-              onChangeValue({ key: 'outlineBars', value: currentVisualizerConfig.outlineBars })
-            "
+            @change="onChangeValue({ key: 'outlineBars', value: currentVisualizerConfig.outlineBars })"
           />
         </ConfigItem>
       </ConfigRow>
@@ -519,9 +488,7 @@ const onChangeScaleXLabel = async () => {
               select-all-on-focus
               class="text-right"
               style="max-width: 8rem"
-              @update:model-value="
-                onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.barSpace })
-              "
+              @update:model-value="onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.barSpace })"
             />
             px
           </div>
@@ -533,9 +500,7 @@ const onChangeScaleXLabel = async () => {
               :step="0.05"
               :format="(val) => `${Number.parseFloat((val * 100).toFixed(10))}%`"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.barSpace })
-              "
+              @update:model-value="onChangeValue({ key: 'barSpace', value: currentVisualizerConfig.barSpace })"
             />
           </div>
         </ConfigItem>
@@ -556,9 +521,7 @@ const onChangeScaleXLabel = async () => {
               :step="0.1"
               :bar-width="0.75"
               :format="(val) => `${val}px`"
-              @update:model-value="
-                onChangeValue({ key: 'lineWidth', value: currentVisualizerConfig.lineWidth })
-              "
+              @update:model-value="onChangeValue({ key: 'lineWidth', value: currentVisualizerConfig.lineWidth })"
             />
           </div>
         </ConfigItem>
@@ -571,9 +534,7 @@ const onChangeScaleXLabel = async () => {
               :step="0.01"
               :bar-width="0.75"
               :format="(val) => `${Number.parseFloat((val * 100).toFixed(10))}%`"
-              @update:model-value="
-                onChangeValue({ key: 'fillAlpha', value: currentVisualizerConfig.fillAlpha })
-              "
+              @update:model-value="onChangeValue({ key: 'fillAlpha', value: currentVisualizerConfig.fillAlpha })"
             />
           </div>
         </ConfigItem>
@@ -588,9 +549,7 @@ const onChangeScaleXLabel = async () => {
               :max="0.7"
               :step="0.01"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'reflexRatio', value: currentVisualizerConfig.reflexRatio })
-              "
+              @update:model-value="onChangeValue({ key: 'reflexRatio', value: currentVisualizerConfig.reflexRatio })"
             />
           </div>
         </ConfigItem>
@@ -612,9 +571,7 @@ const onChangeScaleXLabel = async () => {
               :max="1"
               :step="0.05"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'reflexAlpha', value: currentVisualizerConfig.reflexAlpha })
-              "
+              @update:model-value="onChangeValue({ key: 'reflexAlpha', value: currentVisualizerConfig.reflexAlpha })"
             />
           </div>
         </ConfigItem>
@@ -626,9 +583,7 @@ const onChangeScaleXLabel = async () => {
               :max="2.5"
               :step="0.1"
               :bar-width="0.75"
-              @update:model-value="
-                onChangeValue({ key: 'reflexBright', value: currentVisualizerConfig.reflexBright })
-              "
+              @update:model-value="onChangeValue({ key: 'reflexBright', value: currentVisualizerConfig.reflexBright })"
             />
           </div>
         </ConfigItem>
@@ -676,9 +631,7 @@ const onChangeScaleXLabel = async () => {
           <Switch
             v-model="currentVisualizerConfig.showScaleY"
             size="sm"
-            @change="
-              onChangeValue({ key: 'showScaleY', value: currentVisualizerConfig.showScaleY })
-            "
+            @change="onChangeValue({ key: 'showScaleY', value: currentVisualizerConfig.showScaleY })"
           />
         </ConfigItem>
       </ConfigRow>

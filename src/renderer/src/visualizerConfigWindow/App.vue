@@ -11,9 +11,7 @@ import Titlebar from '@renderer/commonComponents/Titlebar/Titlebar.vue';
 import VisualizerConfig from '@visualizerConfigWindow/components/VisualizerConfig.vue';
 import PresetModal from '@visualizerConfigWindow/components/PresetModal.vue';
 
-const { isAlwaysOnTop, currentVisualizerIndex, fontFamily, theme, primaryColor } = storeToRefs(
-  useWindowStore()
-);
+const { isAlwaysOnTop, currentVisualizerIndex, fontFamily, theme, primaryColor } = storeToRefs(useWindowStore());
 
 useAppearance(fontFamily, theme, primaryColor);
 

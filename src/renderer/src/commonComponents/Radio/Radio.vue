@@ -48,9 +48,7 @@ const onBlur = (e: FocusEvent) => {
   emits('blur', e);
 };
 
-const checked = computed(
-  () => props.modelValue != null && deepEqual(props.modelValue, props.value)
-);
+const checked = computed(() => props.modelValue != null && deepEqual(props.modelValue, props.value));
 </script>
 
 <template>

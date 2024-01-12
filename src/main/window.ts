@@ -1,12 +1,4 @@
-import {
-  BrowserWindow,
-  Event,
-  MessageChannelMain,
-  OpenDialogOptions,
-  dialog,
-  nativeImage,
-  shell,
-} from 'electron';
+import { BrowserWindow, Event, MessageChannelMain, OpenDialogOptions, dialog, nativeImage, shell } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import path from 'path';
 import { settingsStore, visualizersConfigStore, visualizerPresetsStore } from '.';
@@ -42,11 +34,7 @@ const onCloseWindow = async (_event: Event, window: BrowserWindow, isMainWindow 
   }
 };
 
-const registerWindowEvents = (
-  window: BrowserWindow,
-  isMainWindow = true,
-  maximizeWindow = false
-) => {
+const registerWindowEvents = (window: BrowserWindow, isMainWindow = true, maximizeWindow = false) => {
   window.on('ready-to-show', () => {
     window.show();
     maximizeWindow && window.maximize();
@@ -58,10 +46,7 @@ const registerWindowEvents = (
   });
 
   window.webContents.setWindowOpenHandler((details) => {
-    const ALLOWED_URLS = [
-      'https://audiomotion.dev',
-      'https://github.com/antimacho612/Muwviz',
-    ] as const;
+    const ALLOWED_URLS = ['https://audiomotion.dev', 'https://github.com/antimacho612/Muwviz'] as const;
     if (ALLOWED_URLS.some((url) => details.url.startsWith(url))) {
       shell.openExternal(details.url, { activate: true });
     }
@@ -77,19 +62,16 @@ const registerWindowEvents = (
   });
 
   if (isMainWindow) {
-    window.webContents.session.webRequest.onHeadersReceived(
-      { urls: ['*://*.genius.com/*'] },
-      (details, callback) => {
-        if (details.responseHeaders) {
-          // 強制的にCORSブロックを回避する
-          delete details.responseHeaders['Access-Control-Allow-Origin'];
-          delete details.responseHeaders['access-control-allow-origin'];
-          details.responseHeaders['Access-Control-Allow-Origin'] = ['*'];
-        }
-
-        callback({ responseHeaders: details.responseHeaders });
+    window.webContents.session.webRequest.onHeadersReceived({ urls: ['*://*.genius.com/*'] }, (details, callback) => {
+      if (details.responseHeaders) {
+        // 強制的にCORSブロックを回避する
+        delete details.responseHeaders['Access-Control-Allow-Origin'];
+        delete details.responseHeaders['access-control-allow-origin'];
+        details.responseHeaders['Access-Control-Allow-Origin'] = ['*'];
       }
-    );
+
+      callback({ responseHeaders: details.responseHeaders });
+    });
   }
 };
 

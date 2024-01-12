@@ -9,13 +9,8 @@ import { Album, Artist, Song } from '@shared/types';
 import QuickSearchInput from '@mainWindow/components/QuickSearchInput/QuickSearchInput.vue';
 import SearchResults from './SearchResults.vue';
 
-const {
-  searchSongsByTitle,
-  searchAlbumsByTitle,
-  searchArtistsByName,
-  getAlbumSongs,
-  getArtistSongs,
-} = useEntitiesStore();
+const { searchSongsByTitle, searchAlbumsByTitle, searchArtistsByName, getAlbumSongs, getArtistSongs } =
+  useEntitiesStore();
 
 const isResultsShow = ref(false);
 

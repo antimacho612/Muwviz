@@ -39,11 +39,7 @@ provide(showSongDetailModalKey, showSongDetailModal);
     </div>
     <div class="left-pane-main" :inert="isModalOpen">
       <RouterView v-slot="{ Component }">
-        <Transition
-          mode="out-in"
-          enter-active-class="page-fade-in"
-          leave-active-class="page-fade-out"
-        >
+        <Transition mode="out-in" enter-active-class="page-fade-in" leave-active-class="page-fade-out">
           <component :is="Component" />
         </Transition>
       </RouterView>

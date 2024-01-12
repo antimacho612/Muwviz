@@ -131,12 +131,7 @@ const onClickDeletePresetButton = async (id: string, name: string) => {
               class="w-full flex-grow-1 flex-shrink-1"
               placeholder="プリセット名"
             />
-            <Button
-              :disabled="!newPresetName.length"
-              size="xs"
-              class="flex-shrink-0"
-              @click="onClickSaveButton"
-            >
+            <Button :disabled="!newPresetName.length" size="xs" class="flex-shrink-0" @click="onClickSaveButton">
               保存
             </Button>
           </div>

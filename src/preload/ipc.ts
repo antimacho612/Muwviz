@@ -1,15 +1,6 @@
 import { FileFilter, MessageBoxReturnValue, OpenDialogReturnValue, ipcRenderer } from 'electron';
 import { GetApiType } from 'electron-typescript-ipc';
-import {
-  Album,
-  Artist,
-  Lyrics,
-  ScanProgress,
-  ScannedFolder,
-  Settings,
-  Song,
-  UpdatableSettings,
-} from '@shared/types';
+import { Album, Artist, Lyrics, ScanProgress, ScannedFolder, Settings, Song, UpdatableSettings } from '@shared/types';
 import { VisualizerConfig, VisualizerPreset } from '@shared/visualizerTypes';
 
 export type ElectronAPI = GetApiType<
@@ -66,11 +57,7 @@ export type ElectronAPI = GetApiType<
      * @param message メッセージ
      * @param detail 詳細
      */
-    showConfirm: (
-      isMainWindow: boolean,
-      message: string,
-      detail?: string
-    ) => Promise<MessageBoxReturnValue>;
+    showConfirm: (isMainWindow: boolean, message: string, detail?: string) => Promise<MessageBoxReturnValue>;
 
     /**
      * 指定されたパスをデフォルトのアプリケーションで開く
@@ -122,10 +109,7 @@ export type ElectronAPI = GetApiType<
     /**
      * 設定を更新する
      */
-    updateSettings: <K extends keyof UpdatableSettings>(
-      key: K,
-      value: UpdatableSettings[K]
-    ) => Promise<void>;
+    updateSettings: <K extends keyof UpdatableSettings>(key: K, value: UpdatableSettings[K]) => Promise<void>;
 
     /**
      * スキャン済みフォルダ情報を取得する
@@ -307,15 +291,11 @@ export const electronAPI: ElectronAPI = {
 
     openVisualizerConfigWindow: async () => await ipcRenderer.invoke('openVisualizerConfigWindow'),
 
-    isWindowMaximized: async (isMainWindow) =>
-      await ipcRenderer.invoke('isWindowMaximized', isMainWindow),
-    minimizeWindow: async (isMainWindow) =>
-      await ipcRenderer.invoke('minimizeWindow', isMainWindow),
-    maximizeWindow: async (isMainWindow) =>
-      await ipcRenderer.invoke('maximizeWindow', isMainWindow),
+    isWindowMaximized: async (isMainWindow) => await ipcRenderer.invoke('isWindowMaximized', isMainWindow),
+    minimizeWindow: async (isMainWindow) => await ipcRenderer.invoke('minimizeWindow', isMainWindow),
+    maximizeWindow: async (isMainWindow) => await ipcRenderer.invoke('maximizeWindow', isMainWindow),
     closeWindow: async (isMainWindow) => await ipcRenderer.invoke('closeWindow', isMainWindow),
-    isWindowAlwaysOnTop: async (isMainWindow) =>
-      await ipcRenderer.invoke('isWindowAlwaysOnTop', isMainWindow),
+    isWindowAlwaysOnTop: async (isMainWindow) => await ipcRenderer.invoke('isWindowAlwaysOnTop', isMainWindow),
     setWindowAlwaysOnTop: async (isMainWindow, flag) =>
       await ipcRenderer.invoke('setWindowAlwaysOnTop', isMainWindow, flag),
 
@@ -323,11 +303,9 @@ export const electronAPI: ElectronAPI = {
     updateSettings: async (key, value) => await ipcRenderer.invoke('updateSettings', key, value),
 
     getScannedFolders: async () => await ipcRenderer.invoke('getScannedFolders'),
-    scanFolder: async (folderPath, resortLibrary) =>
-      await ipcRenderer.invoke('scanFolder', folderPath, resortLibrary),
+    scanFolder: async (folderPath, resortLibrary) => await ipcRenderer.invoke('scanFolder', folderPath, resortLibrary),
     initializeLibrary: async () => await ipcRenderer.invoke('initializeLibrary'),
-    removeSongsFromLibrary: async (songIds) =>
-      await ipcRenderer.invoke('removeSongsFromLibrary', songIds),
+    removeSongsFromLibrary: async (songIds) => await ipcRenderer.invoke('removeSongsFromLibrary', songIds),
 
     getAllSongs: async () => await ipcRenderer.invoke('getAllSongs'),
     clearSongsCache: async () => await ipcRenderer.invoke('clearSongsCache'),

@@ -44,8 +44,7 @@ const playAlbumSongs = async (shuffle: boolean) => {
   await setQueue(songIds, { shuffle });
 };
 const albumContextMenu = useContextMenu('Album');
-const onClickEllipsisButton = (e: MouseEvent) =>
-  album.value && albumContextMenu.show(e, { album: album.value });
+const onClickEllipsisButton = (e: MouseEvent) => album.value && albumContextMenu.show(e, { album: album.value });
 
 const songContextMenu = useContextMenu('Song');
 const songsContextMenu = useContextMenu('Songs');

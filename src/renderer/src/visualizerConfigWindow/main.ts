@@ -2,11 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 
-import {
-  getToastPluginOptions,
-  getRippleEffectOptions,
-  registerErrorHandler,
-} from '@renderer/commonUtils/setup';
+import { getToastPluginOptions, getRippleEffectOptions, registerErrorHandler } from '@renderer/commonUtils/setup';
 
 import 'modern-css-reset/dist/reset.min.css';
 import 'primeflex/primeflex.min.css';

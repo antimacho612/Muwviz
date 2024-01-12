@@ -20,15 +20,8 @@ import ArtistGridItem from './ArtistGridItem.vue';
 const { backupData } = useArtistsHistoryState();
 
 const { artistList } = storeToRefs(useEntitiesStore());
-const { sortedArtists, sortKey, order } = useArtistsSort(
-  artistList,
-  backupData.value.sortKey,
-  backupData.value.order
-);
-const { searchText, filteredArtists } = useArtistsQuickSearch(
-  sortedArtists,
-  backupData.value.searchText
-);
+const { sortedArtists, sortKey, order } = useArtistsSort(artistList, backupData.value.sortKey, backupData.value.order);
+const { searchText, filteredArtists } = useArtistsQuickSearch(sortedArtists, backupData.value.searchText);
 
 const scroller = ref();
 onMounted(() => {

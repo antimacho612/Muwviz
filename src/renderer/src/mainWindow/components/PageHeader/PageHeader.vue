@@ -17,12 +17,6 @@ const { collapseLeftSidePane } = useWindowStore();
       <slot></slot>
     </div>
 
-    <Button
-      size="sm"
-      :icon="CloseIcon"
-      text
-      class="flex-grow-0 flex-shrink-0"
-      @click="collapseLeftSidePane"
-    />
+    <Button size="sm" :icon="CloseIcon" text class="flex-grow-0 flex-shrink-0" @click="collapseLeftSidePane" />
   </div>
 </template>

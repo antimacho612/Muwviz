@@ -9,9 +9,7 @@ const { currentTime, duration, playerState, setCurrentTime } = useAudioPlayer();
 
 const disabled = computed(() => playerState.value === 'UnReady' || playerState.value === 'Loading');
 
-const gradientOffset = computed(() =>
-  duration.value !== 0 ? (currentTime.value / duration.value) * 100 : 0
-);
+const gradientOffset = computed(() => (duration.value !== 0 ? (currentTime.value / duration.value) * 100 : 0));
 
 useWaveform('#waveform-path');
 
@@ -42,13 +40,7 @@ const onClick = (e: MouseEvent) => {
 </script>
 
 <template>
-  <div
-    ref="waveformEl"
-    class="waveform"
-    :class="{ disabled }"
-    @mousemove="onMouseMove"
-    @click="onClick"
-  >
+  <div ref="waveformEl" class="waveform" :class="{ disabled }" @mousemove="onMouseMove" @click="onClick">
     <div class="tooltip" :style="{ left: `${tooltipLeft}px` }" @mousemove.stop>
       {{ tooltipText }}
     </div>

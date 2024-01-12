@@ -7,12 +7,7 @@ const emits = defineEmits<Emits>();
 </script>
 
 <template>
-  <div
-    v-ripple
-    class="grid-item"
-    @click="emits('click', $event)"
-    @contextmenu="emits('contextmenu', $event)"
-  >
+  <div v-ripple class="grid-item" @click="emits('click', $event)" @contextmenu="emits('contextmenu', $event)">
     <slot></slot>
   </div>
 </template>

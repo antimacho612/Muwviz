@@ -31,13 +31,7 @@ const emits = defineEmits<Emits>();
           <h3>Songs ({{ songs.length }})</h3>
         </div>
         <div class="scroller-wrapper">
-          <RecycleScroller
-            :items="songs"
-            :item-size="33"
-            key-field="id"
-            direction="vertical"
-            class="scroller"
-          >
+          <RecycleScroller :items="songs" :item-size="33" key-field="id" direction="vertical" class="scroller">
             <template #default="{ item }">
               <SongListRow
                 :song="item"
@@ -55,13 +49,7 @@ const emits = defineEmits<Emits>();
           <h3>Albums ({{ albums.length }})</h3>
         </div>
         <div class="scroller-wrapper">
-          <RecycleScroller
-            :items="albums"
-            :item-size="56"
-            key-field="id"
-            direction="vertical"
-            class="scroller"
-          >
+          <RecycleScroller :items="albums" :item-size="56" key-field="id" direction="vertical" class="scroller">
             <template #default="{ item }">
               <AlbumListRow
                 :album="item"
@@ -78,13 +66,7 @@ const emits = defineEmits<Emits>();
           <h3>Artists ({{ artists.length }})</h3>
         </div>
         <div class="scroller-wrapper">
-          <RecycleScroller
-            :items="artists"
-            :item-size="56"
-            key-field="id"
-            direction="vertical"
-            class="scroller"
-          >
+          <RecycleScroller :items="artists" :item-size="56" key-field="id" direction="vertical" class="scroller">
             <template #default="{ item }">
               <ArtistListRow
                 :artist="item"

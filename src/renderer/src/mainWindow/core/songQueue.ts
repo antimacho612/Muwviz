@@ -76,10 +76,7 @@ const songQueue = () => {
     currentIndex.value = shuffle ? 0 : firstSongIndex;
   };
 
-  const push = (
-    songIds: Readonly<string[]>,
-    options?: { nextToCurrent?: boolean; shuffle?: boolean }
-  ) => {
+  const push = (songIds: Readonly<string[]>, options?: { nextToCurrent?: boolean; shuffle?: boolean }) => {
     const opts = { nextToCurrent: false, shuffle: false, ...options };
 
     let queueItems = toQueueItems(songIds);

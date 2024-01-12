@@ -44,25 +44,14 @@ const emits = defineEmits<Emits>();
         <PinIcon v-if="pinned" class="icon" />
         <PinOutlinedIcon v-else class="icon" />
       </div>
-      <div
-        v-if="showMinimizeButton"
-        class="c-titlebar-button"
-        @click="emits('clickMinimizeButton', $event)"
-      >
+      <div v-if="showMinimizeButton" class="c-titlebar-button" @click="emits('clickMinimizeButton', $event)">
         <MinimizeIcon class="icon" />
       </div>
-      <div
-        v-if="showMaximizeButton"
-        class="c-titlebar-button"
-        @click="emits('clickMaximizeButton', $event)"
-      >
+      <div v-if="showMaximizeButton" class="c-titlebar-button" @click="emits('clickMaximizeButton', $event)">
         <SquareStackIcon v-if="isWindowMaximized" class="icon" />
         <SquareIcon v-else class="icon" />
       </div>
-      <div
-        class="c-titlebar-button c-titlebar-button-close"
-        @click="emits('clickCloseButton', $event)"
-      >
+      <div class="c-titlebar-button c-titlebar-button-close" @click="emits('clickCloseButton', $event)">
         <CloseIcon class="icon" />
       </div>
     </div>

@@ -15,10 +15,7 @@ const settings = useSettingsStore();
 const { fontFamily, theme, primaryColor } = storeToRefs(settings);
 const sendMessageToSubWindow = inject(sendMessageToSubWindowKey);
 
-const onChangeValue = async <K extends keyof AppearanceSettings>(
-  key: K,
-  value: AppearanceSettings[K]
-) => {
+const onChangeValue = async <K extends keyof AppearanceSettings>(key: K, value: AppearanceSettings[K]) => {
   sendMessageToSubWindow &&
     sendMessageToSubWindow({
       channel: 'changeAppearance',
@@ -34,12 +31,7 @@ const onChangeValue = async <K extends keyof AppearanceSettings>(
       title="フォント"
       :description="`アプリケーション全体で使用するフォントを設定します。（デフォルト: ${DEFAULT_SETTINGS.fontFamily}）`"
     >
-      <InputText
-        v-model="fontFamily"
-        size="sm"
-        style="width: 75%"
-        @change="onChangeValue('fontFamily', fontFamily)"
-      />
+      <InputText v-model="fontFamily" size="sm" style="width: 75%" @change="onChangeValue('fontFamily', fontFamily)" />
     </BaseSettingsItem>
 
     <BaseSettingsItem
@@ -49,20 +41,8 @@ const onChangeValue = async <K extends keyof AppearanceSettings>(
       }）`"
     >
       <div class="flex" style="column-gap: 2rem">
-        <Radio
-          v-model="theme"
-          name="theme"
-          label="ライト"
-          value="Light"
-          @change="onChangeValue('theme', theme)"
-        />
-        <Radio
-          v-model="theme"
-          name="theme"
-          label="ダーク"
-          value="Dark"
-          @change="onChangeValue('theme', theme)"
-        />
+        <Radio v-model="theme" name="theme" label="ライト" value="Light" @change="onChangeValue('theme', theme)" />
+        <Radio v-model="theme" name="theme" label="ダーク" value="Dark" @change="onChangeValue('theme', theme)" />
       </div>
     </BaseSettingsItem>
 

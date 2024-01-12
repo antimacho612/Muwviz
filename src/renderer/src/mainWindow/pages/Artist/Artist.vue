@@ -27,9 +27,7 @@ const props = defineProps<{ artistId: string }>();
 const { artistsMap, songList } = storeToRefs(useEntitiesStore());
 
 const artist = computed(() => artistsMap.value.get(props.artistId));
-const artistSongs = computed(() =>
-  songList.value.filter((song) => song.artistId === props.artistId)
-);
+const artistSongs = computed(() => songList.value.filter((song) => song.artistId === props.artistId));
 
 const { sortKey, order, sortedSongs } = useSongsSort(artistSongs, {
   sortKey: 'Album',
@@ -56,8 +54,7 @@ const playArtistSongs = async (shuffle: boolean) => {
 };
 
 const artistContextMenu = useContextMenu('Artist');
-const onClickEllipsisButton = (e: MouseEvent) =>
-  artist.value && artistContextMenu.show(e, { artist: artist.value });
+const onClickEllipsisButton = (e: MouseEvent) => artist.value && artistContextMenu.show(e, { artist: artist.value });
 
 const songContextMenu = useContextMenu('Song');
 const songsContextMenu = useContextMenu('Songs');

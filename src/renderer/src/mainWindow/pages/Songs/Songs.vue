@@ -58,13 +58,7 @@ const playSong = async (songId?: string, shuffle = false) => {
       <template #default>
         <div class="header-actions">
           <Button :icon="PlayIcon" size="sm" text title="全曲再生" @click="playSong()" />
-          <Button
-            :icon="ShuffleIcon"
-            size="sm"
-            text
-            title="全曲シャフル再生"
-            @click="playSong(undefined, true)"
-          />
+          <Button :icon="ShuffleIcon" size="sm" text title="全曲シャフル再生" @click="playSong(undefined, true)" />
         </div>
       </template>
     </PageHeader>

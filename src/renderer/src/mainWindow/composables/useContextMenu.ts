@@ -49,11 +49,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
     {
       label: 'ライブラリから削除',
       onClick: async () => {
-        const isOk = await showNativeConfirm(
-          true,
-          '確認',
-          `「${args.song.title}」をライブラリから削除しますか？`
-        );
+        const isOk = await showNativeConfirm(true, '確認', `「${args.song.title}」をライブラリから削除しますか？`);
         if (isOk) {
           await removeSongsFromLibrary([args.song.id]);
           toast.info('ライブラリから楽曲を削除しました。');
@@ -86,8 +82,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
       children: [
         {
           label: '通常再生',
-          onClick: () =>
-            addSongsToQueue(args.selectedSongs, { nextToCurrent: true, skipImmediate: true }),
+          onClick: () => addSongsToQueue(args.selectedSongs, { nextToCurrent: true, skipImmediate: true }),
         },
         {
           label: 'シャッフル再生',
@@ -109,8 +104,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
         },
         {
           label: 'シャッフル再生',
-          onClick: () =>
-            addSongsToQueue(args.selectedSongs, { nextToCurrent: true, shuffle: true }),
+          onClick: () => addSongsToQueue(args.selectedSongs, { nextToCurrent: true, shuffle: true }),
         },
       ],
     },
@@ -240,8 +234,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
         children: [
           {
             label: '通常再生',
-            onClick: () =>
-              addSongsToQueue(getArtistSongIds(), { nextToCurrent: true, skipImmediate: true }),
+            onClick: () => addSongsToQueue(getArtistSongIds(), { nextToCurrent: true, skipImmediate: true }),
           },
           {
             label: 'シャッフル再生',
@@ -263,8 +256,7 @@ export const useContextMenu = <T extends ContextMenuType>(type: T) => {
           },
           {
             label: 'シャッフル再生',
-            onClick: () =>
-              addSongsToQueue(getArtistSongIds(), { nextToCurrent: true, shuffle: true }),
+            onClick: () => addSongsToQueue(getArtistSongIds(), { nextToCurrent: true, shuffle: true }),
           },
         ],
       },

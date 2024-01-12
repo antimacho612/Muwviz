@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { useAudioPlayer } from '@mainWindow/composables/useAudioPlayer';
-import {
-  formatAlbumTitle,
-  formatArtistName,
-  formatBytes,
-  formatTime,
-  toHyphenIfEmpty,
-} from '@renderer/commonUtils';
+import { formatAlbumTitle, formatArtistName, formatBytes, formatTime, toHyphenIfEmpty } from '@renderer/commonUtils';
 
 import Artwork from '@mainWindow/components/Artwork/Artwork.vue';
 
@@ -17,12 +11,7 @@ const { currentSong } = useAudioPlayer();
   <div class="info-tab">
     <template v-if="!currentSong">曲を再生すると情報が表示されます</template>
     <template v-else>
-      <Artwork
-        :src="currentSong.artworkPath"
-        width="120px"
-        height="120px"
-        class="flex-shrink-0 mx-auto"
-      />
+      <Artwork :src="currentSong.artworkPath" width="120px" height="120px" class="flex-shrink-0 mx-auto" />
       <div class="title">{{ currentSong.title }}</div>
       <div class="detail-info">
         <div class="row">

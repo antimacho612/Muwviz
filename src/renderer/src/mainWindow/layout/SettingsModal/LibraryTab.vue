@@ -35,11 +35,9 @@ const onClickInitializeLibraryButton = async () => {
   }
 };
 
-const onClickOpenArtworkDirButton = async () =>
-  await window.electron.invoke.openPath(artworkPath.value);
+const onClickOpenArtworkDirButton = async () => await window.electron.invoke.openPath(artworkPath.value);
 
-const onClickOpenWaveformDirButton = async () =>
-  await window.electron.invoke.openPath(waveformPath.value);
+const onClickOpenWaveformDirButton = async () => await window.electron.invoke.openPath(waveformPath.value);
 
 const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: LibrarySettings[K]) =>
   await settings.saveChange(key, value);
@@ -84,9 +82,7 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
     >
       <div class="flex align-items-center justify-content-between column-gap-1">
         <span class="artwork-dir">{{ artworkPath }}</span>
-        <Button size="sm" class="flex-shrink-0" @click="onClickOpenArtworkDirButton">
-          フォルダを開く
-        </Button>
+        <Button size="sm" class="flex-shrink-0" @click="onClickOpenArtworkDirButton"> フォルダを開く </Button>
       </div>
     </BaseSettingsItem>
 
@@ -95,23 +91,15 @@ const onChangeValue = async <K extends keyof LibrarySettings>(key: K, value: Lib
       :description="`楽曲の再生時に生成した波形データ（アプリケーション下部のシークバー）をキャッシュするかどうかを設定します。\n※キャッシュしない場合、楽曲を再生してから波形が表示されるまで少し時間がかかります。`"
     >
       <div class="flex align-items-center column-gap-3">
-        <Switch
-          v-model="cacheWaveformData"
-          @change="onChangeValue('cacheWaveformData', cacheWaveformData)"
-        />
+        <Switch v-model="cacheWaveformData" @change="onChangeValue('cacheWaveformData', cacheWaveformData)" />
         <span>{{ cacheWaveformData ? 'ON' : 'OFF' }}</span>
       </div>
     </BaseSettingsItem>
 
-    <BaseSettingsItem
-      title="波形データの保存場所"
-      description="波形データが保存されているフォルダです。"
-    >
+    <BaseSettingsItem title="波形データの保存場所" description="波形データが保存されているフォルダです。">
       <div class="flex align-items-center justify-content-between column-gap-1">
         <span class="waveform-dir">{{ waveformPath }}</span>
-        <Button size="sm" class="flex-shrink-0" @click="onClickOpenWaveformDirButton">
-          フォルダを開く
-        </Button>
+        <Button size="sm" class="flex-shrink-0" @click="onClickOpenWaveformDirButton"> フォルダを開く </Button>
       </div>
     </BaseSettingsItem>
   </BaseSettingsTabPanel>

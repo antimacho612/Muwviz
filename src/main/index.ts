@@ -110,12 +110,8 @@ function initializeStore() {
   lyricsStore = new LyricsStore(path.join(STORES_DIR, 'lyrics.json'));
   settingsStore = new SettingsStore(path.join(STORES_DIR, 'settings.json'));
   scannedFoldersStore = new ScannedFoldersStore(path.join(STORES_DIR, 'scanned-folders.json'));
-  visualizersConfigStore = new VisualizersConfigStore(
-    path.join(STORES_DIR, 'visualizers-config.json')
-  );
-  visualizerPresetsStore = new VisualizerPresetsStore(
-    path.join(STORES_DIR, 'visualizer-presets.json')
-  );
+  visualizersConfigStore = new VisualizersConfigStore(path.join(STORES_DIR, 'visualizers-config.json'));
+  visualizerPresetsStore = new VisualizerPresetsStore(path.join(STORES_DIR, 'visualizer-presets.json'));
 }
 
 function registerProtocols() {

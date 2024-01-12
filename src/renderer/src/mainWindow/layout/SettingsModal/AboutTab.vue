@@ -18,11 +18,7 @@ const { appVersion, audioMotionAnalyzerVersion } = useSettingsStore();
       <div class="mt-4">
         バグ報告・ご意見・ご要望などはGitHubのIssuesまでお願いします👇
         <br />
-        <a
-          target="_blank"
-          href="https://github.com/antimacho612/Muwviz/issues/new/choose"
-          class="external-link"
-        >
+        <a target="_blank" href="https://github.com/antimacho612/Muwviz/issues/new/choose" class="external-link">
           https://github.com/antimacho612/Muwviz/issues/new/choose
         </a>
       </div>
@@ -30,9 +26,7 @@ const { appVersion, audioMotionAnalyzerVersion } = useSettingsStore();
 
     <BaseSettingsItem title="audioMotion-analyzer (Visualizer)のバージョン">
       <span class="font-bold text-lg">{{ audioMotionAnalyzerVersion }}</span>
-      <a target="_blank" href="https://audiomotion.dev/" class="external-link ml-4">
-        https://audiomotion.dev/
-      </a>
+      <a target="_blank" href="https://audiomotion.dev/" class="external-link ml-4"> https://audiomotion.dev/ </a>
     </BaseSettingsItem>
   </BaseSettingsTabPanel>
 </template>

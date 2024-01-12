@@ -20,15 +20,8 @@ import AlbumGridItem from './AlbumGridItem.vue';
 const { backupData } = useAlbumsHistoryState();
 
 const { albumList } = storeToRefs(useEntitiesStore());
-const { sortedAlbums, sortKey, order } = useAlbumsSort(
-  albumList,
-  backupData.value.sortKey,
-  backupData.value.order
-);
-const { searchText, filteredAlbums } = useAlbumsQuickSearch(
-  sortedAlbums,
-  backupData.value.searchText
-);
+const { sortedAlbums, sortKey, order } = useAlbumsSort(albumList, backupData.value.sortKey, backupData.value.order);
+const { searchText, filteredAlbums } = useAlbumsQuickSearch(sortedAlbums, backupData.value.searchText);
 
 const scroller = ref();
 onMounted(() => {

@@ -17,9 +17,7 @@ import VolumeControl from './VolumeControl.vue';
 
 const { playerState, repeat, previousSong, togglePlay, nextSong, toggleRepeat } = useAudioPlayer();
 
-const playerDisabled = computed(
-  () => playerState.value === 'UnReady' || playerState.value === 'Loading'
-);
+const playerDisabled = computed(() => playerState.value === 'UnReady' || playerState.value === 'Loading');
 
 const playPauseButtonAttrs = computed(() => ({
   title: playerState.value === 'Playing' ? '一時停止' : '再生',
@@ -27,14 +25,8 @@ const playPauseButtonAttrs = computed(() => ({
 }));
 
 const toggleRepeatButtonAttrs = computed(() => ({
-  icon:
-    repeat.value === 'Off' ? RepeatOffIcon : repeat.value === 'All' ? RepeatIcon : RepeatOnceIcon,
-  title:
-    repeat.value === 'Off'
-      ? 'キューのループON'
-      : repeat.value === 'All'
-      ? '1曲ループON'
-      : 'ループOFF',
+  icon: repeat.value === 'Off' ? RepeatOffIcon : repeat.value === 'All' ? RepeatIcon : RepeatOnceIcon,
+  title: repeat.value === 'Off' ? 'キューのループON' : repeat.value === 'All' ? '1曲ループON' : 'ループOFF',
 }));
 
 const onClickPrevButton = async () => await previousSong();
@@ -62,11 +54,7 @@ const onClickRepeatButton = () => toggleRepeat();
             @click="onClickPlayPauseButton"
           >
             <PauseIcon v-if="playerState === 'Playing'" style="height: 2rem" />
-            <LoadingAnimation
-              v-else-if="playerState === 'Loading'"
-              size="2rem"
-              color="var(--disabled-text-color)"
-            />
+            <LoadingAnimation v-else-if="playerState === 'Loading'" size="2rem" color="var(--disabled-text-color)" />
             <PlayIcon v-else style="height: 2rem" />
           </Button>
           <Button :icon="ForwardIcon" text :disabled="playerDisabled" @click="onClickNextButton" />

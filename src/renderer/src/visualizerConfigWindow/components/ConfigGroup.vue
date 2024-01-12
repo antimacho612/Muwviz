@@ -12,8 +12,7 @@ const isCollapsed = ref(false);
 const setHeightToContentDiv = (height?: '0' | 'scrollHeight') => {
   if (!contentEl.value) return;
   if (height === '0') contentEl.value.style.height = height;
-  else if (height === 'scrollHeight')
-    contentEl.value.style.height = `${contentEl.value?.scrollHeight}px`;
+  else if (height === 'scrollHeight') contentEl.value.style.height = `${contentEl.value?.scrollHeight}px`;
   else contentEl.value.style.height = '';
 };
 </script>
@@ -23,13 +22,7 @@ const setHeightToContentDiv = (height?: '0' | 'scrollHeight') => {
     <div class="header">
       <span class="title">{{ title }}</span>
       <span class="divider"></span>
-      <Button
-        size="xs"
-        text
-        :icon="ChevronUpIcon"
-        class="toggle-button"
-        @click="isCollapsed = !isCollapsed"
-      />
+      <Button size="xs" text :icon="ChevronUpIcon" class="toggle-button" @click="isCollapsed = !isCollapsed" />
     </div>
 
     <Transition

@@ -1,24 +1,8 @@
 import { Ref, ref, watch } from 'vue';
-import {
-  getAlbumsSortOptions,
-  getArtistsSortOptions,
-  getSongsSortOptions,
-  sortArrayOfObjects,
-} from '@shared/utils';
-import {
-  Album,
-  AlbumsSortKey,
-  Artist,
-  ArtistsSortKey,
-  Order,
-  Song,
-  SongsSortKey,
-} from '@shared/types';
+import { getAlbumsSortOptions, getArtistsSortOptions, getSongsSortOptions, sortArrayOfObjects } from '@shared/utils';
+import { Album, AlbumsSortKey, Artist, ArtistsSortKey, Order, Song, SongsSortKey } from '@shared/types';
 
-export const useSongsSort = (
-  songs: Ref<Song[]>,
-  defaultSort?: { sortKey: SongsSortKey; order: Order }
-) => {
+export const useSongsSort = (songs: Ref<Song[]>, defaultSort?: { sortKey: SongsSortKey; order: Order }) => {
   const sortedSongs = ref<Song[]>([...songs.value]);
   const sortKey = ref<SongsSortKey>('Artist');
   const order = ref<Order>('Asc');
@@ -49,11 +33,7 @@ export const useSongsSort = (
   };
 };
 
-export const useAlbumsSort = (
-  albums: Ref<Album[]>,
-  defaultSortKey?: AlbumsSortKey,
-  defaultOrder?: Order
-) => {
+export const useAlbumsSort = (albums: Ref<Album[]>, defaultSortKey?: AlbumsSortKey, defaultOrder?: Order) => {
   const sortedAlbums = ref<Album[]>([]);
   const sortKey = ref<AlbumsSortKey>(defaultSortKey ?? 'Title');
   const order = ref<Order>(defaultOrder ?? 'Asc');
@@ -78,11 +58,7 @@ export const useAlbumsSort = (
   };
 };
 
-export const useArtistsSort = (
-  artists: Ref<Artist[]>,
-  defaultSortKey?: ArtistsSortKey,
-  defaultOrder?: Order
-) => {
+export const useArtistsSort = (artists: Ref<Artist[]>, defaultSortKey?: ArtistsSortKey, defaultOrder?: Order) => {
   const sortedArtists = ref<Artist[]>([]);
   const sortKey = ref<ArtistsSortKey>(defaultSortKey ?? 'Name');
   const order = ref<Order>(defaultOrder ?? 'Asc');

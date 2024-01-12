@@ -30,10 +30,7 @@ const onClickInitializeApplicationButton = async () => {
 
 <template>
   <BaseSettingsTabPanel>
-    <BaseSettingsItem
-      title="デスクトップ通知"
-      description="デスクトップ通知を表示するかどうかを設定します。"
-    >
+    <BaseSettingsItem title="デスクトップ通知" description="デスクトップ通知を表示するかどうかを設定します。">
       <div class="flex align-items-center column-gap-3">
         <Switch
           v-model="showDesktopNotification"
@@ -44,11 +41,7 @@ const onClickInitializeApplicationButton = async () => {
     </BaseSettingsItem>
 
     <div class="w-full mt-4 text-center">
-      <Button
-        size="xs"
-        class="initialize-application-button"
-        @click="onClickInitializeApplicationButton"
-      >
+      <Button size="xs" class="initialize-application-button" @click="onClickInitializeApplicationButton">
         ⚠️アプリケーションを初期化
       </Button>
     </div>

@@ -28,9 +28,7 @@ export const useMultiSelectableSongList = (songList: Ref<Song[]>) => {
       } else {
         const from = Math.min(currentIndex, index);
         const to = Math.max(currentIndex, index);
-        selectedSongs.value = new Map(
-          songList.value.slice(from, to + 1).map((song, index) => [from + index, song.id])
-        );
+        selectedSongs.value = new Map(songList.value.slice(from, to + 1).map((song, index) => [from + index, song.id]));
       }
     } else {
       selectedSongs.value = new Map([[index, id]]);
@@ -38,8 +36,7 @@ export const useMultiSelectableSongList = (songList: Ref<Song[]>) => {
     }
   };
 
-  const getOrderedSelectedSongIds = () =>
-    [...selectedSongs.value].sort((a, b) => a[0] - b[0]).map((i) => i[1]);
+  const getOrderedSelectedSongIds = () => [...selectedSongs.value].sort((a, b) => a[0] - b[0]).map((i) => i[1]);
 
   const onKeyDown = (e: KeyboardEvent) => {
     if ((e.target as HTMLElement)?.tagName?.toLocaleLowerCase() === 'input') {
