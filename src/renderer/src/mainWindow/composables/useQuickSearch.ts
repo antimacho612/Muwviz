@@ -21,7 +21,7 @@ const useQuickSearch = <T>(
 
   filter();
 
-  watchDebounced([searchText, items], () => filter(), { debounce: 500, maxWait: 1000 });
+  watchDebounced([searchText, items], filter, { debounce: 500, maxWait: 1000 });
 
   return { searchText, filteredItems };
 };
