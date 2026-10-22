@@ -56,7 +56,7 @@
     "jimp": "^0.22.10",
     "js-xxhash": "^3.0.0",
     "modern-css-reset": "^1.4.0",
-    "music-metadata": "^7.14.0",
+    "music-metadata": "^11.0.0",
     "pinia": "^2.1.7",
     "prettier": "^3.0.3",
     "primeflex": "^3.3.1",
